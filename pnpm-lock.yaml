@@ -1,0 +1,13 @@
+lockfileVersion: 5.4
+
+specifiers:
+  '@sm003/autojs6-dts': ^2.0.2
+
+dependencies:
+  '@sm003/autojs6-dts': 2.0.2
+
+packages:
+
+  /@sm003/autojs6-dts/2.0.2:
+    resolution: {integrity: sha512-sqepha4fhZ8tX56SDjPfIUql5it1bLDHwT7pNFmSobkJwcQtlLCPn150BzmunIORULMBYJx5v0f4CMhWR80uQw==}
+    dev: false
