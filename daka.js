@@ -8,6 +8,8 @@ const SCREEN_ON = true //运行时是否保持屏幕常亮
 const ACCOUNT = "19988329986"
 const PASSWD = "1313243"
 
+const CORP_ID = "" // 公司的钉钉CorpId, 如果只加入了一家公司, 可以不填
+
 let delay = 0 //随机等待时间，单位：分钟
 
 const PACKAGE_ID = {
@@ -33,13 +35,16 @@ function main() {
 // ----------------打卡流程------------------
 function DingDing() {
     if (delay > 0) {
-        console.log(`随机等待${delay}分钟以内开始打卡`)
+        console.log(`等待${delay}分钟以内打卡`)
         let time = delay * 1e3 * 6e1
         sleep(0, time)
-    } else {
-        console.log("开始打卡")
-        Open(ACCOUNT, PASSWD)
     }
+    console.log("开始打卡")
+    if (Open(ACCOUNT, PASSWD)) {
+    } else {
+        return console.error("无法登录!")
+    }
+    AttendKaoQin(CORP_ID)
 }
 const DaKa = Init(DingDing)
 
@@ -184,20 +189,16 @@ function Open(account, passwd) {
         } else {
             console.info("账号未登录")
 
-            let phone = id("et_phone_input").findOne()
-            phone.setText(account)
+            id("et_phone_input").setText(account)
             console.log("输入账号")
 
-            let password = id("et_password").findOne()
-            password.setText(passwd)
+            id("et_password").setText(passwd)
             console.log("输入密码")
 
-            let privacy = id("cb_privacy").findOne()
-            privacy.click()
+            id("cb_privacy").click()
             console.log("同意隐私协议")
 
-            let btn_login = id("btn_next").findOne()
-            btn_login.click()
+            id("btn_next").click()
             console.log("正在登陆...")
             sleep(10e3)
         }
@@ -219,19 +220,14 @@ function Open(account, passwd) {
 /**
  * 使用 URL Scheme 进入考勤界面
  */
-function AttendKaoQin(key) {
-    if (key == false) {
-        return console.error("无法登录!")
-    }
-    var url_scheme = "dingtalk://dingtalkclient/page/link?url=https://attend.dingtalk.com/attend/index.html"
+function AttendKaoQin(id) {
+    let u = "dingtalk://dingtalkclient/page/link?url=https://attend.dingtalk.com/attend/index.html"
+    let url = id === "" ? u : `${u}?corpId=${id}`
+    console.log(url)
 
-    if (CORP_ID != "") {
-        url_scheme = url_scheme + "?corpId=" + CORP_ID
-    }
-
-    var a = app.intent({
+    let a = app.intent({
         action: "VIEW",
-        data: url_scheme,
+        data: url,
         //flags: [Intent.FLAG_ACTIVITY_NEW_TASK]
     })
     let count = 1
@@ -240,7 +236,7 @@ function AttendKaoQin(key) {
         console.warn(`第${count}次尝试...`)
         app.startActivity(a)
         console.log("正在进入考勤界面...")
-        if (isInKaoqing()) {
+        if (IsInKaoQing()) {
             console.info("已进入考勤界面")
             sleep(1000)
             console.log("等待连接到考勤机...")
@@ -251,13 +247,12 @@ function AttendKaoQin(key) {
                 console.info("可以打卡")
                 sleep(1000)
 
-                btn_register =
-                    textMatches("上班打卡").clickable(true).findOnce() ||
-                    textMatches("下班打卡").clickable(true).findOnce() ||
-                    textMatches("迟到打卡").clickable(true).findOnce() ||
-                    descMatches("迟到打卡").clickable(true).findOnce()
-                if (btn_register) {
-                    btn_register.click()
+                let btn =
+                    desc("上班打卡").clickable(true).findOnce() ||
+                    desc("下班打卡").clickable(true).findOnce() ||
+                    desc("迟到打卡").clickable(true).findOnce()
+                if (btn) {
+                    btn.click()
                     console.log("按下打卡按钮")
                 } else {
                     click(device.width / 2, device.height * 0.56)
@@ -265,7 +260,6 @@ function AttendKaoQin(key) {
                 }
                 sleep(1000)
                 backHome()
-                sleep(1000)
                 return console.info("打卡成功")
             } else {
                 console.error("不符合打卡规则,重新进入考勤界面!")
