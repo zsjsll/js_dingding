@@ -1,6 +1,6 @@
 //-------------设定运行参数------------------
 
-const SCREEN_BRIGHTNESS = 0 //运行时屏幕亮度
+const SCREEN_BRIGHTNESS = 100 //运行时屏幕亮度
 const SCREEN_ON = true //运行时是否保持屏幕常亮
 
 /** 打卡相关的设置 */
@@ -76,7 +76,7 @@ function watcher(func) {
         switch (n.getText()) {
             case "打卡": // 监听文本为 "打卡" 的通知
                 threads.shutDownAll()
-                threads.start(func)
+                threads.start(() => func(0))
                 break
 
             case "查询": // 监听文本为 "查询" 的通知
@@ -111,7 +111,7 @@ function watcher(func) {
             setTimeout(() => {
                 threads.shutDownAll()
                 threads.start(() => sendQQMsg(text))
-            }, 6000) //等待6s，锁屏是10s，这样可以打断锁屏，并且让console.log()输出完整
+            }, 2000) //等待，这样可以打断锁屏，并且让console.log()输出完整
 
             return
         }
@@ -168,7 +168,7 @@ function Init(func) {
                 console.info("设备已唤醒")
             }
         } while (!bs)
-        sleep(1e3)
+        sleep(500)
 
         console.log("解锁屏幕")
         if (isDeviceLocked()) {
@@ -181,13 +181,13 @@ function Init(func) {
             return
         }
         console.info("屏幕已解锁")
-        sleep(3e3) // 等待返回动画完成
+
 
         setVolume(0)
         backHome()
         func(d)
         backHome()
-        sleep(10e3) //等待10s是为了让监听收到dd的打卡信息后，终止这个进程，进行qq消息的发送
+
 
         console.log("关闭屏幕")
 
@@ -274,7 +274,7 @@ function holdOn(delay) {
     if (delay <= 0) {
         return
     } else {
-        let randomTime = random(1, delay)
+        let randomTime = random(1e3, delay * 1e3 * 60)
         toastLog(Math.floor(randomTime / 1000) + "秒后启动" + app.getAppName(PACKAGE_ID.DD) + "...")
         sleep(randomTime)
     }
@@ -358,9 +358,8 @@ function attendKaoQin(id) {
         console.log("正在进入考勤界面...")
         if (isInKaoQing()) {
             console.info("已进入考勤界面")
-            sleep(1000)
+
             console.log("等待连接到考勤机...")
-            sleep(2000)
 
             if (textContains("已连接").findOne(10000) || textContains("已进入").findOne(10000)) {
                 // textContains("已连接").waitFor()
@@ -378,8 +377,8 @@ function attendKaoQin(id) {
                     click(device.width / 2, device.height * 0.56)
                     console.log("点击打卡按钮坐标")
                 }
-                sleep(1000)
                 return console.info("打卡成功")
+
             } else {
                 console.error("不符合打卡规则,重新进入考勤界面!")
                 back()
@@ -401,12 +400,12 @@ function attendKaoQin(id) {
 }
 
 /**
- * @description 发送QQ消息
+ * 发送QQ消息
  * @param {string} message 消息内容
  */
 let sendQQMsg = (message) => {
     console.log("发送QQ消息")
-
+    sleep(1000)
     app.startActivity({
         action: "android.intent.action.VIEW",
         data: "mqq://im/chat?chat_type=wpa&version=1&src_type=web&uin=" + QQ,
@@ -415,6 +414,7 @@ let sendQQMsg = (message) => {
 
     id("input").findOne(-1).setText(message)
     id("fun_btn").findOne(-1).click()
+
     console.info("发送成功")
 
     // waitForActivity("com.tencent.mobileqq.activity.SplashActivity")
