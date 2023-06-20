@@ -251,7 +251,7 @@ function lockScreen() {
 
     // 锁屏方案1：Root
 
-    if (checkRoot()) {
+    if (iskRoot()) {
         Power()
     } else {
     }
@@ -480,27 +480,25 @@ function isDeviceLocked() {
 }
 
 /**
- *返回再退出到桌面
+ *返回再退出到桌面,共需要时间4s
  *
  */
 function backHome() {
     sleep(1e3)
-    if (checkRoot()) {
+    if (iskRoot()) {
         for (let i = 0; i < 12; i++) {
             Back()
         }
         sleep(1e3)
         Home()
     } else {
-        if (checkRoot()) {
-            for (let i = 0; i < 12; i++) {
-                Back()
-            }
-            sleep(1e3)
-            Home()
+        for (let i = 0; i < 12; i++) {
+            back()
         }
-        sleep(2e3)
+        sleep(1e3)
+        home()
     }
+    sleep(2e3)
 }
 
 /**
@@ -590,7 +588,7 @@ function prepare() {
     sleep(1000)
 }
 
-function checkRoot() {
+function iskRoot() {
     return shell("su -v").code === 0 ? true : false
 }
 
