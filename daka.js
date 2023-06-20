@@ -37,7 +37,7 @@ function main() {
     toastLog("开始运行程序")
 
     DaKa = Init(DaKa)
-    Watcher(DaKa)
+    watcher(DaKa)
 }
 
 // ----------------监听通知------------------
@@ -46,7 +46,7 @@ function main() {
  *
  * @param {Function} func 执行一些动作
  */
-function Watcher(func) {
+function watcher(func) {
     sendQQMsg = Init(sendQQMsg) //初始化sendQQMsg，添加开机和关机的功能
     events.observeNotification()
     events.onNotification((n) => {
@@ -139,11 +139,7 @@ function Watcher(func) {
 // ----------------打卡流程------------------
 let DaKa = (d) => {
     console.log("本地时间: " + getCurrentDate() + " " + getCurrentTime())
-    if (d) {
-        console.log(`等待${d}分钟以内打卡`)
-        let time = d * 1e3 * 6e1
-        sleep(0, time)
-    }
+    holdOn(d)
     console.log("开始打卡")
     if (openDD(ACCOUNT, PASSWD)) {
     } else {
@@ -272,6 +268,19 @@ function lockScreen() {
 }
 
 /**
+ *随机等待
+ */
+function holdOn(delay) {
+    if (delay <= 0) {
+        return
+    } else {
+        let randomTime = random(1, delay)
+        toastLog(Math.floor(randomTime / 1000) + "秒后启动" + app.getAppName(PACKAGE_ID.DD) + "...")
+        sleep(randomTime)
+    }
+}
+
+/**
  *  启动并登陆钉钉
  */
 function openDD(account, passwd) {
@@ -344,7 +353,7 @@ function attendKaoQin(id) {
     let count = 1
     do {
         app.launchPackage(PACKAGE_ID.DD)
-        console.warn(`第${count}次尝试...`)
+        console.info(`第${count}次尝试...`)
         app.startActivity(a)
         console.log("正在进入考勤界面...")
         if (isInKaoQing()) {
