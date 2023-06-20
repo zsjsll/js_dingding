@@ -191,11 +191,11 @@ function Init(func) {
         backHome()
         func(d)
         backHome()
-        sleep(10e3)
+        sleep(10e3) //等待10s是为了让监听收到dd的打卡信息后，终止这个进程，进行qq消息的发送
+
         console.log("关闭屏幕")
 
-        // lockScreen() //等待10s是为了让监听收到dd的打卡信息后，终止这个进程，进行qq消息的发送
-
+        lockScreen()
         if (isDeviceLocked()) {
             console.info("屏幕已关闭")
         } else {
@@ -256,7 +256,7 @@ function lockScreen() {
     sleep(1000)
 
     // 锁屏方案1：Root
-    const r = shell(su - v)
+    const r = shell("su - v")
     if (r.code === 0) {
         Power()
     } else {
