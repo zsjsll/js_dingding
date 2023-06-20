@@ -1,6 +1,6 @@
 //-------------设定运行参数------------------
 
-const SCREEN_BRIGHTNESS = 100 //运行时屏幕亮度
+const SCREEN_BRIGHTNESS = 0 //运行时屏幕亮度
 const SCREEN_ON = true //运行时是否保持屏幕常亮
 
 /** 打卡相关的设置 */
@@ -66,7 +66,7 @@ function Watcher(func) {
         // 监听摘要为 "定时打卡" 的通知, 不一定要从 Tasker 中发出通知, 日历、定时器等App均可实现
         //手机不显示‘定时打卡’只能监听通知包名
         if ((n.getText() == "定时打卡" || n.category == "alarm") && !suspend) {
-            OPPO()
+            prepare()
             threads.shutDownAll()
             threads.start(function () {
                 func(DELAY)
@@ -185,15 +185,16 @@ function Init(func) {
             return
         }
         console.info("屏幕已解锁")
-        sleep(1e3) // 等待返回动画完成
+        sleep(3e3) // 等待返回动画完成
 
         setVolume(0)
-
+        backHome()
         func(d)
-
+        backHome()
+        sleep(10e3)
         console.log("关闭屏幕")
 
-        lockScreen(10e3) //等待10s是为了让监听收到dd的打卡信息后，终止这个进程，进行qq消息的发送
+        // lockScreen() //等待10s是为了让监听收到dd的打卡信息后，终止这个进程，进行qq消息的发送
 
         if (isDeviceLocked()) {
             console.info("屏幕已关闭")
@@ -242,21 +243,26 @@ function unlockScreen(time, y1, y2) {
     )
 
     sleep(1000) // 等待解锁动画完成
-    home()
 }
 
 /**
  *锁屏
  *
- * @param {number} delay 延时时间，单位：毫秒
+ *
  */
-function lockScreen(delay) {
+function lockScreen() {
     device.setBrightnessMode(1) // 自动亮度模式
     device.cancelKeepingAwake() // 取消设备常亮
-    sleep(delay)
+    sleep(1000)
+
     // 锁屏方案1：Root
-    Power()
-    sleep(2e3)
+    const r = shell(su - v)
+    if (r.code === 0) {
+        Power()
+    } else {
+    }
+
+    sleep(5e3)
 
     // 锁屏方案2：No Root
     // press(Math.floor(device.width / 2), Math.floor(device.height * 0.973), 1000) // 小米的快捷手势：长按Home键锁屏
@@ -276,7 +282,6 @@ function openDD(account, passwd) {
         console.log("正在启动" + app.getAppName(PACKAGE_ID.DD) + "...")
 
         sleep(10e3) // 等待钉钉启动
-        console.log(currentPackage())
 
         if (currentPackage() !== PACKAGE_ID.DD) {
             console.warn("启动失败，重新启动...")
@@ -288,7 +293,6 @@ function openDD(account, passwd) {
             if (!isInAppHome()) {
                 console.info("重置界面...")
                 backHome()
-                sleep(1000)
                 count += 1
                 continue
             } else {
@@ -318,7 +322,6 @@ function openDD(account, passwd) {
         } else {
             console.error("连接错误,重新登录!")
             backHome()
-            sleep(1000)
             count += 1
             continue
         }
@@ -332,7 +335,6 @@ function openDD(account, passwd) {
 function attendKaoQin(id) {
     let u = "dingtalk://dingtalkclient/page/link?url=https://attend.dingtalk.com/attend/index.html"
     let url = id === "" ? u : `${u}?corpId=${id}`
-    console.log(url)
 
     let a = app.intent({
         action: "VIEW",
@@ -368,7 +370,6 @@ function attendKaoQin(id) {
                     console.log("点击打卡按钮坐标")
                 }
                 sleep(1000)
-                backHome()
                 return console.info("打卡成功")
             } else {
                 console.error("不符合打卡规则,重新进入考勤界面!")
@@ -387,7 +388,6 @@ function attendKaoQin(id) {
         }
     } while (count < 6)
 
-    backHome()
     return console.error("打卡失败!")
 }
 
@@ -396,22 +396,19 @@ function attendKaoQin(id) {
  * @param {string} message 消息内容
  */
 let sendQQMsg = (message) => {
-    //第一步返回到桌面
-    backHome()
     console.log("发送QQ消息")
 
     app.startActivity({
         action: "android.intent.action.VIEW",
         data: "mqq://im/chat?chat_type=wpa&version=1&src_type=web&uin=" + QQ,
-        packageName: "com.tencent.mobileqq",
+        packageName: PACKAGE_ID.QQ,
     })
-
-    // waitForActivity("com.tencent.mobileqq.activity.SplashActivity")
 
     id("input").findOne(-1).setText(message)
     id("fun_btn").findOne(-1).click()
+    console.info("发送成功")
 
-    backHome()
+    // waitForActivity("com.tencent.mobileqq.activity.SplashActivity")
 }
 
 // ---------------功能函数------------------
@@ -481,7 +478,7 @@ function isDeviceLocked() {
  *
  */
 function backHome() {
-    sleep(1000)
+    sleep(1e3)
     back()
     back()
     back()
@@ -491,8 +488,12 @@ function backHome() {
     back()
     back()
     back()
-    sleep(1000)
+    back()
+    back()
+    back()
+    sleep(1e3)
     home()
+    sleep(2e3)
 }
 
 /**
@@ -573,7 +574,7 @@ function filterNotification(bundleId, abstract, text) {
  *自动跳过OPPO的闹铃，进入home界面
  *
  */
-function OPPO() {
+function prepare() {
     if (currentPackage() == "com.android.alarmclock") {
         let btn_close = id("el").findOne()
         btn_close.click()
