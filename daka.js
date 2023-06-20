@@ -486,15 +486,13 @@ function isDeviceLocked() {
 function backHome() {
     sleep(1e3)
     if (iskRoot()) {
-        for (let i = 0; i < 12; i++) {
-            Back()
-        }
+        for (let i = 0; i < 12; i++) Back()
+
         sleep(1e3)
         Home()
     } else {
-        for (let i = 0; i < 12; i++) {
-            back()
-        }
+        for (let i = 0; i < 12; i++) back()
+
         sleep(1e3)
         home()
     }
