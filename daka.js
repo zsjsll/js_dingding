@@ -5,10 +5,10 @@ const SCREEN_ON = true //运行时是否保持屏幕常亮
 
 /** 打卡相关的设置 */
 
-const ACCOUNT = "19988329986"
-const PASSWD = "1313243"
+const ACCOUNT = ""
+const PASSWD = ""
 
-const QQ = "124119885"
+const QQ = ""
 const CORP_ID = "" // 公司的钉钉CorpId, 如果只加入了一家公司, 可以不填
 
 const OBSERVE_VOLUME_KEY = true // 监听音量+键, 开启后无法通过音量-键调整音量, 按下音量-键：结束所有子线程
@@ -36,7 +36,7 @@ let suspend = false //是否暂停定时打卡
 function main() {
     toastLog("开始运行程序")
 
-    const DaKa = Init(DingDing)
+    DaKa = Init(DaKa)
     Watcher(DaKa)
 }
 
@@ -47,7 +47,7 @@ function main() {
  * @param {Function} func 执行一些动作
  */
 function Watcher(func) {
-    // let SendQQMsg = Init(SendQQMsg) //初始化SendQQMsg，添加开机和关机的功能
+    sendQQMsg = Init(sendQQMsg) //初始化sendQQMsg，添加开机和关机的功能
     events.observeNotification()
     events.onNotification((n) => {
         console.log("应用包名: " + n.getPackageName())
@@ -59,7 +59,7 @@ function Watcher(func) {
         console.log("通知摘要: " + n.tickerText)
 
         // 过滤 PackageId 白名单之外的应用所发出的通知
-        if (!FilterNotification(n.getPackageName(), n.tickerText, n.getText())) {
+        if (!filterNotification(n.getPackageName(), n.tickerText, n.getText())) {
             return
         }
 
@@ -81,27 +81,21 @@ function Watcher(func) {
 
             case "查询": // 监听文本为 "查询" 的通知
                 threads.shutDownAll()
-                threads.start(function () {
-                    sendQQMsg(getStorageData("dingding", "clockResult"))
-                })
+                threads.start(() => sendQQMsg(getStorageData("dingding", "clockResult")))
                 break
 
             case "暂停": // 监听文本为 "暂停" 的通知
                 suspend = true
                 console.warn("暂停定时打卡")
                 threads.shutDownAll()
-                threads.start(function () {
-                    sendQQMsg("修改成功, 已暂停定时打卡功能")
-                })
+                threads.start(() => sendQQMsg("修改成功, 已暂停定时打卡功能"))
                 break
 
             case "恢复": // 监听文本为 "恢复" 的通知
                 suspend = false
                 console.warn("恢复定时打卡")
                 threads.shutDownAll()
-                threads.start(function () {
-                    sendQQMsg("修改成功, 已恢复定时打卡功能")
-                })
+                threads.start(() => sendQQMsg("修改成功, 已恢复定时打卡功能"))
                 break
 
             default:
@@ -113,11 +107,12 @@ function Watcher(func) {
         if (n.getPackageName() == PACKAGE_ID.DD && n.getText().indexOf("考勤打卡") != -1) {
             let text = n.getText().indexOf("]") ? n.getText().slice(n.getText().indexOf("]") + 1) : n.getText()
             setStorageData("dingding", "clockResult", text)
-            sleep(6000)
-            threads.shutDownAll()
-            threads.start(function () {
-                sendQQMsg(text)
-            })
+
+            setTimeout(() => {
+                threads.shutDownAll()
+                threads.start(() => sendQQMsg(text))
+            }, 6000) //等待6s，锁屏是10s，这样可以打断锁屏，并且让console.log()输出完整
+
             return
         }
     })
@@ -142,7 +137,7 @@ function Watcher(func) {
 }
 
 // ----------------打卡流程------------------
-function DingDing(d) {
+let DaKa = (d) => {
     console.log("本地时间: " + getCurrentDate() + " " + getCurrentTime())
     if (d) {
         console.log(`等待${d}分钟以内打卡`)
@@ -289,10 +284,10 @@ function openDD(account, passwd) {
             continue
         }
 
-        if (IsLogin()) {
-            if (!IsInAppHome()) {
+        if (isLogin()) {
+            if (!isInAppHome()) {
                 console.info("重置界面...")
-                BackHome()
+                backHome()
                 sleep(1000)
                 count += 1
                 continue
@@ -317,12 +312,12 @@ function openDD(account, passwd) {
             sleep(10e3)
         }
 
-        if (IsLogin()) {
+        if (isLogin()) {
             console.info("账号已登录")
             return true
         } else {
             console.error("连接错误,重新登录!")
-            BackHome()
+            backHome()
             sleep(1000)
             count += 1
             continue
@@ -350,7 +345,7 @@ function attendKaoQin(id) {
         console.warn(`第${count}次尝试...`)
         app.startActivity(a)
         console.log("正在进入考勤界面...")
-        if (IsInKaoQing()) {
+        if (isInKaoQing()) {
             console.info("已进入考勤界面")
             sleep(1000)
             console.log("等待连接到考勤机...")
@@ -373,7 +368,7 @@ function attendKaoQin(id) {
                     console.log("点击打卡按钮坐标")
                 }
                 sleep(1000)
-                BackHome()
+                backHome()
                 return console.info("打卡成功")
             } else {
                 console.error("不符合打卡规则,重新进入考勤界面!")
@@ -392,7 +387,7 @@ function attendKaoQin(id) {
         }
     } while (count < 6)
 
-    BackHome()
+    backHome()
     return console.error("打卡失败!")
 }
 
@@ -400,12 +395,9 @@ function attendKaoQin(id) {
  * @description 发送QQ消息
  * @param {string} message 消息内容
  */
-function sendQQMsg(message) {
-    //第一步要先退出钉钉的打卡界面，所以判断是否还在钉钉的界面，返回到桌面，重复太多次进入钉钉打卡界面会卡死
-    if (IsInKaoQing()) {
-        console.log("退出钉钉的打卡界面")
-        BackHome()
-    }
+let sendQQMsg = (message) => {
+    //第一步返回到桌面
+    backHome()
     console.log("发送QQ消息")
 
     app.startActivity({
@@ -419,7 +411,7 @@ function sendQQMsg(message) {
     id("input").findOne(-1).setText(message)
     id("fun_btn").findOne(-1).click()
 
-    BackHome()
+    backHome()
 }
 
 // ---------------功能函数------------------
@@ -488,7 +480,7 @@ function isDeviceLocked() {
  *返回再退出到桌面
  *
  */
-function BackHome() {
+function backHome() {
     sleep(1000)
     back()
     back()
@@ -520,7 +512,7 @@ function setVolume(volume) {
  *
  * @return {boolean}
  */
-function IsLogin() {
+function isLogin() {
     return currentActivity() == "com.alibaba.android.user.login.SignUpWithPwdActivity" ? false : true
 }
 
@@ -529,7 +521,7 @@ function IsLogin() {
  *
  * @return {boolean}
  */
-function IsInKaoQing() {
+function isInKaoQing() {
     if (
         textContains("申请").findOne(40000) &&
         textContains("打卡").findOne(40000) &&
@@ -541,7 +533,7 @@ function IsInKaoQing() {
     return false
 }
 
-function IsInAppHome() {
+function isInAppHome() {
     if (
         textContains("消息").findOne(40000) &&
         textContains("协作").findOne(40000) &&
@@ -562,7 +554,7 @@ function IsInAppHome() {
  * @param {*} text
  * @return {boolean}
  */
-function FilterNotification(bundleId, abstract, text) {
+function filterNotification(bundleId, abstract, text) {
     var check = Object.values(PACKAGE_ID).some(function (item) {
         return bundleId == item
     })
