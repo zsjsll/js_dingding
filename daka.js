@@ -182,12 +182,10 @@ function Init(func) {
         }
         console.info("屏幕已解锁")
 
-
         setVolume(0)
         backHome()
         func(d)
         backHome()
-
 
         console.log("关闭屏幕")
 
@@ -252,8 +250,8 @@ function lockScreen() {
     sleep(1000)
 
     // 锁屏方案1：Root
-    const r = shell("su - v")
-    if (r.code === 0) {
+
+    if (checkRoot()) {
         Power()
     } else {
     }
@@ -289,7 +287,7 @@ function openDD(account, passwd) {
         console.info(`第${count}次登录...`)
         app.launchPackage(PACKAGE_ID.DD)
         console.log("正在启动" + app.getAppName(PACKAGE_ID.DD) + "...")
-
+        // TODO: 不要用等待来进行判断
         sleep(10e3) // 等待钉钉启动
 
         if (currentPackage() !== PACKAGE_ID.DD) {
@@ -378,7 +376,6 @@ function attendKaoQin(id) {
                     console.log("点击打卡按钮坐标")
                 }
                 return console.info("打卡成功")
-
             } else {
                 console.error("不符合打卡规则,重新进入考勤界面!")
                 back()
@@ -488,21 +485,22 @@ function isDeviceLocked() {
  */
 function backHome() {
     sleep(1e3)
-    back()
-    back()
-    back()
-    back()
-    back()
-    back()
-    back()
-    back()
-    back()
-    back()
-    back()
-    back()
-    sleep(1e3)
-    home()
-    sleep(2e3)
+    if (checkRoot()) {
+        for (let i = 0; i < 12; i++) {
+            Back()
+        }
+        sleep(1e3)
+        Home()
+    } else {
+        if (checkRoot()) {
+            for (let i = 0; i < 12; i++) {
+                Back()
+            }
+            sleep(1e3)
+            Home()
+        }
+        sleep(2e3)
+    }
 }
 
 /**
@@ -590,6 +588,10 @@ function prepare() {
         toast("关闭闹钟")
     }
     sleep(1000)
+}
+
+function checkRoot() {
+    return shell("su -v").code === 0 ? true : false
 }
 
 main()
