@@ -287,7 +287,7 @@ function openDD(account, passwd) {
 
         //用findOne()来进行等待，比直接用sleep()好
 
-        if (packageName(PACKAGE_ID.DD).findOne(20e3) === null) {
+        if (packageName(PACKAGE_ID.DD).findOne(15e3) === null) {
             console.warn("启动失败，重新启动...")
             count += 1
             continue
@@ -354,7 +354,7 @@ function attendKaoQin(id) {
 
             console.log("等待连接到考勤机...")
 
-            if (textContains("考勤").findOne(20e3) != null) {
+            if (textContains("考勤").findOne(15e3) != null) {
                 // textContains("已连接").waitFor()
                 console.info("可以打卡")
 
@@ -369,7 +369,8 @@ function attendKaoQin(id) {
                     click(device.width / 2, device.height * 0.56)
                     console.log("点击打卡按钮坐标")
                 }
-                return console.info("打卡成功")
+                textContains("成功").findOne(-1)
+                return console.info("打卡成功!")
             } else {
                 console.error("不符合打卡规则,重新进入考勤界面!")
                 back()
@@ -386,8 +387,8 @@ function attendKaoQin(id) {
             continue
         }
     } while (count < 6)
-
-    return console.error("打卡失败!")
+    console.error("打卡失败!")
+    return
 }
 
 /**
@@ -509,7 +510,7 @@ function setVolume(volume) {
  */
 function isLogin() {
     // return currentActivity() != "com.alibaba.android.user.login.SignUpWithPwdActivity" ? true : false
-    return text("登录").findOne(20e3) == null ? true : false
+    return text("登录").findOne(15e3) === null ? true : false
 }
 
 /**
@@ -518,11 +519,11 @@ function isLogin() {
  * @return {boolean}
  */
 function isInKaoQing() {
-    return text("申请").findOne(20e3) != null ? true : false
+    return text("申请").findOne(15e3) != null ? true : false
 }
 
 function isInAppHome() {
-    return text("DING").findOne(20e3) != null ? true : false
+    return text("DING").findOne(15e3) != null ? true : false
 }
 
 /**
