@@ -5,13 +5,13 @@ const SCREEN_ON = true //运行时是否保持屏幕常亮
 
 /** 打卡相关的设置 */
 
-const ACCOUNT = ""
-const PASSWD = ""
+const ACCOUNT = "19988329986"
+const PASSWD = "1313243"
 
-const QQ = ""
+const QQ = "124119885"
 const CORP_ID = "" // 公司的钉钉CorpId, 如果只加入了一家公司, 可以不填
 
-const OBSERVE_VOLUME_KEY = true // 监听音量+键, 开启后无法通过音量-键调整音量, 按下音量-键：结束所有子线程
+const OBSERVE_VOLUME_KEY = true // 监听音量-键, 开启后无法通过音量-键调整音量, 按下音量-键：结束所有子线程
 const NOTIFICATIONS_FILTER = true // 是否过滤通知
 
 const PACKAGE_ID = {
@@ -142,9 +142,8 @@ let DaKa = (d) => {
     holdOn(d)
     console.log("开始打卡")
     if (openDD(ACCOUNT, PASSWD)) {
-    } else {
-        return console.error("无法登录!")
-    }
+    } else return console.error("无法登录!")
+
     attendKaoQin(CORP_ID)
 }
 
@@ -164,9 +163,7 @@ function Init(func) {
             if (!bs) {
                 console.warn("设备未唤醒, 重试")
                 continue
-            } else {
-                console.info("设备已唤醒")
-            }
+            } else console.info("设备已唤醒")
         } while (!bs)
         sleep(500)
 
@@ -287,10 +284,10 @@ function openDD(account, passwd) {
         console.info(`第${count}次登录...`)
         app.launchPackage(PACKAGE_ID.DD)
         console.log("正在启动" + app.getAppName(PACKAGE_ID.DD) + "...")
-        // TODO: 不要用等待来进行判断
-        sleep(10e3) // 等待钉钉启动
 
-        if (currentPackage() !== PACKAGE_ID.DD) {
+        //用findOne()来进行等待，比直接用sleep()好
+
+        if (packageName(PACKAGE_ID.DD).findOne(20e3) === null) {
             console.warn("启动失败，重新启动...")
             count += 1
             continue
@@ -320,17 +317,15 @@ function openDD(account, passwd) {
 
             id("btn_next").findOne(-1).click()
             console.log("正在登陆...")
-            sleep(10e3)
-        }
-
-        if (isLogin()) {
-            console.info("账号已登录")
-            return true
-        } else {
-            console.error("连接错误,重新登录!")
-            backHome()
-            count += 1
-            continue
+            if (isInAppHome()) {
+                console.info("账号已登录")
+                return true
+            } else {
+                console.error("连接错误,重新登录!")
+                backHome()
+                count += 1
+                continue
+            }
         }
     } while (count < 6)
     return false
@@ -351,7 +346,7 @@ function attendKaoQin(id) {
     let count = 1
     do {
         app.launchPackage(PACKAGE_ID.DD)
-        console.info(`第${count}次尝试...`)
+        console.info(`第${count}次尝试打卡...`)
         app.startActivity(a)
         console.log("正在进入考勤界面...")
         if (isInKaoQing()) {
@@ -359,10 +354,9 @@ function attendKaoQin(id) {
 
             console.log("等待连接到考勤机...")
 
-            if (textContains("已连接").findOne(10000) || textContains("已进入").findOne(10000)) {
+            if (textContains("考勤").findOne(20e3) != null) {
                 // textContains("已连接").waitFor()
                 console.info("可以打卡")
-                sleep(1000)
 
                 let btn =
                     text("上班打卡").clickable(true).findOnce() ||
@@ -402,7 +396,6 @@ function attendKaoQin(id) {
  */
 let sendQQMsg = (message) => {
     console.log("发送QQ消息")
-    sleep(1000)
     app.startActivity({
         action: "android.intent.action.VIEW",
         data: "mqq://im/chat?chat_type=wpa&version=1&src_type=web&uin=" + QQ,
@@ -515,7 +508,8 @@ function setVolume(volume) {
  * @return {boolean}
  */
 function isLogin() {
-    return currentActivity() == "com.alibaba.android.user.login.SignUpWithPwdActivity" ? false : true
+    // return currentActivity() != "com.alibaba.android.user.login.SignUpWithPwdActivity" ? true : false
+    return text("登录").findOne(20e3) == null ? true : false
 }
 
 /**
@@ -524,28 +518,11 @@ function isLogin() {
  * @return {boolean}
  */
 function isInKaoQing() {
-    if (
-        textContains("申请").findOne(40000) &&
-        textContains("打卡").findOne(40000) &&
-        textContains("统计").findOne(40000) &&
-        textContains("设置").findOne(40000)
-    ) {
-        return true
-    }
-    return false
+    return text("申请").findOne(20e3) != null ? true : false
 }
 
 function isInAppHome() {
-    if (
-        textContains("消息").findOne(40000) &&
-        textContains("协作").findOne(40000) &&
-        textContains("工作台").findOne(40000) &&
-        textContains("通讯录").findOne(40000) &&
-        textContains("我的").findOne(40000)
-    ) {
-        return true
-    }
-    return false
+    return text("DING").findOne(20e3) != null ? true : false
 }
 
 /**
