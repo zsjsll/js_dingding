@@ -1,14 +1,14 @@
 //-------------设定运行参数------------------
 
-const SCREEN_BRIGHTNESS = 100 //运行时屏幕亮度
+const SCREEN_BRIGHTNESS = 0 //运行时屏幕亮度
 const SCREEN_ON = true //运行时是否保持屏幕常亮
 
 /** 打卡相关的设置 */
 
-const ACCOUNT = "19988329986"
-const PASSWD = "1313243"
+const ACCOUNT = ""
+const PASSWD = ""
 
-const QQ = "124119885"
+const QQ = ""
 const CORP_ID = "" // 公司的钉钉CorpId, 如果只加入了一家公司, 可以不填
 
 const OBSERVE_VOLUME_KEY = true // 监听音量-键, 开启后无法通过音量-键调整音量, 按下音量-键：结束所有子线程
@@ -150,7 +150,8 @@ let DaKa = (d) => {
 // ----------------初始化------------------
 function Init(func) {
     return (d) => {
-        auto()
+        auto.waitFor()
+        auto.waitFor()
 
         // 创建运行日志
         console.setGlobalLogConfig({ file: GLOBAL_LOG_FILE_PATH })
