@@ -317,15 +317,15 @@ function openDD(account, passwd) {
 
             id("btn_next").findOne(-1).click()
             console.log("正在登陆...")
-            if (isInAppHome()) {
-                console.info("账号已登录")
-                return true
-            } else {
-                console.error("连接错误,重新登录!")
-                backHome()
-                count += 1
-                continue
-            }
+        }
+        if (isInAppHome() && isLogin()) {
+            console.info("账号已登录")
+            return true
+        } else {
+            console.error("连接错误,重新登录!")
+            backHome()
+            count += 1
+            continue
         }
     } while (count < 6)
     return false
