@@ -322,7 +322,7 @@ function openDD(account, passwd) {
             console.info("账号已登录")
             return true
         } else {
-            console.error("连接错误,重新登录!")
+            console.warn("连接错误,重新登录!")
             backHome()
             count += 1
             continue
