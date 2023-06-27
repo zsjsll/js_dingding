@@ -41,7 +41,6 @@ let suspend = false //是否暂停定时打卡
  */
 function main() {
     toastLog("开始运行程序")
-
     DaKa = Init(DaKa)
     watcher(DaKa)
 }
@@ -135,9 +134,7 @@ function watcher(func) {
         device.setBrightnessMode(1)
         device.cancelKeepingAwake()
         toast("已中断所有子线程!")
-
-        // 可以在此调试各个方法
-        openDD(ACCOUNT, PASSWD)
+        // 调试脚本
     })
 
     toastLog("监听中, 请在日志中查看记录的通知及其内容")
@@ -247,7 +244,7 @@ function unlockScreen(time, y1, y2) {
  *
  */
 function lockScreen() {
-    device.setBrightnessMode(1) // 自动亮度模式
+    // device.setBrightnessMode(1) // 自动亮度模式
     device.cancelKeepingAwake() // 取消设备常亮
     sleep(1000)
 
@@ -299,12 +296,18 @@ function openDD(account, passwd) {
 
         if (isFind(id("cb_privacy").findOne(1e3))) {
             console.info("账号未登录")
-
             id("et_phone_input").findOne(-1).setText(account)
             id("et_password").findOne(-1).setText(passwd)
             id("cb_privacy").findOne(-1).click()
             id("btn_next").findOne(-1).click()
             console.log("正在登陆...")
+        }
+
+        let noupdate = text("暂不更新").findOne(1e3)
+        if (isFind(noupdate)) {
+            console.info("发现更新...")
+            console.log("取消更新")
+            noupdate.click()
         }
         let ele = id("home_app_item").indexInParent(0).findOne(15e3)
         if (isFind(ele)) {
@@ -523,7 +526,7 @@ function filterNotification(bundleId, abstract, text) {
  */
 function prepare() {
     if (currentPackage() == "com.android.alarmclock") {
-        let btn_close = id("el").findOne()
+        let btn_close = id("el").findOne(-1)
         btn_close.click()
         toast("关闭闹钟")
     }
