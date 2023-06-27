@@ -1,6 +1,6 @@
 //-------------设定运行参数------------------
 
-const SCREEN_BRIGHTNESS = 0 //运行时屏幕亮度
+const SCREEN_BRIGHTNESS = 100 //运行时屏幕亮度
 const SCREEN_ON = true //运行时是否保持屏幕常亮
 
 /** 打卡相关的设置 */
@@ -288,13 +288,15 @@ function openDD(account, passwd) {
 
         //用findOne()来进行等待，比直接用sleep()好
 
-        if (packageName(PACKAGE_ID.DD).findOne(15e3) === null) {
-            console.warn("启动失败，重新启动...")
-            count += 1
-            continue
-        }
+        // if (packageName(PACKAGE_ID.DD).findOne(15e3) === null) {
+        //     console.warn("启动失败，重新启动...")
+        //     count += 1
+        //     continue
+        // }
+        
+        packageName(PACKAGE_ID.DD).text("暂不更新").findOne(1e3).click()
 
-        if (isLogin()) {
+        if (packageName(PACKAGE_ID.DD).text("登录").findOne(15e3) === null) {
             if (!isInAppHome()) {
                 console.info("重置界面...")
                 backHome()
