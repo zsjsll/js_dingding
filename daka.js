@@ -1,14 +1,14 @@
 //-------------设定运行参数------------------
 
-const SCREEN_BRIGHTNESS = 100 //运行时屏幕亮度
+const SCREEN_BRIGHTNESS = 0 //运行时屏幕亮度
 const SCREEN_ON = true //运行时是否保持屏幕常亮
 
 /** 打卡相关的设置 */
 
-const ACCOUNT = "19988329986"
-const PASSWD = "1313243"
+const ACCOUNT = ""
+const PASSWD = ""
 
-const QQ = "124119885"
+const QQ = ""
 const CORP_ID = "" // 公司的钉钉CorpId, 如果只加入了一家公司, 可以不填
 
 const OBSERVE_VOLUME_KEY = true // 监听音量-键, 开启后无法通过音量-键调整音量, 按下音量-键：结束所有子线程
@@ -297,7 +297,7 @@ function openDD(account, passwd) {
             continue
         }
 
-        if (!isFind(id("home_app_item").findOne(15e3))) {
+        if (isFind(id("cb_privacy").findOne(1e3))) {
             console.info("账号未登录")
 
             id("et_phone_input").findOne(-1).setText(account)
@@ -306,15 +306,14 @@ function openDD(account, passwd) {
             id("btn_next").findOne(-1).click()
             console.log("正在登陆...")
         }
-        if (isFind(id("home_app_item").findOne(15e3))) {
+        let ele = id("home_app_item").indexInParent(0).findOne(15e3)
+        if (isFind(ele)) {
             console.info("账号已登录")
-            id("home_app_item").indexInParent(0).findOne(1e3).click()
+            ele.click()
             return true
-        } else {
-            console.warn("登录失败,重试...")
-            count += 1
-            continue
         }
+        console.warn("登录失败,重试...")
+        count += 1
     } while (count < 6)
     console.error("无法登录!")
     return false
@@ -338,7 +337,7 @@ function attendKaoQin(id) {
         console.info(`第${count}次尝试打卡...`)
         app.startActivity(a)
         console.log("正在进入考勤界面...")
-        if (isFind(text("申请").findOne(15.e3))) {
+        if (isFind(text("申请").findOne(15e3))) {
             console.info("已进入考勤界面")
 
             console.log("等待连接到考勤机...")
