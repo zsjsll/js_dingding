@@ -155,7 +155,7 @@ let DaKa = (d) => {
 // ----------------初始化------------------
 function Init(func) {
     return (d) => {
-        auto.waitFor()
+        auto()
 
         // 创建运行日志
         console.setGlobalLogConfig({ file: GLOBAL_LOG_FILE_PATH })
