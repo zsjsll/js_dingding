@@ -5,14 +5,19 @@ const SCREEN_ON = true //运行时是否保持屏幕常亮
 
 /** 打卡相关的设置 */
 
-const ACCOUNT = ""
-const PASSWD = ""
+const ACCOUNT = "19988329986"
+const PASSWD = "1313243"
 
-const QQ = ""
+const QQ = "124119885"
 const CORP_ID = "" // 公司的钉钉CorpId, 如果只加入了一家公司, 可以不填
 
 const OBSERVE_VOLUME_KEY = true // 监听音量-键, 开启后无法通过音量-键调整音量, 按下音量-键：结束所有子线程
 const NOTIFICATIONS_FILTER = true // 是否过滤通知
+
+// ----------------------
+// 需要自行修改CLOCK的值
+// 需要自行修改HOME的值
+// ----------------------
 
 const PACKAGE_ID = {
     QQ: "com.tencent.mobileqq", // QQ
@@ -20,8 +25,9 @@ const PACKAGE_ID = {
     XMSF: "com.xiaomi.xmsf", // 小米推送服务
     TASKER: "net.dinglisch.android.taskerm", // Tasker
     EMAIL: "com.android.email", // 系统内置邮箱
-    OPPO_CLOCK: "com.android.alarmclock", // OPPO系统闹铃
-    XIAOMI_CLOCK: "com.android.deskclock", //小米闹铃服务
+    CLOCK: "com.android.alarmclock", // OPPO系统闹铃
+    // CLOCK:"com.android.desklock" , //小米闹铃服务
+    HOME: "com.meizu.flyme.launcher", //桌面的包名称
 }
 
 const DELAY = 1 //随机等待时间，单位：分钟,如果填写的值<=0，则跳过等待时间
@@ -131,6 +137,7 @@ function watcher(func) {
         toast("已中断所有子线程!")
 
         // 可以在此调试各个方法
+        openDD(ACCOUNT, PASSWD)
     })
 
     toastLog("监听中, 请在日志中查看记录的通知及其内容")
@@ -141,16 +148,13 @@ let DaKa = (d) => {
     console.log("本地时间: " + getCurrentDate() + " " + getCurrentTime())
     holdOn(d)
     console.log("开始打卡")
-    if (openDD(ACCOUNT, PASSWD)) {
-    } else return console.error("无法登录!")
-
-    attendKaoQin(CORP_ID)
+    if (openDD(ACCOUNT, PASSWD)) attendKaoQin(CORP_ID)
+    else return
 }
 
 // ----------------初始化------------------
 function Init(func) {
     return (d) => {
-        auto.waitFor()
         auto.waitFor()
 
         // 创建运行日志
@@ -283,54 +287,36 @@ function openDD(account, passwd) {
     let count = 1
     do {
         console.info(`第${count}次登录...`)
+        backHome()
         app.launchPackage(PACKAGE_ID.DD)
         console.log("正在启动" + app.getAppName(PACKAGE_ID.DD) + "...")
 
-        //用findOne()来进行等待，比直接用sleep()好
+        if (!isFind(packageName(PACKAGE_ID.DD).findOne(15e3))) {
+            console.warn("启动失败，重新启动...")
+            count += 1
+            continue
+        }
 
-        // if (packageName(PACKAGE_ID.DD).findOne(15e3) === null) {
-        //     console.warn("启动失败，重新启动...")
-        //     count += 1
-        //     continue
-        // }
-        
-        packageName(PACKAGE_ID.DD).text("暂不更新").findOne(1e3).click()
-
-        if (packageName(PACKAGE_ID.DD).text("登录").findOne(15e3) === null) {
-            if (!isInAppHome()) {
-                console.info("重置界面...")
-                backHome()
-                count += 1
-                continue
-            } else {
-                console.info("账号已登录")
-                return true
-            }
-        } else {
+        if (!isFind(id("home_app_item").findOne(15e3))) {
             console.info("账号未登录")
 
             id("et_phone_input").findOne(-1).setText(account)
-            console.log("输入账号")
-
             id("et_password").findOne(-1).setText(passwd)
-            console.log("输入密码")
-
             id("cb_privacy").findOne(-1).click()
-            console.log("同意隐私协议")
-
             id("btn_next").findOne(-1).click()
             console.log("正在登陆...")
         }
-        if (isInAppHome() && isLogin()) {
+        if (isFind(id("home_app_item").findOne(15e3))) {
             console.info("账号已登录")
+            id("home_app_item").indexInParent(0).findOne(1e3).click()
             return true
         } else {
-            console.warn("连接错误,重新登录!")
-            backHome()
+            console.warn("登录失败,重试...")
             count += 1
             continue
         }
     } while (count < 6)
+    console.error("无法登录!")
     return false
 }
 
@@ -352,20 +338,18 @@ function attendKaoQin(id) {
         console.info(`第${count}次尝试打卡...`)
         app.startActivity(a)
         console.log("正在进入考勤界面...")
-        if (isInKaoQing()) {
+        if (isFind(text("申请").findOne(15.e3))) {
             console.info("已进入考勤界面")
 
             console.log("等待连接到考勤机...")
 
-            if (textContains("考勤").findOne(15e3) != null) {
-                // textContains("已连接").waitFor()
+            if (isFind(textContains("考勤").findOne(15e3))) {
                 console.info("可以打卡")
-
                 let btn =
                     text("上班打卡").clickable(true).findOnce() ||
                     text("下班打卡").clickable(true).findOnce() ||
                     text("迟到打卡").clickable(true).findOnce()
-                if (btn) {
+                if (isFind(btn)) {
                     btn.click()
                     console.log("按下打卡按钮")
                 } else {
@@ -377,21 +361,17 @@ function attendKaoQin(id) {
             } else {
                 console.error("不符合打卡规则,重新进入考勤界面!")
                 back()
-                sleep(2000)
                 count += 1
                 continue
             }
         } else {
             console.error("连接错误,重新进入考勤界面!")
-            sleep(1000)
             back()
-            sleep(1000)
             count += 1
             continue
         }
     } while (count < 6)
-    console.error("打卡失败!")
-    return
+    return console.error("打卡失败!")
 }
 
 /**
@@ -400,6 +380,7 @@ function attendKaoQin(id) {
  */
 let sendQQMsg = (message) => {
     console.log("发送QQ消息")
+    backHome()
     app.startActivity({
         action: "android.intent.action.VIEW",
         data: "mqq://im/chat?chat_type=wpa&version=1&src_type=web&uin=" + QQ,
@@ -410,7 +391,7 @@ let sendQQMsg = (message) => {
     id("fun_btn").findOne(-1).click()
 
     console.info("发送成功")
-
+    backHome()
     // waitForActivity("com.tencent.mobileqq.activity.SplashActivity")
 }
 
@@ -481,17 +462,21 @@ function isDeviceLocked() {
  *
  */
 function backHome() {
-    sleep(1e3)
-    if (iskRoot()) {
-        for (let i = 0; i < 12; i++) Back()
-        sleep(1e3)
-        Home()
+    if (currentPackage() === PACKAGE_ID.HOME) {
+        return
     } else {
-        for (let i = 0; i < 12; i++) back()
         sleep(1e3)
-        home()
+        if (iskRoot()) {
+            for (let i = 0; i < 12; i++) Back()
+            sleep(1e3)
+            Home()
+        } else {
+            for (let i = 0; i < 12; i++) back()
+            sleep(1e3)
+            home()
+        }
+        sleep(2e3)
     }
-    sleep(2e3)
 }
 
 /**
@@ -506,27 +491,8 @@ function setVolume(volume) {
     console.verbose("通知音量:" + device.getNotificationVolume())
 }
 
-/**
- *判断是否登录钉钉
- *
- * @return {boolean}
- */
-function isLogin() {
-    // return currentActivity() != "com.alibaba.android.user.login.SignUpWithPwdActivity" ? true : false
-    return text("登录").findOne(15e3) === null ? true : false
-}
-
-/**
- *判断是否在考勤界面
- *
- * @return {boolean}
- */
-function isInKaoQing() {
-    return text("申请").findOne(15e3) != null ? true : false
-}
-
-function isInAppHome() {
-    return text("DING").findOne(15e3) != null ? true : false
+function isFind(something) {
+    return something != null ? true : false
 }
 
 /**
