@@ -153,46 +153,50 @@ let DaKa = (d) => {
 function Init(func) {
     return (d) => {
         auto()
-
         // 创建运行日志
         console.setGlobalLogConfig({ file: GLOBAL_LOG_FILE_PATH })
 
-        console.log("唤醒设备")
-        let bs
-        do {
-            bs = brightScreen(SCREEN_BRIGHTNESS, SCREEN_ON)
+        if (device.isScreenOn()) {
+            console.log("唤醒设备")
+            let bs
+            do {
+                bs = brightScreen(SCREEN_BRIGHTNESS, SCREEN_ON)
 
-            if (!bs) {
-                console.warn("设备未唤醒, 重试")
-                continue
-            } else console.info("设备已唤醒")
-        } while (!bs)
-        sleep(500)
+                if (!bs) {
+                    console.warn("设备未唤醒, 重试")
+                    continue
+                } else console.info("设备已唤醒")
+            } while (!bs)
+            sleep(500)
+        }
 
-        console.log("解锁屏幕")
         if (isDeviceLocked()) {
+            console.log("解锁屏幕")
             unlockScreen(320, 0.9, 0.1)
+            if (isDeviceLocked()) {
+                console.error(
+                    "上滑解锁失败, 请按脚本中的注释调整UnlockScreen中的 gesture(time, [x1,y1], [x2,y2]) 方法的参数!"
+                )
+                return
+            }
+            console.info("屏幕已解锁")
         }
-        if (isDeviceLocked()) {
-            console.error(
-                "上滑解锁失败, 请按脚本中的注释调整UnlockScreen中的 gesture(time, [x1,y1], [x2,y2]) 方法的参数!"
-            )
-            return
-        }
-        console.info("屏幕已解锁")
 
-        setVolume(0)
+        if (device.getMusicVolume() != 0 && device.getNotificationVolume() != 0) setVolume(0)
+
         backHome()
         func(d)
         backHome()
 
         console.log("关闭屏幕")
 
-        lockScreen()
-        if (isDeviceLocked()) {
-            console.info("屏幕已关闭")
-        } else {
-            console.error("屏幕未关闭, 请尝试其他锁屏方案, 或等待屏幕自动关闭")
+        if (!isDeviceLocked()) {
+            lockScreen()
+            if (isDeviceLocked()) {
+                console.info("屏幕已关闭")
+            } else {
+                console.error("屏幕未关闭, 请尝试其他锁屏方案, 或等待屏幕自动关闭")
+            }
         }
     }
 }
@@ -313,6 +317,7 @@ function openDD(account, passwd) {
         if (isFind(ele)) {
             console.info("账号已登录")
             ele.click()
+            sleep(5e3) //如果设置了极速打卡或者蓝牙自动打卡， 会在这段时间完成打卡
             return true
         }
         console.warn("登录失败,重试...")
@@ -358,8 +363,7 @@ function attendKaoQin(id) {
                     click(device.width / 2, device.height * 0.56)
                     console.log("点击打卡按钮坐标")
                 }
-                textContains("成功").findOne(-1)
-                return console.info("打卡成功!")
+                if (isFind(textContains("成功").findOne(15e3))) return console.info("打卡成功!")
             } else {
                 console.error("不符合打卡规则,重新进入考勤界面!")
                 back()
