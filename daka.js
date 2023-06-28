@@ -1,14 +1,13 @@
 //-------------设定运行参数------------------
 
-const SCREEN_BRIGHTNESS = 0 //运行时屏幕亮度
-const SCREEN_ON = true //运行时是否保持屏幕常亮
+const SCREEN_BRIGHTNESS = 100 //运行时屏幕亮度
 
 /** 打卡相关的设置 */
 
-const ACCOUNT = ""
-const PASSWD = ""
+const ACCOUNT = "19988329986"
+const PASSWD = "1313243"
 
-const QQ = ""
+const QQ = "124119885"
 const CORP_ID = "" // 公司的钉钉CorpId, 如果只加入了一家公司, 可以不填
 
 const OBSERVE_VOLUME_KEY = true // 监听音量-键, 开启后无法通过音量-键调整音量, 按下音量-键：结束所有子线程
@@ -41,8 +40,8 @@ let suspend = false //是否暂停定时打卡
  */
 function main() {
     toastLog("开始运行程序")
-    DaKa = Init(DaKa)
-    watcher(DaKa)
+    const InitDaKa = Init(DaKa)
+    watcher(InitDaKa)
 }
 
 // ----------------监听通知------------------
@@ -52,7 +51,7 @@ function main() {
  * @param {Function} func 执行一些动作
  */
 function watcher(func) {
-    sendQQMsg = Init(sendQQMsg) //初始化sendQQMsg，添加开机和关机的功能
+    const InitsendQQMsg = Init(sendQQMsg) //初始化sendQQMsg，添加开机和关机的功能
     events.observeNotification()
     events.onNotification((n) => {
         console.log("应用包名: " + n.getPackageName())
@@ -86,21 +85,21 @@ function watcher(func) {
 
             case "查询": // 监听文本为 "查询" 的通知
                 threads.shutDownAll()
-                threads.start(() => sendQQMsg(getStorageData("dingding", "clockResult")))
+                threads.start(() => InitsendQQMsg(getStorageData("dingding", "clockResult")))
                 break
 
             case "暂停": // 监听文本为 "暂停" 的通知
                 suspend = true
                 console.warn("暂停定时打卡")
                 threads.shutDownAll()
-                threads.start(() => sendQQMsg("修改成功, 已暂停定时打卡功能"))
+                threads.start(() => InitsendQQMsg("修改成功, 已暂停定时打卡功能"))
                 break
 
             case "恢复": // 监听文本为 "恢复" 的通知
                 suspend = false
                 console.warn("恢复定时打卡")
                 threads.shutDownAll()
-                threads.start(() => sendQQMsg("修改成功, 已恢复定时打卡功能"))
+                threads.start(() => InitsendQQMsg("修改成功, 已恢复定时打卡功能"))
                 break
 
             default:
@@ -109,13 +108,12 @@ function watcher(func) {
         if (n.getText() == null) return
 
         // 监听钉钉返回的考勤结果
-        if (n.getPackageName() == PACKAGE_ID.DD && n.getText().indexOf("考勤打卡") != -1) {
+        if (n.getPackageName() == PACKAGE_ID.DD && n.getText().indexOf("考勤打卡") !== -1) {
             let text = n.getText().indexOf("]") ? n.getText().slice(n.getText().indexOf("]") + 1) : n.getText()
-            setStorageData("dingding", "clockResult", text)
 
             setTimeout(() => {
                 threads.shutDownAll()
-                threads.start(() => sendQQMsg(text))
+                threads.start(() => InitsendQQMsg(text))
             }, 2000) //等待，这样可以打断锁屏，并且让console.log()输出完整
 
             return
@@ -141,12 +139,22 @@ function watcher(func) {
 }
 
 // ----------------打卡流程------------------
-let DaKa = (d) => {
+const DaKa = (d) => {
     console.log("本地时间: " + getCurrentDate() + " " + getCurrentTime())
     holdOn(d)
     console.log("开始打卡")
-    if (openDD(ACCOUNT, PASSWD)) attendKaoQin(CORP_ID)
-    else return
+    let statu_scode = {}
+    statu_scode = openDD(ACCOUNT, PASSWD)
+    if (!statu_scode["status"]) {
+        sendQQMsg(statu_scode["text"])
+        return
+    }
+    statu_scode = attendKaoQin(CORP_ID)
+    if (!statu_scode["status"]) {
+        sendQQMsg(statu_scode["text"])
+        return
+    }
+    return
 }
 
 // ----------------初始化------------------
@@ -156,33 +164,31 @@ function Init(func) {
         // 创建运行日志
         console.setGlobalLogConfig({ file: GLOBAL_LOG_FILE_PATH })
 
-        if (device.isScreenOn()) {
-            console.log("唤醒设备")
-            let bs
-            do {
-                bs = brightScreen(SCREEN_BRIGHTNESS, SCREEN_ON)
-
-                if (!bs) {
-                    console.warn("设备未唤醒, 重试")
-                    continue
-                } else console.info("设备已唤醒")
-            } while (!bs)
-            sleep(500)
+        let err
+        console.log("唤醒设备")
+        bs = brightScreen(SCREEN_BRIGHTNESS)
+        if (!bs) {
+            err = "唤醒设备失败"
+            console.error(err)
+            sendQQMsg(err)
+            return
         }
+        sleep(500)
 
         if (isDeviceLocked()) {
             console.log("解锁屏幕")
             unlockScreen(320, 0.9, 0.1)
             if (isDeviceLocked()) {
-                console.error(
-                    "上滑解锁失败, 请按脚本中的注释调整UnlockScreen中的 gesture(time, [x1,y1], [x2,y2]) 方法的参数!"
-                )
+                err = "上滑解锁失败, 请按脚本中的注释调整UnlockScreen中的 gesture(time, [x1,y1], [x2,y2]) 方法的参数!"
+                console.error(err)
+                sendQQMsg(err)
                 return
+            } else {
+                console.info("屏幕已解锁")
             }
-            console.info("屏幕已解锁")
         }
 
-        if (device.getMusicVolume() != 0 && device.getNotificationVolume() != 0) setVolume(0)
+        setVolume(0)
 
         backHome()
         func(d)
@@ -190,13 +196,11 @@ function Init(func) {
 
         console.log("关闭屏幕")
 
-        if (!isDeviceLocked()) {
-            lockScreen()
-            if (isDeviceLocked()) {
-                console.info("屏幕已关闭")
-            } else {
-                console.error("屏幕未关闭, 请尝试其他锁屏方案, 或等待屏幕自动关闭")
-            }
+        lockScreen()
+        if (isDeviceLocked()) {
+            console.info("屏幕已关闭")
+        } else {
+            console.error("屏幕未关闭, 请尝试其他锁屏方案, 或等待屏幕自动关闭")
         }
     }
 }
@@ -205,16 +209,14 @@ function Init(func) {
  *唤醒设备
  *
  * @param {number} brightness 亮度
- * @param {boolean} keepScreenOn 是否保持亮屏
  * @return {*}
  */
-function brightScreen(brightness, keepScreenOn) {
+function brightScreen(brightness) {
+    device.wakeUpIfNeeded() // 唤醒设备
+    device.keepScreenOn() // 保持亮屏
     device.setBrightnessMode(0) // 手动亮度模式
     device.setBrightness(brightness)
-    device.wakeUpIfNeeded() // 唤醒设备
-    if (keepScreenOn) {
-        device.keepScreenOn() // 保持亮屏
-    }
+    device.cancelVibration()
 
     return device.isScreenOn ? true : false
 }
@@ -251,21 +253,18 @@ function lockScreen() {
     // device.setBrightnessMode(1) // 自动亮度模式
     device.cancelKeepingAwake() // 取消设备常亮
     sleep(1000)
-
     // 锁屏方案1：Root
 
     if (iskRoot()) {
         Power()
     } else {
+        // 锁屏方案2：No Root
+        // press(Math.floor(device.width / 2), Math.floor(device.height * 0.973), 1000) // 小米的快捷手势：长按Home键锁屏
+        // 万能锁屏方案：向Tasker发送广播, 触发系统锁屏动作。配置方法见 2021-03-09 更新日志
+        // app.sendBroadcast({ action: ACTION_LOCK_SCREEN })
     }
 
     sleep(5e3)
-
-    // 锁屏方案2：No Root
-    // press(Math.floor(device.width / 2), Math.floor(device.height * 0.973), 1000) // 小米的快捷手势：长按Home键锁屏
-
-    // 万能锁屏方案：向Tasker发送广播, 触发系统锁屏动作。配置方法见 2021-03-09 更新日志
-    // app.sendBroadcast({ action: ACTION_LOCK_SCREEN })
 }
 
 /**
@@ -285,6 +284,7 @@ function holdOn(delay) {
  *  启动并登陆钉钉
  */
 function openDD(account, passwd) {
+    let err
     let count = 1
     do {
         console.info(`第${count}次登录...`)
@@ -318,13 +318,14 @@ function openDD(account, passwd) {
             console.info("账号已登录")
             ele.click()
             sleep(5e3) //如果设置了极速打卡或者蓝牙自动打卡， 会在这段时间完成打卡
-            return true
+            return { status: true, text: "OK" }
         }
         console.warn("登录失败,重试...")
         count += 1
     } while (count < 6)
-    console.error("无法登录!")
-    return false
+    err = `重试${count}次,无法登录!`
+    console.error(err)
+    return { status: false, text: err }
 }
 
 /**
@@ -339,6 +340,7 @@ function attendKaoQin(id) {
         data: url,
         //flags: [Intent.FLAG_ACTIVITY_NEW_TASK]
     })
+    let err
     let count = 1
     do {
         app.launchPackage(PACKAGE_ID.DD)
@@ -363,7 +365,14 @@ function attendKaoQin(id) {
                     click(device.width / 2, device.height * 0.56)
                     console.log("点击打卡按钮坐标")
                 }
-                if (isFind(textContains("成功").findOne(15e3))) return console.info("打卡成功!")
+                if (isFind(textContains("成功").findOne(15e3))) {
+                    console.info("打卡成功!")
+                    return { status: true, text: "OK" }
+                } else {
+                    err = `蓝牙打卡:${getCurrentTime()}打卡·无效\n也许未到打卡时间`
+                    console.error(err)
+                    return { status: false, text: err }
+                }
             } else {
                 console.error("不符合打卡规则,重新进入考勤界面!")
                 back()
@@ -377,14 +386,17 @@ function attendKaoQin(id) {
             continue
         }
     } while (count < 6)
-    return console.error("打卡失败!")
+    err = `重试${count}次,打卡失败!`
+    console.error(err)
+    return { status: false, text: err }
 }
 
 /**
  * 发送QQ消息
  * @param {string} message 消息内容
  */
-let sendQQMsg = (message) => {
+const sendQQMsg = (message) => {
+    setStorageData("dingding", "clockResult", message)
     console.log("发送QQ消息")
     backHome()
     app.startActivity({
@@ -415,8 +427,8 @@ function getCurrentTime() {
     let currentDate = new Date()
     let hours = dateDigitToString(currentDate.getHours())
     let minute = dateDigitToString(currentDate.getMinutes())
-    let second = dateDigitToString(currentDate.getSeconds())
-    let formattedTimeString = hours + ":" + minute + ":" + second
+    // let second = dateDigitToString(currentDate.getSeconds())
+    let formattedTimeString = hours + ":" + minute
     return formattedTimeString
 }
 
@@ -493,12 +505,11 @@ function backHome() {
 function setVolume(volume) {
     device.setMusicVolume(volume)
     device.setNotificationVolume(volume)
-    console.verbose("媒体音量:" + device.getMusicVolume())
-    console.verbose("通知音量:" + device.getNotificationVolume())
+    device.setAlarmVolume(volume)
 }
 
 function isFind(something) {
-    return something != null ? true : false
+    return something !== null ? true : false
 }
 
 /**
