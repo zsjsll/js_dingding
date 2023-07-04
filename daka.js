@@ -63,18 +63,23 @@ function watcher(func) {
         console.log("通知摘要: " + n.tickerText)
 
         // 过滤 PackageId 白名单之外的应用所发出的通知
-        if (!filterNotification(n.getPackageName(), n.tickerText, n.getText())) {
-            return
-        }
+        if (!filterNotification(n.getPackageName(), n.tickerText, n.getText())) return
 
         // 监听摘要为 "定时打卡" 的通知, 不一定要从 Tasker 中发出通知, 日历、定时器等App均可实现
         //手机不显示‘定时打卡’只能监听通知包名
-        if ((n.getText() == "定时打卡" || n.category == "alarm") && !suspend) {
-            prepare()
+        if (n.getPackageName() === PACKAGE_ID.CLOCK && !suspend) {
             threads.shutDownAll()
-            threads.start(function () {
-                func(DELAY)
-            })
+            if (n.getText().includes("已错过")) return
+
+            sleep(3000)
+            n.click()
+            if (currentPackage() === n.getPackageName()) {
+                let btn_close = id("el").findOne(3000)
+                btn_close.click()
+                toast("关闭闹钟")
+            }
+            sleep(1000)
+            threads.start(() => func(DELAY))
         }
 
         switch (n.getText()) {
@@ -255,7 +260,7 @@ function lockScreen() {
     sleep(1000)
     // 锁屏方案1：Root
 
-    if (iskRoot()) {
+    if (isRoot()) {
         Power()
     } else {
         // 锁屏方案2：No Root
@@ -484,7 +489,7 @@ function backHome() {
         return
     } else {
         sleep(1e3)
-        if (iskRoot()) {
+        if (isRoot()) {
             for (let i = 0; i < 12; i++) Back()
             sleep(1e3)
             Home()
@@ -535,20 +540,7 @@ function filterNotification(bundleId, abstract, text) {
     }
 }
 
-/**
- *自动跳过OPPO的闹铃，进入home界面
- *
- */
-function prepare() {
-    if (currentPackage() == "com.android.alarmclock") {
-        let btn_close = id("el").findOne(-1)
-        btn_close.click()
-        toast("关闭闹钟")
-    }
-    sleep(1000)
-}
-
-function iskRoot() {
+function isRoot() {
     return shell("su -v").code === 0 ? true : false
 }
 
