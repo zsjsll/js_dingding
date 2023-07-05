@@ -410,7 +410,7 @@ const sendQQMsg = (message) => {
         packageName: PACKAGE_ID.QQ,
     })
 
-    id("input").findOne(-1).setText(message)
+    id("input").findOne(-1).setText(`${message}\n当前电量:${device.getBattery()}%\n是否充电:${device.isCharging()}`)
     id("fun_btn").findOne(-1).click()
 
     console.info("发送成功")
