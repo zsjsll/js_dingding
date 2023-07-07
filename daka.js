@@ -107,6 +107,14 @@ function watcher(func) {
                 threads.start(() => InitsendQQMsg("修改成功, 已恢复定时打卡功能"))
                 break
 
+            case "初始化": // 监听文本为 "初始化" 的通知
+                console.warn("恢复初始化")
+                threads.shutDownAll()
+                console.log("已停止所以线程！")
+                backHome()
+                lockScreen()
+                break
+
             default:
                 break
         }
@@ -119,7 +127,7 @@ function watcher(func) {
             setTimeout(() => {
                 threads.shutDownAll()
                 threads.start(() => InitsendQQMsg(text))
-            }, 2000) //等待，这样可以打断锁屏，并且让console.log()输出完整
+            }, 3000) //等待，这样可以打断锁屏，并且让console.log()输出完整
 
             return
         }
@@ -182,7 +190,7 @@ function Init(func) {
 
         if (isDeviceLocked()) {
             console.log("解锁屏幕")
-            unlockScreen(320, 0.9, 0.1)
+            unlockScreen(720, 0.8, 0.2)
             if (isDeviceLocked()) {
                 err = "上滑解锁失败, 请按脚本中的注释调整UnlockScreen中的 gesture(time, [x1,y1], [x2,y2]) 方法的参数!"
                 console.error(err)
@@ -409,10 +417,14 @@ const sendQQMsg = (message) => {
         data: "mqq://im/chat?chat_type=wpa&version=1&src_type=web&uin=" + QQ,
         packageName: PACKAGE_ID.QQ,
     })
-
-    id("input").findOne(-1).setText(`${message}\n当前电量:${device.getBattery()}%\n是否充电:${device.isCharging()}`)
-    id("fun_btn").findOne(-1).click()
-
+    sleep(3000)
+    const input = id("input").findOne(10e3)
+    sleep(1000)
+    input.setText(`${message}\n当前电量:${device.getBattery()}%\n是否充电:${device.isCharging()}`)
+    // id("send_btn").findOne(-1).click()
+    const send = id("send_btn").text("发送").clickable().findOne(2000)
+    sleep(1000)
+    send.click()
     console.info("发送成功")
     backHome()
     // waitForActivity("com.tencent.mobileqq.activity.SplashActivity")
@@ -489,15 +501,12 @@ function backHome() {
         return
     } else {
         sleep(1e3)
-        if (isRoot()) {
-            for (let i = 0; i < 12; i++) Back()
-            sleep(1e3)
-            Home()
-        } else {
-            for (let i = 0; i < 12; i++) back()
-            sleep(1e3)
-            home()
+        for (let i = 0; i < 9; i++) {
+            back()
+            sleep(200)
         }
+        sleep(2e3)
+        home()
         sleep(2e3)
     }
 }
