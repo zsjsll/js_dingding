@@ -1,13 +1,13 @@
 //-------------设定运行参数------------------
 
-const SCREEN_BRIGHTNESS = 0 //运行时屏幕亮度
+const SCREEN_BRIGHTNESS = 100 //运行时屏幕亮度
 
 /** 打卡相关的设置 */
 
-const ACCOUNT = ""
-const PASSWD = ""
+const ACCOUNT = "19988329986"
+const PASSWD = "1313243"
 
-const QQ = ""
+const QQ = "124119885"
 const CORP_ID = "" // 公司的钉钉CorpId, 如果只加入了一家公司, 可以不填
 
 const OBSERVE_VOLUME_KEY = true // 监听音量-键, 开启后无法通过音量-键调整音量, 按下音量-键：结束所有子线程
@@ -146,6 +146,11 @@ function watcher(func) {
         device.cancelKeepingAwake()
         toast("已中断所有子线程!")
         // 调试脚本
+        app.startActivity({
+            action: "android.intent.action.VIEW",
+            data: "mqq://im/chat?chat_type=wpa&version=1&src_type=web&uin=" + QQ,
+            packageName: PACKAGE_ID.QQ,
+        })
     })
 
     toastLog("监听中, 请在日志中查看记录的通知及其内容")
@@ -265,7 +270,6 @@ function unlockScreen(time, y1, y2) {
 function lockScreen() {
     // device.setBrightnessMode(1) // 自动亮度模式
     device.cancelKeepingAwake() // 取消设备常亮
-    sleep(1000)
     // 锁屏方案1：Root
 
     if (isRoot()) {
@@ -277,7 +281,7 @@ function lockScreen() {
         // app.sendBroadcast({ action: ACTION_LOCK_SCREEN })
     }
 
-    sleep(5e3)
+    sleep(2e3)
 }
 
 /**
@@ -418,16 +422,15 @@ const sendQQMsg = (message) => {
         packageName: PACKAGE_ID.QQ,
     })
     sleep(3000)
-    const input = id("input").findOne(10e3)
+    const input = id("input").findOne(-1)
     sleep(1000)
     input.setText(`${message}\n当前电量:${device.getBattery()}%\n是否充电:${device.isCharging()}`)
     // id("send_btn").findOne(-1).click()
-    const send = id("send_btn").text("发送").clickable().findOne(2000)
+    const send = id("send_btn").text("发送").clickable().findOne(-1)
     sleep(1000)
     send.click()
     console.info("发送成功")
     backHome()
-    // waitForActivity("com.tencent.mobileqq.activity.SplashActivity")
 }
 
 // ---------------功能函数------------------
