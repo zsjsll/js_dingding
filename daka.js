@@ -1,13 +1,13 @@
 //-------------设定运行参数------------------
 
-const SCREEN_BRIGHTNESS = 100 //运行时屏幕亮度
+const SCREEN_BRIGHTNESS = 0 //运行时屏幕亮度
 
 /** 打卡相关的设置 */
 
 const ACCOUNT = ""
 const PASSWD = ""
 
-const QQ = "124119885"
+const QQ = ""
 const CORP_ID = "" // 公司的钉钉CorpId, 如果只加入了一家公司, 可以不填
 
 const OBSERVE_VOLUME_KEY = true // 监听音量-键, 开启后无法通过音量-键调整音量, 按下音量-键：结束所有子线程
@@ -121,16 +121,16 @@ function watcher(func) {
         if (n.getText() == null) return
 
         // 监听钉钉返回的考勤结果
-        // if (n.getPackageName() == PACKAGE_ID.DD && n.getText().indexOf("考勤打卡") !== -1) {
-        //     let text = n.getText().indexOf("]") ? n.getText().slice(n.getText().indexOf("]") + 1) : n.getText()
+        if (n.getPackageName() == PACKAGE_ID.DD && n.getText().indexOf("考勤打卡") !== -1) {
+            let text = n.getText().indexOf("]") ? n.getText().slice(n.getText().indexOf("]") + 1) : n.getText()
 
-        //     setTimeout(() => {
-        //         threads.shutDownAll()
-        //         threads.start(() => InitsendQQMsg(text))
-        //     }, 3000) //等待，这样可以打断锁屏，并且让console.log()输出完整
+            setTimeout(() => {
+                threads.shutDownAll()
+                threads.start(() => InitsendQQMsg(text))
+            }, 1000) //等待，这样可以打断锁屏，并且让console.log()输出完整
 
-        //     return
-        // }
+            return
+        }
     })
 
     events.setKeyInterceptionEnabled("volume_down", OBSERVE_VOLUME_KEY)
@@ -168,7 +168,8 @@ const DaKa = (d) => {
         return
     }
     statu_scode = attendKaoQin(CORP_ID)
-    sleep(2000)
+    backHome()
+    sleep(1000)
     sendQQMsg(statu_scode["text"])
 
     return
@@ -382,16 +383,14 @@ function attendKaoQin(id) {
                     console.log("点击打卡按钮坐标")
                 }
                 if (isFind(textContains("成功").findOne(15e3))) {
+                    info = `考勤打卡:${getCurrentTime()}打卡·成功\n但未收到成功消息`
                     console.info("打卡成功!")
-                    backHome()
-
-                    return { status: true, text: "OK" }
                 } else {
-                    info = `未收到钉钉打卡信息\n打卡时间:${getCurrentTime()}`
-                    console.error(info)
-                    backHome()
-                    return { status: false, text: info }
+                    info = `考勤打卡:${getCurrentTime()}打卡·无效\n也许未到打卡时间`
+                    console.error("打卡无效,也许未到打卡时间!")
                 }
+
+                return { status: false, text: info }
             } else {
                 console.error("不符合打卡规则,重新进入考勤界面!")
                 back()
@@ -407,6 +406,7 @@ function attendKaoQin(id) {
     } while (count < 6)
     info = `重试${count}次,打卡失败!`
     console.error(info)
+
     return { status: false, text: info }
 }
 
