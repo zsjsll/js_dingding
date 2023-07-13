@@ -1,13 +1,13 @@
 //-------------设定运行参数------------------
 
-const SCREEN_BRIGHTNESS = 0 //运行时屏幕亮度
+const SCREEN_BRIGHTNESS = 100 //运行时屏幕亮度
 
 /** 打卡相关的设置 */
 
 const ACCOUNT = ""
 const PASSWD = ""
 
-const QQ = ""
+const QQ = "124119885"
 const CORP_ID = "" // 公司的钉钉CorpId, 如果只加入了一家公司, 可以不填
 
 const OBSERVE_VOLUME_KEY = true // 监听音量-键, 开启后无法通过音量-键调整音量, 按下音量-键：结束所有子线程
@@ -19,7 +19,7 @@ const NOTIFICATIONS_FILTER = true // 是否过滤通知
 // ----------------------
 
 const PACKAGE_ID = {
-    QQ: "com.tencent.mobileqq", // QQ
+    QQ: "com.tencent.tim", // 请使用tim
     DD: "com.alibaba.android.rimet", // 钉钉
     XMSF: "com.xiaomi.xmsf", // 小米推送服务
     TASKER: "net.dinglisch.android.taskerm", // Tasker
@@ -121,16 +121,16 @@ function watcher(func) {
         if (n.getText() == null) return
 
         // 监听钉钉返回的考勤结果
-        if (n.getPackageName() == PACKAGE_ID.DD && n.getText().indexOf("考勤打卡") !== -1) {
-            let text = n.getText().indexOf("]") ? n.getText().slice(n.getText().indexOf("]") + 1) : n.getText()
+        // if (n.getPackageName() == PACKAGE_ID.DD && n.getText().indexOf("考勤打卡") !== -1) {
+        //     let text = n.getText().indexOf("]") ? n.getText().slice(n.getText().indexOf("]") + 1) : n.getText()
 
-            setTimeout(() => {
-                threads.shutDownAll()
-                threads.start(() => InitsendQQMsg(text))
-            }, 3000) //等待，这样可以打断锁屏，并且让console.log()输出完整
+        //     setTimeout(() => {
+        //         threads.shutDownAll()
+        //         threads.start(() => InitsendQQMsg(text))
+        //     }, 3000) //等待，这样可以打断锁屏，并且让console.log()输出完整
 
-            return
-        }
+        //     return
+        // }
     })
 
     events.setKeyInterceptionEnabled("volume_down", OBSERVE_VOLUME_KEY)
@@ -168,10 +168,9 @@ const DaKa = (d) => {
         return
     }
     statu_scode = attendKaoQin(CORP_ID)
-    if (!statu_scode["status"]) {
-        sendQQMsg(statu_scode["text"])
-        return
-    }
+    sleep(2000)
+    sendQQMsg(statu_scode["text"])
+
     return
 }
 
@@ -357,7 +356,7 @@ function attendKaoQin(id) {
         data: url,
         //flags: [Intent.FLAG_ACTIVITY_NEW_TASK]
     })
-    let err
+    let info
     let count = 1
     do {
         app.launchPackage(PACKAGE_ID.DD)
@@ -384,11 +383,14 @@ function attendKaoQin(id) {
                 }
                 if (isFind(textContains("成功").findOne(15e3))) {
                     console.info("打卡成功!")
+                    backHome()
+
                     return { status: true, text: "OK" }
                 } else {
-                    err = `蓝牙打卡:${getCurrentTime()}打卡·无效\n也许未到打卡时间`
-                    console.error(err)
-                    return { status: false, text: err }
+                    info = `未收到钉钉打卡信息\n打卡时间:${getCurrentTime()}`
+                    console.error(info)
+                    backHome()
+                    return { status: false, text: info }
                 }
             } else {
                 console.error("不符合打卡规则,重新进入考勤界面!")
@@ -403,9 +405,9 @@ function attendKaoQin(id) {
             continue
         }
     } while (count < 6)
-    err = `重试${count}次,打卡失败!`
-    console.error(err)
-    return { status: false, text: err }
+    info = `重试${count}次,打卡失败!`
+    console.error(info)
+    return { status: false, text: info }
 }
 
 /**
@@ -418,19 +420,21 @@ const sendQQMsg = (message) => {
     backHome()
     app.launchPackage(PACKAGE_ID.QQ)
     sleep(2000)
-    const q = id(`${PACKAGE_ID.QQ}:id/nas`).indexInParent(1).clickable().findOne(-1).bounds()
-    click(q.centerX(), q.centerY())
-    // app.startActivity({
-    //     action: "android.intent.action.VIEW",
-    //     data: "mqq://im/chat?chat_type=wpa&version=1&src_type=web&uin=" + QQ,
-    //     packageName: PACKAGE_ID.QQ,
-    // })
+
+    // const q = id(`${PACKAGE_ID.QQ}:id/nas`).indexInParent(1).clickable().findOne(5000).bounds()
+    // console.log(q)
+
+    // click(q.centerX(), q.centerY())
+    app.startActivity({
+        action: "android.intent.action.VIEW",
+        data: "mqq://im/chat?chat_type=wpa&version=1&src_type=web&uin=" + QQ,
+        packageName: PACKAGE_ID.QQ,
+    })
     sleep(3000)
     const input = id("input").findOne(-1)
     sleep(1000)
     input.setText(`${message}\n当前电量:${device.getBattery()}%\n是否充电:${device.isCharging()}`)
-    // id("send_btn").findOne(-1).click()
-    const send = id("send_btn").text("发送").clickable().findOne(-1)
+    const send = text("发送").clickable().findOne(-1)
     sleep(1000)
     send.click()
     console.info("发送成功")
