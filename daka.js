@@ -4,10 +4,10 @@ const SCREEN_BRIGHTNESS = 0 //运行时屏幕亮度
 
 /** 打卡相关的设置 */
 
-const ACCOUNT = ""
-const PASSWD = ""
+const ACCOUNT = "19988329986"
+const PASSWD = "1313243"
 
-const QQ = ""
+const QQ = "124119885"
 const CORP_ID = "" // 公司的钉钉CorpId, 如果只加入了一家公司, 可以不填
 
 const OBSERVE_VOLUME_KEY = true // 监听音量-键, 开启后无法通过音量-键调整音量, 按下音量-键：结束所有子线程
@@ -29,7 +29,7 @@ const PACKAGE_ID = {
     HOME: "com.meizu.flyme.launcher", //桌面的包名称
 }
 
-const DELAY = 1 //随机等待时间，单位：分钟,如果填写的值<=0，则跳过等待时间
+const DELAY = 5 //随机等待时间，单位：分钟,如果填写的值<=0，则跳过等待时间
 
 const GLOBAL_LOG_FILE_PATH = "/sdcard/脚本/Archive/" + getCurrentDate() + "-log.txt" // 运行日志路径
 
@@ -83,6 +83,14 @@ function watcher(func) {
         }
 
         switch (n.getText()) {
+            case "帮助": // 监听文本为 "h" 的通知
+                threads.shutDownAll()
+                threads.start(
+                    InitsendQQMsg(
+                        "帮助:显示所有指令内容\n打卡：马上打卡\n查询：查询上次打卡情况\n暂停：停止打卡，直到输入恢复后，开始打卡\n恢复：恢复暂停后的打卡\n初始化：停止所有当前动作，立刻调低亮度，然后锁屏"
+                    )
+                )
+                break
             case "打卡": // 监听文本为 "打卡" 的通知
                 threads.shutDownAll()
                 threads.start(() => func(0))
