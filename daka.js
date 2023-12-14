@@ -29,7 +29,7 @@ const PACKAGE_ID = {
     HOME: "com.meizu.flyme.launcher", //桌面的包名称
 }
 
-const DELAY = 5 //随机等待时间，单位：分钟,如果填写的值<=0，则跳过等待时间
+const DELAY = 4 //随机等待时间，单位：分钟,如果填写的值<=0，则跳过等待时间，目前手机设置的是5min锁屏，所以设定4min
 
 const GLOBAL_LOG_FILE_PATH = "/sdcard/脚本/Archive/" + getCurrentDate() + "-log.txt" // 运行日志路径
 
@@ -83,11 +83,11 @@ function watcher(func) {
         }
 
         switch (n.getText()) {
-            case "帮助": // 监听文本为 "h" 的通知
+            case "帮助": // 监听文本为 "帮助" 的通知
                 threads.shutDownAll()
-                threads.start(
+                threads.start(() =>
                     InitsendQQMsg(
-                        "帮助:显示所有指令内容\n打卡：马上打卡\n查询：查询上次打卡情况\n暂停：停止打卡，直到输入恢复后，开始打卡\n恢复：恢复暂停后的打卡\n初始化：停止所有当前动作，立刻调低亮度，然后锁屏"
+                        "帮助：显示所有指令内容\n打卡：马上打卡\n查询：查询上次打卡情况\n暂停：停止打卡动作\n恢复：恢复打卡动作\n锁屏：停止当前动作后锁屏"
                     )
                 )
                 break
@@ -115,10 +115,10 @@ function watcher(func) {
                 threads.start(() => InitsendQQMsg("修改成功, 已恢复定时打卡功能"))
                 break
 
-            case "初始化": // 监听文本为 "初始化" 的通知
+            case "锁屏": // 监听文本为 "锁屏" 的通知
                 console.warn("恢复初始化")
                 threads.shutDownAll()
-                console.log("已停止所以线程！")
+                console.log("已停止所有线程！")
                 backHome()
                 lockScreen()
                 break
