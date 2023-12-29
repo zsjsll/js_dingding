@@ -10,4 +10,3 @@ const source = require("../config.js")
 const CONFIG = init.initConfig(target, source)
 console.log(CONFIG)
 
-tools.isInWhiteList(true,,n)

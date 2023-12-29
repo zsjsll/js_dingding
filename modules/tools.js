@@ -28,6 +28,7 @@ module.exports = {
      *
      * @param {number} volume
      */
+    // TODO:
     setVolume: (volume) => {
         device.setMusicVolume(volume)
         device.setNotificationVolume(volume)
