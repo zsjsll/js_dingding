@@ -1,5 +1,5 @@
 {
-  "name": "daka",
+  "name": "js_dingding",
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
@@ -9,7 +9,7 @@
   "keywords": [],
   "author": "",
   "license": "ISC",
-  "dependencies": {
+  "devDependencies": {
     "@sm003/autojs6-dts": "^2.1.3"
   }
 }
