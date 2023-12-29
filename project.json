@@ -9,7 +9,7 @@
       "stableMode": false
     },
     "main": "main.js",
-    "name": "%ProjectName%",
+    "name": "DD_daka",
     "optimization": {
       "removeOpenCv": false,
       "unusedResources": false
