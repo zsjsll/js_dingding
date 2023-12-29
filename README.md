@@ -13,6 +13,6 @@ daka.js 填写用户、密码、QQ号即可使用
 
 
 ## 一个新的开始
-个基于[autojs6](https://github.com/zsjsll/js_dingding/tree/dev)的分支。
+基于[autojs6](https://github.com/SuperMonster003/AutoJs6)的分支。
 
 https://github.com/zsjsll/js_dingding/tree/dev
