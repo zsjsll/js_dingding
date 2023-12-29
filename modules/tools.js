@@ -4,16 +4,18 @@ module.exports = {
     /**
      *通知白名单
      *
-     * @param {object} packages_id 白名单
+     * @param {boolean} filter_switch
+     * @param {White_list} white_list 白名单
      * @param {org.autojs.autojs.core.notification.Notification} find_package 截取的信息，和白名单进行对比
      * @return {boolean}
      */
-    isNeedNotification: (packages_id, find_package) => {
-        let check = Object.values(packages_id).some((item) => find_package.getPackageName() == item)
-        if (!NOTIFICATIONS_FILTER || check) {
-            console.verbose(bundleId)
-            console.verbose(abstract)
-            console.verbose(text)
+
+    isInWhiteList: (filter_switch, white_list, find_package) => {
+        let check = Object.values(white_list).some((item) => find_package.getPackageName() == item)
+        if (!filter_switch || check) {
+            console.verbose(find_package.getPackageName())
+            console.verbose(find_package.tickerText)
+            console.verbose(find_package.getText())
             console.verbose("---------------------------")
             return true
         } else {
