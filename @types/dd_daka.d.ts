@@ -5,8 +5,8 @@ declare interface Config {
     CORP_ID: string
 
     SCREEN_BRIGHTNESS: number
-    OBSERVE_VOLUME_KEY: Boolean
-    OPEN_NOTIFICATIONS_FILTER: Open_filter
+    OBSERVE_VOLUME_KEY: boolean
+    OPEN_NOTIFICATIONS_FILTER: Filter_switch
     DELAY: number
 
     PACKAGE_ID_LIST: Package_id_list
@@ -25,4 +25,4 @@ declare interface Package_id_list {
 }
 
 declare type White_list = Package_id_list
-
+declare type Filter_switch = boolean

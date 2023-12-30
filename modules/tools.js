@@ -4,7 +4,7 @@ module.exports = {
     /**
      *通知白名单
      *
-     * @param {boolean } filter_switch
+     * @param {Filter_switch } filter_switch
      * @param {White_list} white_list 白名单
      * @param {org.autojs.autojs.core.notification.Notification} find_package 截取的信息，和白名单进行对比
      * @return {boolean}
