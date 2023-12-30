@@ -6,15 +6,15 @@ declare interface Config {
 
     SCREEN_BRIGHTNESS: number
     OBSERVE_VOLUME_KEY: Boolean
-    OPEN_NOTIFICATIONS_FILTER: Boolean
+    OPEN_NOTIFICATIONS_FILTER: Open_filter
     DELAY: number
 
-    PACKAGE_ID: White_list
+    PACKAGE_ID_LIST: Package_id_list
 
     GLOBAL_LOG_FILE_DIR: string
 }
 
-declare interface White_list {
+declare interface Package_id_list {
     QQ: string
     DD: string
     XMSF: string
@@ -23,3 +23,6 @@ declare interface White_list {
     CLOCK: string
     HOME: string
 }
+
+declare type White_list = Package_id_list
+
