@@ -1,8 +1,8 @@
 const autojsUtils = require("./modules/autojs-utils")
 const tools = require("./modules/tools.js")
 const init = require("./modules/init.js")
-const target = require("../config/config.js")
-const source = require("../config.js")
+const target = require("./config/config.js")
+const source = require("./config.js")
 
 // autojsUtils.test()
 
@@ -10,3 +10,4 @@ const source = require("../config.js")
 const CONFIG = init.initConfig(target, source)
 console.log(CONFIG)
 
+tools.getCurrentTime()
