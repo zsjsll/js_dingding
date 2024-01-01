@@ -1,9 +1,13 @@
-module.exports = {
-    /**
-     *
-     *
-     * @param {Config} target
-     * @param {Config} source
-     */
-    initConfig: (target, source) => Object.assign(target, source),
+module.exports = { initConfig }
+
+/**
+ *
+ *
+ * @param {Config} target
+ * @param {Config} source
+ */
+function initConfig(target, source) {
+    const cfg = Object.assign(target, source)
+    cfg["GLOBAL_LOG_FILE_DIR"] = cfg["GLOBAL_LOG_FILE_DIR"] + require("./tools.js").getCurrentDate() + ".log"
+    return cfg
 }
