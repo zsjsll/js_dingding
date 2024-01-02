@@ -74,8 +74,8 @@ function watcher(func) {
             sleep(3000)
             n.click()
             if (currentPackage() === n.getPackageName()) {
-                let btn_close = id("el").findOne(3000)
                 sleep(1000)
+                let btn_close = id("el").findOne(3000)
                 btn_close.click()
                 toast("关闭闹钟")
             }
