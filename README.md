@@ -6,7 +6,7 @@
 适用版本：
 
 - [autojs6](https://github.com/SuperMonster003/AutoJs6) 6.5.0
-- 钉钉 7.0.52
+- 钉钉 7.0.42.11
 - TIM 3.5.5.3198
 
 

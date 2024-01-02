@@ -1,7 +1,10 @@
 const tools = require("./modules/tools.js")
 const init = require("./modules/init.js")
 const target = require("./config/config.js")
-const source = {} || require("./config.js")
+const DD = require("./modules/dd.js")
+
+if (!files.exists("./config.js")) files.copy("./config/config.js", "./config.js")
+const source = require("./config.js")
 
 // autojsUtils.test()
 
@@ -9,7 +12,4 @@ const source = {} || require("./config.js")
 const CONFIG = init.initConfig(target, source)
 console.log(CONFIG)
 
-id("et_phone").untilFind().setText("19988329986")
-id("btn_next").untilFind().click()
-id("design_bottom_sheet").untilFind()
-id("btn_next").untilFind().click()
+// DD.openDD(CONFIG.PACKAGE_ID_LIST.DD, CONFIG.ACCOUNT, CONFIG.PASSWD, 5)
