@@ -1,7 +1,6 @@
 const backHome = require("./tools").backHome
-const isFindSelector = require("./tools").isFindSelector
 
-module.exports = { openDD }
+module.exports = { openDD, punchIn }
 
 function startAPP(package_id) {
     app.launchPackage(package_id)
