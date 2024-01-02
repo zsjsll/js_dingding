@@ -4,7 +4,6 @@ module.exports = {
     backHome,
     isDeviceLocked,
     isInWhiteList,
-    isFindSelector,
     setVolume,
     setStorageData,
     getStorageData,
@@ -12,6 +11,19 @@ module.exports = {
     unlockScreen,
     lockScreen,
     rollTimer,
+    startAPP,
+}
+
+/**
+ * 打开APP
+ *
+ * @param {package_id} package_id
+ *
+ */
+function startAPP(package_id) {
+    app.launchPackage(package_id)
+    if (packageName(package_id).findOne(15e3) === null) return false
+    else return true
 }
 
 /**
@@ -162,16 +174,6 @@ function isInWhiteList(filter_switch, white_list, find_package) {
     if (filter_switch === false) return true
     const check = Object.values(white_list).some((item) => find_package.getPackageName() === item)
     return check ? true : false
-}
-
-/**
- *是否找到一些东西
- *
- * @param {Internal.Selector} selector
- */
-//FIX
-function isFindSelector(selector) {
-    return selector !== null ? true : false
 }
 
 /**

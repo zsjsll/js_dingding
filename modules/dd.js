@@ -1,19 +1,13 @@
 const backHome = require("./tools").backHome
-
-module.exports = { openDD, punchIn }
-
-function startAPP(package_id) {
-    app.launchPackage(package_id)
-    if (packageName(package_id).findOne(15e3) === null) return false
-    else return true
-}
+const startAPP = require("./tools.js").startAPP
+module.exports = { punchIn }
 
 function logining(account, passwd) {
     if (id("cb_privacy").findOne(1e3) !== null) {
-        id("et_phone_input").untilFind().setText(account)
-        id("et_password").untilFind().setText(passwd)
-        id("cb_privacy").untilFind().click()
-        id("btn_next").untilFind().click()
+        id("et_phone_input").untilFindOne().setText(account)
+        id("et_password").untilFindOne().setText(passwd)
+        id("cb_privacy").untilFindOne().click()
+        id("btn_next").untilFindOne().click()
         return true
     } else return false
 }
@@ -35,7 +29,7 @@ function atAPPHome() {
 }
 
 /**
- *  启动并登陆钉钉
+ *  启动并登录钉钉
  */
 function openDD(count, dd_package_id, account, passwd) {
     for (let index = 1; index <= count; index++) {
@@ -60,21 +54,25 @@ function openDD(count, dd_package_id, account, passwd) {
         if (is_at_APP_home) return true
         else console.warn("登录失败,重试...")
     }
+    console.error(`重试${count}次,登录失败!`)
     return false
 }
 // FIX :msg变量没有使用，没有声明
-function punchIn(count, dd_package_id, corp_id) {
+function punchIn(count, dd_package_id, account, passwd, corp_id) {
+    const isOpenDD = openDD(count, dd_package_id, account, passwd)
+    if (!isOpenDD) {
+        console.error("无法打开钉钉!")
+        return false
+    }
+
     const u = "dingtalk://dingtalkclient/page/link?url=https://attend.dingtalk.com/attend/index.html"
     const url = corp_id === "" ? u : `${u}?corpId=${corp_id}`
-
     const a = app.intent({
         action: "VIEW",
         data: url,
         //flags: [Intent.FLAG_ACTIVITY_NEW_TASK]
     })
-
     for (let index = 1; index <= count; index++) {
-        app.launchPackage(dd_package_id)
         console.info(`第${index}次尝试打卡...`)
         app.startActivity(a)
         console.log("正在进入考勤界面...")
@@ -104,12 +102,13 @@ function punchIn(count, dd_package_id, corp_id) {
         }
         if (textContains("成功").findOne(15e3) === null) {
             msg = `考勤打卡:${getCurrentTime()}打卡·无效\n也许未到打卡时间`
-            console.error("打卡无效,也许未到打卡时间!")
+            console.warn("打卡无效,也许未到打卡时间!")
             return false
         }
         msg = `考勤打卡:${getCurrentTime()}打卡·成功\n但未收到成功消息`
         console.info("打卡成功!")
         return true
     }
+    console.error(`重试${count}次,打卡失败!`)
     return false
 }
