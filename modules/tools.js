@@ -4,14 +4,14 @@ module.exports = {
     backHome,
     isDeviceLocked,
     isInWhiteList,
-    isFind,
+    isFindSelector,
     setVolume,
     setStorageData,
     getStorageData,
     brightScreen,
     unlockScreen,
     lockScreen,
-    holdOn,
+    rollTimer,
 }
 
 /**
@@ -69,7 +69,7 @@ function lockScreen() {
  *
  * @param {number} delay
  */
-function holdOn(delay) {
+function rollTimer(delay) {
     if (delay <= 0) return
     else sleep(1e3, delay * 1000 * 60)
 }
@@ -167,11 +167,11 @@ function isInWhiteList(filter_switch, white_list, find_package) {
 /**
  *是否找到一些东西
  *
- * @param {*} something
+ * @param {Internal.Selector} selector
  */
 //FIX
-function isFind(something) {
-    return something !== null ? true : false
+function isFindSelector(selector) {
+    return selector !== null ? true : false
 }
 
 /**

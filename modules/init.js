@@ -1,7 +1,7 @@
 module.exports = { initConfig }
 
 /**
- *
+ * 合并设置，添加时间
  *
  * @param {Config} target
  * @param {Config} source

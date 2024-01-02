@@ -74,8 +74,8 @@ function watcher(func) {
             sleep(3000)
             n.click()
             if (currentPackage() === n.getPackageName()) {
-                let btn_close = id("el").findOne(3000)
                 sleep(1000)
+                let btn_close = id("el").findOne(3000)
                 btn_close.click()
                 toast("关闭闹钟")
             }
@@ -318,13 +318,13 @@ function openDD(account, passwd) {
         app.launchPackage(PACKAGE_ID.DD)
         console.log("正在启动" + app.getAppName(PACKAGE_ID.DD) + "...")
 
-        if (!isFind(packageName(PACKAGE_ID.DD).findOne(15e3))) {
+        if (!isFindSelector(packageName(PACKAGE_ID.DD).findOne(15e3))) {
             console.warn("启动失败，重新启动...")
             count += 1
             continue
         }
 
-        if (isFind(id("cb_privacy").findOne(1e3))) {
+        if (isFindSelector(id("cb_privacy").findOne(1e3))) {
             console.info("账号未登录")
             id("et_phone_input").findOne(-1).setText(account)
             id("et_password").findOne(-1).setText(passwd)
@@ -334,13 +334,13 @@ function openDD(account, passwd) {
         }
 
         let noupdate = text("暂不更新").findOne(1e3)
-        if (isFind(noupdate)) {
+        if (isFindSelector(noupdate)) {
             console.info("发现更新...")
             console.log("取消更新")
             noupdate.click()
         }
         let ele = id("home_app_item").indexInParent(0).findOne(15e3)
-        if (isFind(ele)) {
+        if (isFindSelector(ele)) {
             console.info("账号已登录")
             ele.click()
             sleep(5e3) //如果设置了极速打卡或者蓝牙自动打卡， 会在这段时间完成打卡
@@ -373,25 +373,25 @@ function attendKaoQin(id) {
         console.info(`第${count}次尝试打卡...`)
         app.startActivity(a)
         console.log("正在进入考勤界面...")
-        if (isFind(text("申请").findOne(15e3))) {
+        if (isFindSelector(text("申请").findOne(15e3))) {
             console.info("已进入考勤界面")
 
             console.log("等待连接到考勤机...")
 
-            if (isFind(textContains("考勤").findOne(15e3))) {
+            if (isFindSelector(textContains("考勤").findOne(15e3))) {
                 console.info("可以打卡")
                 let btn =
                     text("上班打卡").clickable(true).findOnce() ||
                     text("下班打卡").clickable(true).findOnce() ||
                     text("迟到打卡").clickable(true).findOnce()
-                if (isFind(btn)) {
+                if (isFindSelector(btn)) {
                     btn.click()
                     console.log("按下打卡按钮")
                 } else {
                     click(device.width / 2, device.height * 0.56)
                     console.log("点击打卡按钮坐标")
                 }
-                if (isFind(textContains("成功").findOne(15e3))) {
+                if (isFindSelector(textContains("成功").findOne(15e3))) {
                     info = `考勤打卡:${getCurrentTime()}打卡·成功\n但未收到成功消息`
                     console.info("打卡成功!")
                 } else {
@@ -542,7 +542,7 @@ function setVolume(volume) {
     device.setAlarmVolume(volume)
 }
 
-function isFind(something) {
+function isFindSelector(something) {
     return something !== null ? true : false
 }
 
