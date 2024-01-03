@@ -8,7 +8,7 @@ declare type Config = {
 
     SCREEN_BRIGHTNESS: string
     OBSERVE_VOLUME_KEY: boolean
-    OPEN_NOTIFICATIONS_FILTER: boolean
+    NOTIFICATIONS_FILTER: boolean
 
     DELAY: number
     RETRY: number

@@ -47,13 +47,12 @@ function turnOff(config) {
 }
 
 /**
- *
+ * 手机的流程
  *
  * @param {Config} config
  * @param {Function} func
-
+ * @return {Function}
  */
-
 function phoneProcess(config, func) {
     return (opt) => {
         turnOn(config)

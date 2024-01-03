@@ -77,7 +77,6 @@ function unlockScreen(opt) {
  *
  */
 function lockScreen() {
-    // device.setBrightnessMode(1) // 自动亮度模式
     device.cancelKeepingAwake() // 取消设备常亮
     if (isRoot()) Power()
     sleep(2e3)

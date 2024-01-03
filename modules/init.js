@@ -2,7 +2,7 @@ const dd = require("./dd.js")
 const qq = require("./qq.js")
 const tools = require("./tools.js")
 
-module.exports = { setConfig, setAutojs, startDDPunkIn, startQQSendMsg }
+module.exports = { setConfig, setlog, startDDPunkIn, startQQSendMsg }
 
 /**
  * 合并设置，添加时间
@@ -12,7 +12,7 @@ module.exports = { setConfig, setAutojs, startDDPunkIn, startQQSendMsg }
  */
 function setConfig(target, source) {
     if (!(source.ACCOUNT && source.PASSWD && source.QQ)) {
-        console.error("设置根目录下config.js中的ACCOUNT、PASSWD、QQ参数，如果不存在,请复制config/config.js到根目录下!")
+        console.error("设置根目录下config.js中的ACCOUNT、PASSWD、QQ参数.如果不存在,请复制config/config.js到根目录下!")
         return false
     }
     const cfg = Object.assign(target, source)
@@ -26,7 +26,7 @@ function setConfig(target, source) {
  *
  * @param {Config} config
  */
-function setAutojs(config) {
+function setlog(config) {
     auto()
     // 创建运行日志
     console.setGlobalLogConfig({ file: config.GLOBAL_LOG_FILE_PATH })
@@ -49,7 +49,6 @@ function startDDPunkIn(config, delay) {
         console.error("无法打开钉钉!")
         return false
     }
-    sleep(5e3)
     dd.punchIn(config.RETRY, config.PACKAGE_ID_LIST.DD, config.ACCOUNT, config.PASSWD, config.CORP_ID)
     return true
 }
