@@ -15,8 +15,7 @@ declare type Config = {
 
     GLOBAL_LOG_FILE_DIR: string
     DEV: boolean
-    
-    message: string
+
     pause: boolean
 }
 

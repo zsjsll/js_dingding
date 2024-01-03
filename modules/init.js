@@ -2,7 +2,7 @@ const dd = require("./dd.js")
 const qq = require("./qq.js")
 const tools = require("./tools.js")
 
-module.exports = { setConfig, setAutojs }
+module.exports = { setConfig, setAutojs, startDDPunkIn, startQQSendMsg }
 
 /**
  * 合并设置，添加时间
@@ -17,7 +17,6 @@ function setConfig(target, source) {
     }
     const cfg = Object.assign(target, source)
     cfg["GLOBAL_LOG_FILE_DIR"] = cfg["GLOBAL_LOG_FILE_DIR"] + tools.getCurrentDate() + ".log"
-    cfg["message"] = ""
     cfg["pause"] = false
     return cfg
 }
@@ -48,15 +47,17 @@ return
  *
  *
  * @param {Config} config
+ * @param {number} delay
+ *
  */
-function setDD(config) {
+function startDDPunkIn(config, delay) {
     console.log("本地时间: " + getCurrentDate() + " " + getCurrentTime())
     if (!config.DEV) {
-        tools.holdOn(config.DELAY)
+        tools.holdOn(delay)
     }
     console.log("开始打卡")
-    const isOpenDD = dd.openDD(config.RETRY, config.PACKAGE_ID_LIST.DD, config.ACCOUNT, config.PASSWD)
-    if (!isOpenDD) {
+    const isStartDD = dd.startDD(config.RETRY, config.PACKAGE_ID_LIST.DD, config.ACCOUNT, config.PASSWD)
+    if (!isStartDD) {
         console.error("无法打开钉钉!")
         return false
     }
@@ -69,12 +70,12 @@ function setDD(config) {
  *
  * @param {Config} config
  */
-function setQQ(config) {
-    const isOpenQQ = qq.openQQ(config.PACKAGE_ID_LIST.QQ)
-    if (!isOpenQQ) {
+function startQQSendMsg(config, msg) {
+    const isStartQQ = qq.startQQ(config.PACKAGE_ID_LIST.QQ)
+    if (!isStartQQ) {
         console.error("无法打开QQ!")
         return false
     }
-    qq.sendQQMsg(config.PACKAGE_ID_LIST.QQ, config.QQ, config.message)
+    qq.sendMsg(config.PACKAGE_ID_LIST.QQ, config.QQ, msg)
     return true
 }

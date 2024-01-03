@@ -1,6 +1,6 @@
 const backHome = require("./tools").backHome
 const startAPP = require("./tools.js").startAPP
-module.exports = { openDD, punchIn }
+module.exports = { startDD, punchIn }
 
 /**
  * 登录钉钉，如果已经登录，false
@@ -50,7 +50,7 @@ function atAPPHome() {
  * @param {string} account
  * @param {string} passwd
  */
-function openDD(count, dd_package_id, account, passwd) {
+function startDD(count, dd_package_id, account, passwd) {
     for (let index = 1; index <= count; index++) {
         console.info(`第${index}次登录...`)
         backHome()
