@@ -1,7 +1,13 @@
 const backHome = require("./tools").backHome
 const startAPP = require("./tools.js").startAPP
-module.exports = { punchIn }
+module.exports = { openDD, punchIn }
 
+/**
+ * 登录钉钉，如果已经登录，false
+ *
+ * @param {string} account
+ * @param {string} passwd
+ */
 function logining(account, passwd) {
     if (id("cb_privacy").findOne(1e3) !== null) {
         id("et_phone_input").untilFindOne().setText(account)
@@ -12,6 +18,10 @@ function logining(account, passwd) {
     } else return false
 }
 
+/**
+ * 不进行更新
+ *
+ */
 function noUpdate() {
     const noupdate = text("暂不更新").findOne(10e3)
     if (noupdate !== null) {
@@ -20,6 +30,10 @@ function noUpdate() {
     } else return false
 }
 
+/**
+ * 强制回到app的home界面
+ *
+ */
 function atAPPHome() {
     const message = id("home_app_item").indexInParent(0).findOne(1e3)
     if (message !== null) {
@@ -29,7 +43,12 @@ function atAPPHome() {
 }
 
 /**
- *  启动并登录钉钉
+ * 启动并登录钉钉
+ *
+ * @param {number} count 重试次数
+ * @param {Package_id} dd_package_id
+ * @param {string} account
+ * @param {string} passwd
  */
 function openDD(count, dd_package_id, account, passwd) {
     for (let index = 1; index <= count; index++) {
@@ -58,13 +77,16 @@ function openDD(count, dd_package_id, account, passwd) {
     return false
 }
 // FIX :msg变量没有使用，没有声明
+/**
+ *
+ *
+ * @param {number} count 重试次数
+ * @param {Package_id} dd_package_id
+ * @param {string} account
+ * @param {string} passwd
+ * @param {string} corp_id 企业的ID
+ */
 function punchIn(count, dd_package_id, account, passwd, corp_id) {
-    const isOpenDD = openDD(count, dd_package_id, account, passwd)
-    if (!isOpenDD) {
-        console.error("无法打开钉钉!")
-        return false
-    }
-
     const u = "dingtalk://dingtalkclient/page/link?url=https://attend.dingtalk.com/attend/index.html"
     const url = corp_id === "" ? u : `${u}?corpId=${corp_id}`
     const a = app.intent({

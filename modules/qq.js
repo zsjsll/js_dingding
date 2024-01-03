@@ -1,26 +1,26 @@
 const backHome = require("./tools").backHome
 const startAPP = require("./tools.js").startAPP
 
-module.exports = { sendQQMsg }
+module.exports = { openQQ, sendQQMsg }
 
 /**
- *
+ * 打开qq
  *
  * @param {Package_id} qq_package_id
-
  */
 function openQQ(qq_package_id) {
     backHome()
     return startAPP(qq_package_id)
 }
 
+/**
+ * 发送qq消息
+ *
+ * @param {Package_id} qq_package_id
+ * @param {string} qq
+ * @param {string} message 发送的信息
+ */
 const sendQQMsg = (qq_package_id, qq, message) => {
-    const isOpenQQ = openQQ(qq_package_id)
-    if (!isOpenQQ) {
-        console.error("无法打开QQ！")
-        return false
-    }
-
     app.startActivity({
         action: "android.intent.action.VIEW",
         data: "mqq://im/chat?chat_type=wpa&version=1&src_type=web&uin=" + qq,

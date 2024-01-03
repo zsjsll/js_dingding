@@ -10,7 +10,7 @@ module.exports = {
     brightScreen,
     unlockScreen,
     lockScreen,
-    rollTimer,
+    holdOn,
     startAPP,
 }
 
@@ -81,7 +81,7 @@ function lockScreen() {
  *
  * @param {number} delay
  */
-function rollTimer(delay) {
+function holdOn(delay) {
     if (delay <= 0) return
     else sleep(1e3, delay * 1000 * 60)
 }
