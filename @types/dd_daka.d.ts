@@ -4,6 +4,8 @@ declare type Config = {
     QQ: string
     CORP_ID?: string
 
+    UNLOCKSCREEN: Unlockscreen
+
     SCREEN_BRIGHTNESS: string
     OBSERVE_VOLUME_KEY: boolean
     OPEN_NOTIFICATIONS_FILTER: boolean
@@ -24,3 +26,9 @@ declare type Packages = "QQ" | "DD" | "XMSF" | "CLOCK" | "HOME"
 declare type Package_id_list = { [key in Packages]: Package_id }
 
 declare type Package_id = string
+
+declare type Unlockscreen = {
+    T: number
+    Y1: number
+    Y2: number
+}

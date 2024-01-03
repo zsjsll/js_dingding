@@ -86,7 +86,7 @@ function startDD(count, dd_package_id, account, passwd) {
  * @param {string} passwd
  * @param {string} corp_id 企业的ID
  */
-function punchIn(count, dd_package_id, account, passwd, corp_id) {
+function punchIn(count, corp_id) {
     const u = "dingtalk://dingtalkclient/page/link?url=https://attend.dingtalk.com/attend/index.html"
     const url = corp_id === "" ? u : `${u}?corpId=${corp_id}`
     const a = app.intent({

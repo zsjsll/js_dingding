@@ -22,7 +22,7 @@ module.exports = {
  */
 function startAPP(package_id) {
     app.launchPackage(package_id)
-    if (packageName(package_id).findOne(15e3) === null) return false
+    if (packageName(package_id).findOne(20e3) === null) return false
     else return true
 }
 
@@ -44,20 +44,18 @@ function brightScreen(brightness) {
 /**
  *解锁屏幕
  *
- * @param {number} time // 滑动时间：毫秒
- * @param {number} y1 // 滑动起点 y 坐标：距离屏幕底部 10% 的位置, 华为系统需要往上一些 0.9
- * @param {number} y2 // 滑动终点 y 坐标：距离屏幕顶部 10% 的位置 0.1
+ * @param {Unlockscreen} opt
  */
-function unlockScreen(time, y1, y2) {
+function unlockScreen(opt) {
     gesture(
-        time, // 滑动时间：毫秒 320
+        opt.T, // 滑动时间：毫秒 320
         [
             device.width * 0.5, // 滑动起点 x 坐标：屏幕宽度的一半
-            device.height * y1, // 滑动起点 y 坐标：距离屏幕底部 10% 的位置, 华为系统需要往上一些
+            device.height * opt.Y1, // 滑动起点 y 坐标：距离屏幕底部 10% 的位置, 华为系统需要往上一些
         ],
         [
             device.width * 0.5, // 滑动终点 x 坐标：屏幕宽度的一半
-            device.height * y2, // 滑动终点 y 坐标：距离屏幕顶部 10% 的位置
+            device.height * opt.Y2, // 滑动终点 y 坐标：距离屏幕顶部 10% 的位置
         ]
     )
 

@@ -20,7 +20,8 @@ function startQQ(qq_package_id) {
  * @param {string} qq
  * @param {string} message 发送的信息
  */
-const sendMsg = (qq_package_id, qq, message) => {
+function sendMsg(qq_package_id, qq, message) {
+
     app.startActivity({
         action: "android.intent.action.VIEW",
         data: "mqq://im/chat?chat_type=wpa&version=1&src_type=web&uin=" + qq,

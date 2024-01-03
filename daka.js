@@ -375,9 +375,7 @@ function attendKaoQin(id) {
         console.log("正在进入考勤界面...")
         if (isFindSelector(text("申请").findOne(15e3))) {
             console.info("已进入考勤界面")
-
             console.log("等待连接到考勤机...")
-
             if (isFindSelector(textContains("考勤").findOne(15e3))) {
                 console.info("可以打卡")
                 let btn =

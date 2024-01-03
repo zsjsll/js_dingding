@@ -1,12 +1,18 @@
 const init = require("./modules/init.js")
 const target = require("./config/config.js")
-const DD = require("./modules/dd.js")
+const qq = require("./modules/qq.js")
 
 if (!files.exists("./config.js")) files.copy("./config/config.js", "./config.js")
 const source = require("./config.js")
 
-/** @type {Config} */
-const CONFIG = init.setConfig(target, source)
-console.log(CONFIG)
+// const meizu = require("./modules/meizu.js")
 
-// DD.openDD(CONFIG.PACKAGE_ID_LIST.DD, CONFIG.ACCOUNT, CONFIG.PASSWD, 5)
+/** @type {Config} */
+const cfg = init.setConfig(target, source)
+console.log(cfg)
+
+init.setAutojs(cfg)
+
+// meizu.phoneProcess(cfg, init.startQQSendMsg)("测试")
+
+qq.sendMsg("com.tencent.tim", "124119885", "msg")

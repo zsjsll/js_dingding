@@ -4,6 +4,13 @@ module.exports = {
     QQ: "",
     CORP_ID: "", // 公司的钉钉CorpId, 如果只加入了一家公司, 可以不填
 
+    /* 解锁屏幕参数 */
+    UNLOCKSCREEN: {
+        T: 720, // 滑动时间：毫秒
+        Y1: 0.8, // 滑动起点 y 坐标：距离屏幕底部 10% 的位置, 华为系统需要往上一些 0.9
+        Y2: 0.2, // 滑动终点 y 坐标：距离屏幕顶部 10% 的位置 0.1
+    },
+
     SCREEN_BRIGHTNESS: 0, //运行时屏幕亮度
     OBSERVE_VOLUME_KEY: true, // 监听音量-键, 开启后无法通过音量-键调整音量, 按下音量-键：结束所有子线程
     OPEN_NOTIFICATIONS_FILTER: true, // 是否过滤通知

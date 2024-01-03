@@ -21,27 +21,16 @@ function setConfig(target, source) {
     return cfg
 }
 
-function setAutojs() {
+/**
+ *
+ *
+ * @param {Config} config
+ */
+function setAutojs(config) {
     auto()
     // 创建运行日志
-    console.setGlobalLogConfig({ file: GLOBAL_LOG_FILE_PATH })
+    console.setGlobalLogConfig({ file: config.GLOBAL_LOG_FILE_PATH })
 }
-
-console.log("本地时间: " + getCurrentDate() + " " + getCurrentTime())
-holdOn(d)
-console.log("开始打卡")
-let statu_scode = {}
-statu_scode = openDD(ACCOUNT, PASSWD)
-if (!statu_scode["status"]) {
-    sendQQMsg(statu_scode["text"])
-    return
-}
-statu_scode = attendKaoQin(CORP_ID)
-backHome()
-sleep(1000)
-sendQQMsg(statu_scode["text"])
-
-return
 
 /**
  *
@@ -52,15 +41,15 @@ return
  */
 function startDDPunkIn(config, delay) {
     console.log("本地时间: " + getCurrentDate() + " " + getCurrentTime())
-    if (!config.DEV) {
-        tools.holdOn(delay)
-    }
+    if (config.DEV) delay = 0
+    tools.holdOn(delay)
     console.log("开始打卡")
     const isStartDD = dd.startDD(config.RETRY, config.PACKAGE_ID_LIST.DD, config.ACCOUNT, config.PASSWD)
     if (!isStartDD) {
         console.error("无法打开钉钉!")
         return false
     }
+    sleep(5e3)
     dd.punchIn(config.RETRY, config.PACKAGE_ID_LIST.DD, config.ACCOUNT, config.PASSWD, config.CORP_ID)
     return true
 }
@@ -76,6 +65,7 @@ function startQQSendMsg(config, msg) {
         console.error("无法打开QQ!")
         return false
     }
+    sleep(5e3)
     qq.sendMsg(config.PACKAGE_ID_LIST.QQ, config.QQ, msg)
     return true
 }
