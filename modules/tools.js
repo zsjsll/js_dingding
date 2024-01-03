@@ -12,6 +12,7 @@ module.exports = {
     lockScreen,
     holdOn,
     startAPP,
+    resetPhone,
 }
 
 /**
@@ -26,16 +27,24 @@ function startAPP(package_id) {
     else return true
 }
 
+function resetPhone() {
+    device.setBrightness(50)
+    device.setBrightnessMode(1) // 自动亮度模式
+    device.cancelKeepingAwake() // 取消设备常亮
+}
+
 /**
  *唤醒设备T
  *
- * @param {string} brightness 亮度
+ * @param {string} brightness 亮度,如果小于0 进入调试模式
  */
 function brightScreen(brightness) {
     device.wakeUpIfNeeded() // 唤醒设备
-    device.keepScreenOn() // 保持亮屏
-    device.setBrightnessMode(0) // 手动亮度模式
-    device.setBrightness(brightness)
+    if (brightness >= 0) {
+        device.keepScreenOn() // 保持亮屏
+        device.setBrightnessMode(0) // 手动亮度模式
+        device.setBrightness(brightness)
+    }
     device.cancelVibration() //取消震动
 
     return device.isScreenOn ? true : false
@@ -124,7 +133,7 @@ function getCurrentDate() {
 }
 
 /**
- *返回再退出到桌面,共需要时间4s
+ *返回再退出到桌面,共需要时间2s
  *
  * @param {Package_id} home_id
  */
@@ -132,15 +141,13 @@ function getCurrentDate() {
 function backHome(home_id) {
     if (currentPackage() === home_id) return
     // 先退回到桌面
-    sleep(1e3)
-    for (let i = 0; i < 9; i++) {
+    for (let i = 0; i < 5; i++) {
         back()
         sleep(200)
     }
     // 再点击home键
-    sleep(2e3)
     home()
-    sleep(2e3)
+    sleep(1e3)
     return
 }
 

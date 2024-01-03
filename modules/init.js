@@ -11,7 +11,7 @@ module.exports = { setConfig, setAutojs, startDDPunkIn, startQQSendMsg }
  * @param {Config} source
  */
 function setConfig(target, source) {
-    if (source.ACCOUNT && source.QQ && source.PASSWD === "") {
+    if (!(source.ACCOUNT && source.PASSWD && source.QQ)) {
         console.error("设置根目录下config.js中的ACCOUNT、PASSWD、QQ参数，如果不存在,请复制config/config.js到根目录下!")
         return false
     }
@@ -41,7 +41,7 @@ function setAutojs(config) {
  */
 function startDDPunkIn(config, delay) {
     console.log("本地时间: " + getCurrentDate() + " " + getCurrentTime())
-    if (config.DEV) delay = 0
+    if (config.DEV) delay = -1
     tools.holdOn(delay)
     console.log("开始打卡")
     const isStartDD = dd.startDD(config.RETRY, config.PACKAGE_ID_LIST.DD, config.ACCOUNT, config.PASSWD)
@@ -65,7 +65,6 @@ function startQQSendMsg(config, msg) {
         console.error("无法打开QQ!")
         return false
     }
-    sleep(5e3)
     qq.sendMsg(config.PACKAGE_ID_LIST.QQ, config.QQ, msg)
     return true
 }

@@ -8,7 +8,7 @@ module.exports = { phoneProcess }
  * @param {Config} config
  */
 function turnOn(config) {
-    if (config.DEV) config.SCREEN_BRIGHTNESS = 70
+    if (config.DEV) config.SCREEN_BRIGHTNESS = -1
     const isScreenOn = tools.brightScreen(config.SCREEN_BRIGHTNESS)
     if (!isScreenOn) {
         console.error("唤醒设备失败!")
@@ -29,9 +29,14 @@ function turnOn(config) {
     tools.setVolume(0)
     tools.backHome()
 }
-
-function turnOff() {
+/**
+ *
+ *
+ * @param {Config} config
+ */
+function turnOff(config) {
     tools.backHome()
+    if (config.DEV) tools.resetPhone()
     console.log("关闭屏幕")
     tools.lockScreen()
     if (tools.isDeviceLocked()) {
@@ -50,9 +55,9 @@ function turnOff() {
  */
 
 function phoneProcess(config, func) {
-    return (some) => {
+    return (opt) => {
         turnOn(config)
-        func(config, some)
-        turnOff()
+        func(config, opt)
+        turnOff(config)
     }
 }
