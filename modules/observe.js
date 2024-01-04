@@ -24,13 +24,13 @@ function printInfo(notification) {
  * @param {Config} config
  */
 
-function listenMsg(config, notification, QQ, DD) {
+function listenMsg(config, QQ, DD, notification) {
     switch (notification.getText()) {
         case "帮助":
             threads.shutDownAll()
             threads.start(() =>
                 QQ(
-                    "帮助: 显示所有指令内容\n打卡: 马上打卡\n暂停: 停止打卡动作\n恢复: 恢复打卡动作\n锁屏: 停止当前动作后锁屏"
+                    "帮助: 显示所有指令内容\n打卡: 马上打卡\n暂停: 停止自动打卡\n恢复: 恢复自动打卡\n锁屏: 停止当前动作后锁屏"
                 )
             )
             break
@@ -77,12 +77,16 @@ function listenClock(config, notification) {
         if (notification.getText().includes("已错过")) return
 
         notification.click()
-        let btn_close = id(config.PACKAGE_ID_LIST.CLOCK + ":id/el").findOne(15e3)
+        let btn_close = null
+        threads
+            .start(() => {
+                btn_close = id(config.PACKAGE_ID_LIST.CLOCK + ":id/el").findOne(15e3)
+            })
+            .join(0)
         if (btn_close === null) return
         btn_close.click()
         console.log("关闭闹钟")
 
-        sleep(1000)
         // threads.start(() => func(DELAY))
     } else if (config.pause) console.info("已停止打卡")
 }

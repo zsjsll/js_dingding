@@ -32,3 +32,7 @@ declare type Unlockscreen = {
     Y1: number
     Y2: number
 }
+
+declare type Function_list = {
+    [key: string]: Function
+}
