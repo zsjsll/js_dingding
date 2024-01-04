@@ -1,5 +1,5 @@
-const backHome = require("./tools").backHome
-const startAPP = require("./tools.js").startAPP
+let backHome = require("./tools").backHome
+let startAPP = require("./tools.js").startAPP
 module.exports = { startDD, punchIn }
 
 /**
@@ -23,7 +23,7 @@ function logining(account, passwd) {
  *
  */
 function noUpdate() {
-    const noupdate = text("暂不更新").findOne(10e3)
+    let noupdate = text("暂不更新").findOne(10e3)
     if (noupdate !== null) {
         noupdate.click()
         return true
@@ -35,11 +35,11 @@ function noUpdate() {
  *
  */
 function atAPPHome() {
-    const message = id("home_app_item").indexInParent(0).findOne(1e3)
-    if (message !== null) {
-        message.click()
-        return true
-    } else return false
+    let message = id("home_app_item").indexInParent(0).findOne(1e3)
+
+    if (message === null) return false
+    message.click()
+    return true
 }
 
 /**
@@ -55,20 +55,21 @@ function startDD(count, dd_package_id, account, passwd) {
         console.info(`第${index}次登录...`)
         backHome()
         console.log("正在启动" + app.getAppName(dd_package_id) + "...")
-        const is_run = startAPP(dd_package_id)
+        let is_run = startAPP(dd_package_id)
         if (!is_run) {
             console.warn("启动失败，重新启动...")
             continue
         }
-        const is_logining = logining(account, passwd)
+        let is_logining = logining(account, passwd)
         if (is_logining) console.log("正在登录...")
         else console.log("可能已登录")
 
-        const is_reject = noUpdate()
+        let is_reject = noUpdate()
         if (is_reject) console.info("取消更新")
         else console.log("无更新消息")
 
-        const is_at_APP_home = atAPPHome()
+        let is_at_APP_home = atAPPHome()
+
         sleep(5e3) //如果设置了极速打卡或者蓝牙自动打卡， 会在这段时间完成打卡
         if (is_at_APP_home) return true
         else console.warn("登录失败,重试...")
@@ -81,15 +82,13 @@ function startDD(count, dd_package_id, account, passwd) {
  *
  *
  * @param {number} count 重试次数
- * @param {Package_id} dd_package_id
- * @param {string} account
- * @param {string} passwd
  * @param {string} corp_id 企业的ID
  */
 function punchIn(count, corp_id) {
-    const u = "dingtalk://dingtalkclient/page/link?url=https://attend.dingtalk.com/attend/index.html"
-    const url = corp_id === "" ? u : `${u}?corpId=${corp_id}`
-    const a = app.intent({
+    let u = "dingtalk://dingtalkclient/page/link?url=https://attend.dingtalk.com/attend/index.html"
+    let url = corp_id === "" ? u : `${u}?corpId=${corp_id}`
+
+    let a = app.intent({
         action: "VIEW",
         data: url,
         //flags: [Intent.FLAG_ACTIVITY_NEW_TASK]
@@ -98,7 +97,7 @@ function punchIn(count, corp_id) {
         console.info(`第${index}次尝试打卡...`)
         app.startActivity(a)
         console.log("正在进入考勤界面...")
-        if (text("申请").findOne(15e3 === null)) {
+        if (text("申请").findOne(15e3) === null) {
             console.error("连接错误,重新进入考勤界面!")
             back()
             continue

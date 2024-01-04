@@ -1,5 +1,5 @@
-const backHome = require("./tools").backHome
-const startAPP = require("./tools.js").startAPP
+let backHome = require("./tools").backHome
+let startAPP = require("./tools.js").startAPP
 
 module.exports = { startQQ, sendMsg }
 
@@ -27,9 +27,9 @@ function sendMsg(qq_package_id, qq, message) {
         data: "mqq://im/chat?chat_type=wpa&version=1&src_type=web&uin=" + qq,
         packageName: qq_package_id,
     })
-    const input = id("input").untilFindOne()
+    let input = id("input").untilFindOne()
     input.setText(`${message}\n当前电量:${device.getBattery()}%\n是否充电:${device.isCharging()}`)
-    const send = text("发送").clickable().untilFindOne()
+    let send = text("发送").clickable().untilFindOne()
     send.click()
     console.info("发送成功")
     backHome()

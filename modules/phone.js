@@ -1,6 +1,7 @@
-const tools = require("./tools.js")
+let tools = require("./tools.js")
+let observe = require("./observe.js")
 
-module.exports = { phoneProcess, bindVolumeKey }
+module.exports = { phoneProcess, bindVolumeKey, listener }
 
 /**
  *
@@ -34,7 +35,7 @@ function bindVolumeKey(config) {
  */
 function turnOn(config) {
     if (config.DEV) config.SCREEN_BRIGHTNESS = -1
-    const isScreenOn = tools.brightScreen(config.SCREEN_BRIGHTNESS)
+    let isScreenOn = tools.brightScreen(config.SCREEN_BRIGHTNESS)
     if (!isScreenOn) {
         console.error("唤醒设备失败!")
         return false
@@ -42,7 +43,7 @@ function turnOn(config) {
     sleep(500)
     if (tools.isDeviceLocked()) {
         console.log("解锁屏幕")
-        unlockScreen(config.UNLOCKSCREEN)
+        tools.unlockScreen(config.UNLOCKSCREEN)
         if (tools.isDeviceLocked()) {
             console.error(
                 "上滑解锁失败, 请按脚本中的注释调整UnlockScreen中的 gesture(time, [x1,y1], [x2,y2]) 方法的参数!"
@@ -84,4 +85,20 @@ function phoneProcess(config, func) {
         func(config, opt)
         turnOff(config)
     }
+}
+
+/**
+ *
+ *
+ * @param {Function} QQ
+ * @param {Function} DD
+ * @param {Config} config
+ */
+function listener(QQ, DD, config) {
+    events.observeNotification()
+    events.onNotification((n) => {
+        observe.printInfo(n)
+
+        observe.listenMsg(n, QQ, DD, config)
+    })
 }

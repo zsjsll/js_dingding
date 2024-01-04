@@ -1,20 +1,20 @@
-const init = require("./modules/init.js")
-const target = require("./config/config.js")
+let init = require("./modules/init.js")
+let target = require("./config/config.js")
 
 if (!files.exists("./config.js")) files.copy("./config/config.js", "./config.js")
-const source = require("./config.js")
+let source = require("./config.js")
 
-const phone = require("./modules/phone.js")
-const observe = require("./modules/observe.js")
+let phone = require("./modules/phone.js")
 
 ;(function () {
     /** @type {Config} */
-    const cfg = init.setConfig(target, source)
+    let cfg = init.setConfig(target, source)
     init.setlog(cfg)
     console.info(cfg)
 
     phone.bindVolumeKey(cfg)
 
-    const QQSendMsg = phone.phoneProcess(cfg, init.startQQSendMsg)
-    const DDPunkIn = phone.phoneProcess(cfg, init.startDDPunkIn)
+    let QQSendMsg = phone.phoneProcess(cfg, init.startQQSendMsg)
+    let DDPunkIn = phone.phoneProcess(cfg, init.startDDPunkIn)
+    phone.listener(QQSendMsg, DDPunkIn, cfg)
 })()

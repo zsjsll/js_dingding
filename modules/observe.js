@@ -1,4 +1,4 @@
-module.exports = { listener }
+module.exports = { printInfo, listenMsg, listenClock }
 
 /**
  *
@@ -6,17 +6,13 @@ module.exports = { listener }
  * @param {org.autojs.autojs.core.notification.Notification} notification
  */
 function printInfo(notification) {
-    console.verbose("应用包名: " + n.getPackageName())
-    console.verbose("通知文本: " + n.getText())
-    console.verbose("通知优先级: " + n.priority)
-    console.verbose("通知目录: " + n.category)
-    console.verbose("通知时间: " + new Date(n.when))
-    console.verbose("通知数: " + n.number)
-    console.verbose("通知摘要: " + n.tickerText)
-}
-
-function listenClock(notification) {
-    // TODO
+    console.verbose("应用包名: " + notification.getPackageName())
+    console.verbose("通知文本: " + notification.getText())
+    console.verbose("通知优先级: " + notification.priority)
+    console.verbose("通知目录: " + notification.category)
+    console.verbose("通知时间: " + new Date(notification.when))
+    console.verbose("通知数: " + notification.number)
+    console.verbose("通知摘要: " + notification.tickerText)
 }
 
 /**
@@ -69,18 +65,6 @@ function listenMsg(notification, QQ, DD, config) {
     }
 }
 
-/**
- *
- *
- * @param {Function} QQ
- * @param {Function} DD
- * @param {Config} config
- */
-function listener(QQ, DD, config) {
-    events.observeNotification()
-    events.onNotification((n) => {
-        printInfo(n)
-
-        listenMsg(n, QQ, DD, config)
-    })
+function listenClock(notification) {
+    // TODO
 }

@@ -107,11 +107,11 @@ function formatDateDigit(num) {
  * @return {string} 格式化后的时间
  */
 function getCurrentTime() {
-    const currentDate = new Date()
-    const hours = formatDateDigit(currentDate.getHours())
-    const minute = formatDateDigit(currentDate.getMinutes())
+    let currentDate = new Date()
+    let hours = formatDateDigit(currentDate.getHours())
+    let minute = formatDateDigit(currentDate.getMinutes())
     // let second = formatDateDigit(currentDate.getSeconds())
-    const formattedTimeString = hours + ":" + minute
+    let formattedTimeString = hours + ":" + minute
     return formattedTimeString
 }
 
@@ -121,13 +121,13 @@ function getCurrentTime() {
  * @return {string} 格式化后的日期
  */
 function getCurrentDate() {
-    const WEEK_DAY = ["(日)", "(一)", "(二)", "(三)", "(四)", "(五)", "(六)"]
-    const currentDate = new Date()
-    const year = formatDateDigit(currentDate.getFullYear())
-    const month = formatDateDigit(currentDate.getMonth() + 1)
-    const date = formatDateDigit(currentDate.getDate())
-    const week = currentDate.getDay()
-    const formattedDateString = year + "-" + month + "-" + date + "-" + WEEK_DAY[week]
+    let WEEK_DAY = ["(日)", "(一)", "(二)", "(三)", "(四)", "(五)", "(六)"]
+    let currentDate = new Date()
+    let year = formatDateDigit(currentDate.getFullYear())
+    let month = formatDateDigit(currentDate.getMonth() + 1)
+    let date = formatDateDigit(currentDate.getDate())
+    let week = currentDate.getDay()
+    let formattedDateString = year + "-" + month + "-" + date + "-" + WEEK_DAY[week]
     return formattedDateString
 }
 
@@ -158,7 +158,7 @@ function backHome(home_id) {
 function isDeviceLocked() {
     importClass(android.app.KeyguardManager)
     importClass(android.content.Context)
-    const km = context.getSystemService(Context.KEYGUARD_SERVICE)
+    let km = context.getSystemService(Context.KEYGUARD_SERVICE)
     return km.isKeyguardLocked()
 }
 
@@ -176,7 +176,7 @@ function isRoot() {
  */
 function isInWhiteList(filter_switch, white_list, find_package) {
     if (filter_switch === false) return true
-    const check = Object.values(white_list).some((item) => find_package.getPackageName() === item)
+    let check = Object.values(white_list).some((item) => find_package.getPackageName() === item)
     return check ? true : false
 }
 
@@ -199,7 +199,7 @@ function setVolume(volume) {
  * @param {*} value
  */
 function setStorageData(name, key, value) {
-    const storage = storages.create(name) // 创建storage对象
+    let storage = storages.create(name) // 创建storage对象
     storage.put(key, value)
 }
 
@@ -211,7 +211,7 @@ function setStorageData(name, key, value) {
  * @return {*}
  */
 function getStorageData(name, key) {
-    const storage = storages.create(name)
+    let storage = storages.create(name)
     if (storage.contains(key)) {
         return storage.get(key, "")
     }
