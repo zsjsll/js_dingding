@@ -76,14 +76,12 @@ function listenClock(config, notification) {
         threads.shutDownAll()
         if (notification.getText().includes("已错过")) return
 
-        sleep(3e3)
         notification.click()
-        if (currentPackage() === notification.getPackageName()) {
-            sleep(1e3)
-            let btn_close = id("el").findOne(3e3)
-            btn_close.click()
-            console.log("关闭闹钟")
-        }
+        let btn_close = id(config.PACKAGE_ID_LIST.CLOCK + ":id/el").findOne(15e3)
+        if (btn_close === null) return
+        btn_close.click()
+        console.log("关闭闹钟")
+
         sleep(1000)
         threads.start(() => func(DELAY))
     } else if (config.pause) console.info("已停止打卡")

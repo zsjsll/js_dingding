@@ -100,5 +100,6 @@ function listener(config, QQ, DD) {
         observe.printInfo(n)
 
         observe.listenMsg(config, QQ, DD, n)
+        observe.listenClock(config, n)
     })
 }
