@@ -93,15 +93,13 @@ function phoneProcess(config, func) {
  * @param {Function} QQ
  * @param {Function} DD
  * @param {Config} config
- * @param {Function_list} function_list
+
  */
-function listener(config, QQ, DD, function_list) {
+function listener(config, QQ, DD) {
     return () => {
         events.observeNotification()
 
         events.onNotification((n) => {
-            
-
             observe.printInfo(n)
             observe.listenClock(config, n)
             observe.listenMsg(config, QQ, DD, n)
