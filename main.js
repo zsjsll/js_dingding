@@ -13,8 +13,8 @@ const observe = require("./modules/observe.js")
     init.setlog(cfg)
     console.info(cfg)
 
+    phone.bindVolumeKey(cfg)
+
     const QQSendMsg = phone.phoneProcess(cfg, init.startQQSendMsg)
     const DDPunkIn = phone.phoneProcess(cfg, init.startDDPunkIn)
-
-    phone.bindVolumeKey(cfg)
 })()

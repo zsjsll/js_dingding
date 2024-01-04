@@ -1,6 +1,6 @@
 const tools = require("./tools.js")
 
-module.exports = { phoneProcess,bindVolumeKey }
+module.exports = { phoneProcess, bindVolumeKey }
 
 /**
  *
@@ -14,22 +14,18 @@ function bindVolumeKey(config) {
         events.observeKey()
     }
 
-    // 监听音量-键
-    events.onKeyDown("volume_down", doSomething)
     // 监听音量+键
     events.onKeyDown("volume_up", doSomething)
+    // 监听音量-键
+    events.onKeyDown("volume_down", doSomething)
 
-    const doSomething = () => {
+    function doSomething() {
         require("./tools").resetPhone()
         threads.shutDownAll()
-        toast("已中断所有子线程!")
+        toastLog("按下音量键,已中断所有子线程!")
         /* 调试脚本*/
-
     }
 }
-
-
-
 
 /**
  *
