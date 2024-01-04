@@ -1,29 +1,4 @@
-module.exports = { bindVolumeKey, listener }
-
-/**
- *
- *
- * @param {Config} config
- */
-function bindVolumeKey(config) {
-    events.setKeyInterceptionEnabled("volume_down", config.OBSERVE_VOLUME_KEY)
-    events.setKeyInterceptionEnabled("volume_up", config.OBSERVE_VOLUME_KEY)
-    if (config.OBSERVE_VOLUME_KEY) {
-        events.observeKey()
-    }
-
-    // 监听音量-键
-    events.onKeyDown("volume_down", doSomething)
-    // 监听音量+键
-    events.onKeyDown("volume_up", doSomething)
-
-    const doSomething = () => {
-        require("./tools").resetPhone()
-        threads.shutDownAll()
-        toast("已中断所有子线程!")
-        /* 调试脚本*/
-    }
-}
+module.exports = { listener }
 
 /**
  *
@@ -40,12 +15,9 @@ function printInfo(notification) {
     console.verbose("通知摘要: " + n.tickerText)
 }
 
-
-
-function listenClock(notification){
+function listenClock(notification) {
     // TODO
 }
-
 
 /**
  *

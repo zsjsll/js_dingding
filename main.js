@@ -5,7 +5,7 @@ if (!files.exists("./config.js")) files.copy("./config/config.js", "./config.js"
 const source = require("./config.js")
 
 const phone = require("./modules/phone.js")
-const events = require("./modules/events.js")
+const observe = require("./modules/observe.js")
 
 ;(function () {
     /** @type {Config} */
@@ -16,5 +16,5 @@ const events = require("./modules/events.js")
     const QQSendMsg = phone.phoneProcess(cfg, init.startQQSendMsg)
     const DDPunkIn = phone.phoneProcess(cfg, init.startDDPunkIn)
 
-    events.bindVolumeKey(cfg)
+    phone.bindVolumeKey(cfg)
 })()
