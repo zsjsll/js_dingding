@@ -1,5 +1,4 @@
 let tools = require("./tools.js")
-let observe = require("./observe.js")
 
 module.exports = { phoneProcess, bindVolumeKey, listener }
 
@@ -90,19 +89,16 @@ function phoneProcess(config, func) {
 /**
  *
  *
- * @param {Function} QQ
- * @param {Function} DD
- * @param {Config} config
+ * @param {Function_list} function_list
 
  */
-function listener(config, QQ, DD) {
-    return () => {
-        events.observeNotification()
+function listener( function_list) {
+    events.observeNotification()
 
-        events.onNotification((n) => {
-            observe.printInfo(n)
-            observe.listenClock(config, n)
-            observe.listenMsg(config, QQ, DD, n)
+    events.onNotification((n) => {
+        function_list.forEach((element) => {
+            console.log(function_list[element])
+            element(n)
         })
-    }
+    })
 }

@@ -6,6 +6,7 @@ module.exports = { printInfo, listenMsg, listenClock }
  * @param {org.autojs.autojs.core.notification.Notification} notification
  */
 function printInfo(notification) {
+
     console.verbose("应用包名: " + notification.getPackageName())
     console.verbose("通知文本: " + notification.getText())
     console.verbose("通知优先级: " + notification.priority)
@@ -23,7 +24,7 @@ function printInfo(notification) {
  * @param {org.autojs.autojs.core.notification.Notification} notification
  * @param {Config} config
  */
-
+//TODO 要么柯里化，要么重写这个函数
 function listenMsg(config, QQ, DD, notification) {
     switch (notification.getText()) {
         case "帮助":
@@ -69,24 +70,31 @@ function listenMsg(config, QQ, DD, notification) {
  *
  *
  * @param {Config} config
- * @param {org.autojs.autojs.core.notification.Notification} notification
+ * @param {Function} QQ
+ * @param {Function} DD
  */
-function listenClock(config, notification) {
-    if (notification.getPackageName() === config.PACKAGE_ID_LIST.CLOCK && !config.pause) {
-        threads.shutDownAll()
-        if (notification.getText().includes("已错过")) return
 
-        notification.click()
-        let btn_close = null
-        threads
-            .start(() => {
-                btn_close = id(config.PACKAGE_ID_LIST.CLOCK + ":id/el").findOne(15e3)
-            })
-            .join(0)
-        if (btn_close === null) return
-        btn_close.click()
-        console.log("关闭闹钟")
+function listenClock(config, QQ, DD) {
+    /**
+     * @param {org.autojs.autojs.core.notification.Notification} notification
+     */
+    return (notification) => {
+        if (notification.getPackageName() === config.PACKAGE_ID_LIST.CLOCK && !config.pause) {
+            threads.shutDownAll()
+            if (notification.getText().includes("已错过")) return
 
-        // threads.start(() => func(DELAY))
-    } else if (config.pause) console.info("已停止打卡")
+            notification.click()
+            let btn_close = null
+            threads
+                .start(() => {
+                    btn_close = id(config.PACKAGE_ID_LIST.CLOCK + ":id/el").findOne(15e3)
+                })
+                .join(0)
+            if (btn_close === null) return
+            btn_close.click()
+            console.log("关闭闹钟")
+
+            // threads.start(() => func(DELAY))
+        } else if (config.pause) console.info("已停止打卡")
+    }
 }

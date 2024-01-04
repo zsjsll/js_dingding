@@ -5,6 +5,7 @@ if (!files.exists("./config.js")) files.copy("./config/config.js", "./config.js"
 let source = require("./config.js")
 
 let phone = require("./modules/phone.js")
+let observe = require("./modules/observe.js")
 
 ;(function () {
     /** @type {Config} */
@@ -16,5 +17,9 @@ let phone = require("./modules/phone.js")
 
     let QQSendMsg = phone.phoneProcess(cfg, init.startQQSendMsg)
     let DDPunkIn = phone.phoneProcess(cfg, init.startDDPunkIn)
-    phone.listener(cfg, QQSendMsg, DDPunkIn)
+
+    let ob = [observe.printInfo, observe.listenClock(cfg, QQSendMsg, DDPunkIn)]
+
+    phone.listener(ob)
 })()
+

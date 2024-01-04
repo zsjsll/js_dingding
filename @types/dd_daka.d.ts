@@ -34,5 +34,5 @@ declare type Unlockscreen = {
 }
 
 declare type Function_list = {
-    [key: string]: Function
+    [key: number]: Function
 }
