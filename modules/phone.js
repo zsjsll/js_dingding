@@ -99,7 +99,7 @@ function listener(config, QQ, DD) {
     events.onNotification((n) => {
         observe.printInfo(n)
 
-        observe.listenMsg(config, QQ, DD, n)
         observe.listenClock(config, n)
+        observe.listenMsg(config, QQ, DD, n)
     })
 }

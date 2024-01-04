@@ -72,7 +72,7 @@ function listenMsg(config, notification, QQ, DD) {
  * @param {org.autojs.autojs.core.notification.Notification} notification
  */
 function listenClock(config, notification) {
-    if (notification.getPackageName() === PACKAGE_ID.CLOCK && !config.pause) {
+    if (notification.getPackageName() === config.PACKAGE_ID_LIST.CLOCK && !config.pause) {
         threads.shutDownAll()
         if (notification.getText().includes("已错过")) return
 
@@ -83,6 +83,6 @@ function listenClock(config, notification) {
         console.log("关闭闹钟")
 
         sleep(1000)
-        threads.start(() => func(DELAY))
+        // threads.start(() => func(DELAY))
     } else if (config.pause) console.info("已停止打卡")
 }
