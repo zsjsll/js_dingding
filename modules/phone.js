@@ -94,11 +94,11 @@ function phoneProcess(config, func) {
  * @param {Function} DD
  * @param {Config} config
  */
-function listener(QQ, DD, config) {
+function listener(config, QQ, DD) {
     events.observeNotification()
     events.onNotification((n) => {
         observe.printInfo(n)
 
-        observe.listenMsg(n, QQ, DD, config)
+        observe.listenMsg(config, QQ, DD, n)
     })
 }

@@ -16,5 +16,5 @@ let phone = require("./modules/phone.js")
 
     let QQSendMsg = phone.phoneProcess(cfg, init.startQQSendMsg)
     let DDPunkIn = phone.phoneProcess(cfg, init.startDDPunkIn)
-    phone.listener(QQSendMsg, DDPunkIn, cfg)
+    phone.listener(cfg, QQSendMsg, DDPunkIn)
 })()

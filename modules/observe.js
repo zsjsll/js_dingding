@@ -24,7 +24,7 @@ function printInfo(notification) {
  * @param {Config} config
  */
 
-function listenMsg(notification, QQ, DD, config) {
+function listenMsg(config, notification, QQ, DD) {
     switch (notification.getText()) {
         case "帮助":
             threads.shutDownAll()
@@ -65,6 +65,26 @@ function listenMsg(notification, QQ, DD, config) {
     }
 }
 
-function listenClock(notification) {
-    // TODO
+/**
+ *
+ *
+ * @param {Config} config
+ * @param {org.autojs.autojs.core.notification.Notification} notification
+ */
+function listenClock(config, notification) {
+    if (notification.getPackageName() === PACKAGE_ID.CLOCK && !config.pause) {
+        threads.shutDownAll()
+        if (notification.getText().includes("已错过")) return
+
+        sleep(3e3)
+        notification.click()
+        if (currentPackage() === notification.getPackageName()) {
+            sleep(1e3)
+            let btn_close = id("el").findOne(3e3)
+            btn_close.click()
+            console.log("关闭闹钟")
+        }
+        sleep(1000)
+        threads.start(() => func(DELAY))
+    } else if (config.pause) console.info("已停止打卡")
 }
