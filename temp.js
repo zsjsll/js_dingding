@@ -5,20 +5,18 @@
  * @return {*}
  */
 function curry(fn, args) {
-    console.log(arguments)
-    delete arguments["0"]
-    console.log(arguments)
+    let slice = Array.prototype.slice
+    args = slice.call(arguments, 1)
+    console.log("[ args ]-10", args)
 
-    let a = Object.values(arguments)
-
-    console.log(a)
-
-    if (fn.length <= a.length) return fn.apply(null, a)
+    if (fn.length <= args.length) return fn.apply(null, args)
     else {
-        return (_args) => {
-            args = Object.values(arguments)
+        return function (_args) {
+            console.log("[ _args ]-16", arguments)
+            _args = slice.call(arguments, 0)
+            console.log("[ _args ]-17", _args)
+            args = args.concat(_args)
             args.unshift(fn)
-            args.push(_args)
             console.log(args)
 
             return curry.apply(null, args)
@@ -35,4 +33,4 @@ function t(a) {
 }
 
 let b = curry(add, 1)
-console.log(b(2)(3))
+console.log(b(2) (3))
