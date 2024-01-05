@@ -10,10 +10,10 @@ module.exports = { startDD, punchIn }
  */
 function logining(account, passwd) {
     if (id("cb_privacy").findOne(1e3) !== null) {
-        id("et_phone_input").untilFindOne().setText(account)
-        id("et_password").untilFindOne().setText(passwd)
-        id("cb_privacy").untilFindOne().click()
-        id("btn_next").untilFindOne().click()
+        id("et_phone_input").findOne(-1).setText(account)
+        id("et_password").findOne(-1).setText(passwd)
+        id("cb_privacy").findOne(-1).click()
+        id("btn_next").findOne(-1).click()
         return true
     } else return false
 }

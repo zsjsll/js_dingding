@@ -27,9 +27,9 @@ function sendMsg(qq_package_id, qq, message) {
         data: "mqq://im/chat?chat_type=wpa&version=1&src_type=web&uin=" + qq,
         packageName: qq_package_id,
     })
-    let input = id("input").untilFindOne()
+    let input = id("input").findOne(-1)
     input.setText(`${message}\n当前电量:${device.getBattery()}%\n是否充电:${device.isCharging()}`)
-    let send = text("发送").clickable().untilFindOne()
+    let send = text("发送").clickable().findOne(-1)
     send.click()
     console.info("发送成功")
     backHome()
