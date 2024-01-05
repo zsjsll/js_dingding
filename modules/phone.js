@@ -90,9 +90,9 @@ function phoneProcess(config, func) {
  *
  *
  * @param {Function_list} function_list
-
+ *
  */
-function listener( function_list) {
+function listener(function_list) {
     events.observeNotification()
 
     events.onNotification((n) => {
