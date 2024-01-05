@@ -36,3 +36,11 @@ function aaa(a, b, c) {
 }
 
 console.log(aaa.length)
+
+let o = { a: 1, b: 2, c: 3 }
+
+for (let k in o) {
+    o[k] = o[k] + 1
+}
+
+console.log(o)

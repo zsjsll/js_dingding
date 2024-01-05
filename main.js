@@ -7,6 +7,10 @@ let source = require("./config.js")
 let phone = require("./modules/phone.js")
 let observe = require("./modules/observe.js")
 
+for (let k in observe) {
+    observe[k] = require("./modules/tools.js").createCurry(observe[k])
+}
+
 ;(function () {
     /** @type {Config} */
     let cfg = init.setConfig(target, source)
@@ -18,8 +22,7 @@ let observe = require("./modules/observe.js")
     let QQSendMsg = phone.phoneProcess(cfg, init.startQQSendMsg)
     let DDPunkIn = phone.phoneProcess(cfg, init.startDDPunkIn)
 
-    let ob = [observe.printInfo, require("./modules/tools.js").createCurry(observe.listenClock, cfg)]
-    console.log(ob)
+    let ob = [observe.printInfo, observe.listenClock(cfg, QQSendMsg, DDPunkIn)]
 
     phone.listener(ob)
 })()
