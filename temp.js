@@ -6,12 +6,9 @@
  */
 function curry(fn, args) {
     function toArray(a) {
-        let arr = []
-        for (let iterator of a) {
-            arr.push(iterator)
-        }
-        return arr
+        return Array.prototype.slice.call(a)
     }
+
     let args_list = toArray(arguments)
     console.log(args_list)
 
