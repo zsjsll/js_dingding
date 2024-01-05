@@ -1,16 +1,6 @@
 let createCurry = require("./tools").createCurry
 
-module.exports = { initObserve, printInfo, listenMsg, listenClock }
-
-/**
- *
- *
- * @param {Array} func_list
- * @return {Array}
- */
-function initObserve(func_list) {
-    return func_list.forEach((e) => createCurry(e))
-}
+module.exports = { printInfo, listenMsg, listenClock }
 
 /**
  *
@@ -81,9 +71,11 @@ function listenMsg(config, QQ, DD, notification) {
  *
  *
  * @param {Config} config
+ * @param {Function} QQ
+ * @param {Function} DD
+ * @param {org.autojs.autojs.core.notification.Notification} notification
  */
-
-function listenClock(config, notification) {
+function listenClock(config, QQ, DD, notification) {
     if (notification.getPackageName() === config.PACKAGE_ID_LIST.CLOCK && !config.pause) {
         threads.shutDownAll()
         if (notification.getText().includes("已错过")) return
@@ -96,9 +88,15 @@ function listenClock(config, notification) {
             })
             .join(0)
         if (btn_close === null) return
+
         btn_close.click()
         console.log("关闭闹钟")
+        setTimeout(() => {
+            console.log("开始打卡")
 
-        // threads.start(() => func(DELAY))
+            threads.start(() => {
+                DD(config.DELAY)
+            })
+        }, 1000)
     } else if (config.pause) console.info("已停止打卡")
 }
