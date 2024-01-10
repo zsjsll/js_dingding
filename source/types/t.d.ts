@@ -7,6 +7,7 @@ declare type Config = {
     UNLOCKSCREEN: Unlockscreen
 
     SCREEN_BRIGHTNESS: number
+    VOLUME: number
     OBSERVE_VOLUME_KEY: boolean
     NOTIFICATIONS_FILTER: boolean
 

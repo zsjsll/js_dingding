@@ -56,3 +56,66 @@ export function holdOn(delay: number) {
         sleep(randomTime)
     }
 }
+
+export function brightScreen(brightness: number) {
+    device.wakeUpIfNeeded() // 唤醒设备
+    if (brightness >= 0) {
+        device.keepScreenOn() // 保持亮屏
+        device.setBrightnessMode(0) // 手动亮度模式
+        device.setBrightness(brightness)
+    }
+    device.cancelVibration() //取消震动
+
+    return device.isScreenOn ? true : false
+}
+
+export function isDeviceLocked() {
+    importClass(android.app.KeyguardManager)
+    importClass(android.content.Context)
+    let km = context.getSystemService(Context.KEYGUARD_SERVICE)
+    return km.isKeyguardLocked()
+}
+
+export interface UnLockScreen {
+    T: number
+    Y1: number
+    Y2: number
+}
+
+export function unlockScreen(opt: UnLockScreen) {
+    gesture(
+        opt.T, // 滑动时间：毫秒 320
+        [
+            device.width * 0.5, // 滑动起点 x 坐标：屏幕宽度的一半
+            device.height * opt.Y1, // 滑动起点 y 坐标：距离屏幕底部 10% 的位置, 华为系统需要往上一些
+        ],
+        [
+            device.width * 0.5, // 滑动终点 x 坐标：屏幕宽度的一半
+            device.height * opt.Y2, // 滑动终点 y 坐标：距离屏幕顶部 10% 的位置
+        ]
+    )
+
+    sleep(1e3) // 等待解锁动画完成
+}
+
+export function setVolume(volume: number) {
+    device.setMusicVolume(volume)
+    device.setNotificationVolume(volume)
+    device.setAlarmVolume(volume)
+}
+
+export function resetPhone() {
+    device.setBrightness(50)
+    device.setBrightnessMode(1) // 自动亮度模式
+    device.cancelKeepingAwake() // 取消设备常亮
+}
+
+export function lockScreen() {
+    device.cancelKeepingAwake() // 取消设备常亮
+    if (isRoot()) Power()
+    sleep(2e3)
+}
+
+function isRoot() {
+    return shell("su -v").code === 0 ? true : false
+}

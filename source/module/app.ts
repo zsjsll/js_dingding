@@ -1,37 +1,39 @@
 import { backHome, openApp, getCurrentDate, getCurrentTime, holdOn } from "./tools"
 
-export interface QQConfig {
-    home_id: string
-    package_id: string
-    qq_num: string
+export interface QQCfg {
+    PACKAGE_ID_LIST: QQ_Package_Id_List
+    QQ: string
+}
+
+interface QQ_Package_Id_List {
+    QQ: string
+    HOME: string
 }
 
 interface App {
     open(num: number): boolean
 }
 
-export class QQ implements App {
-    private home_id: string
-    private package_id: string
-    private qq_num: string
+export class QQ implements App, QQCfg {
+    PACKAGE_ID_LIST: QQ_Package_Id_List
+    QQ: string
 
-    constructor(home_id: string, qq_package_id: string, qq_num: string) {
-        this.home_id = home_id
-        this.package_id = qq_package_id
-        this.qq_num = qq_num
+    constructor(QQConfig: QQCfg) {
+        this.PACKAGE_ID_LIST = QQConfig.PACKAGE_ID_LIST
+        this.QQ = QQConfig.QQ
     }
 
     open() {
-        return openApp(this.package_id)
+        return openApp(this.PACKAGE_ID_LIST.QQ)
     }
 
     sendmsg(message: string) {
         app.startActivity({
             action: "android.intent.action.VIEW",
-            data: "mqq://im/chat?chat_type=wpa&version=1&src_type=web&uin=" + this.qq_num,
-            packageName: this.package_id,
+            data: "mqq://im/chat?chat_type=wpa&version=1&src_type=web&uin=" + this.QQ,
+            packageName: this.PACKAGE_ID_LIST.QQ,
         })
-        const input = id(this.package_id + ":id/input").findOne(-1)
+        const input = id(this.PACKAGE_ID_LIST.QQ + ":id/input").findOne(-1)
         input.setText(`${message}\n当前电量:${device.getBattery()}%\n是否充电:${device.isCharging()}`)
         const send = text("发送").clickable().findOne(-1)
         send.click()
@@ -40,44 +42,48 @@ export class QQ implements App {
     }
     openAndSendMsg(message: string) {
         console.log("发送信息")
-        backHome(this.home_id)
+        backHome(this.PACKAGE_ID_LIST.HOME)
         if (!this.open()) {
             console.error("无法打开QQ!")
             return false
         }
         const r = this.sendmsg(message)
-        backHome(this.home_id)
+        backHome(this.PACKAGE_ID_LIST.HOME)
         return r
     }
 }
 
-export interface DDConfig {
-    home_id: string
-    package_id: string
-    account: string
-    passwd: string
-    corp_id: string
+export interface DDCfg {
+    PACKAGE_ID_LIST: DD_PACKAGE_ID_LIST
+    ACCOUNT: string
+    PASSWD: string
+    RETRY: number
+    CORP_ID?: string
+}
+interface DD_PACKAGE_ID_LIST {
+    DD: string
+    HOME: string
 }
 
-export class DD implements App {
-    private home_id: string
-    private package_id: string
-    private account: string
-    private passwd: string
-    private corp_id: string
-    constructor(home_id: string, package_id: string, account: string, passwd: string, corp_id?: string) {
-        this.home_id = home_id
-        this.package_id = package_id
-        this.account = account
-        this.passwd = passwd
-        this.corp_id = corp_id
+export class DD implements App, DDCfg {
+    constructor(ddcfg: DDCfg) {
+        this.PACKAGE_ID_LIST = ddcfg.PACKAGE_ID_LIST
+        this.ACCOUNT = ddcfg.ACCOUNT
+        this.PASSWD = ddcfg.PASSWD
+        this.RETRY = ddcfg.RETRY
+        this.CORP_ID = ddcfg.CORP_ID
     }
+    PACKAGE_ID_LIST: DD_PACKAGE_ID_LIST
+    ACCOUNT: string
+    PASSWD: string
+    RETRY: number
+    CORP_ID: string
 
     // 登录钉钉，如果已经登录，false
     private logining() {
-        if (id(this.package_id + ":id/cb_privacy").findOne(1e3) !== null) {
-            id("et_phone_input").findOne(-1).setText(this.account)
-            id("et_password").findOne(-1).setText(this.passwd)
+        if (id(this.PACKAGE_ID_LIST.DD + ":id/cb_privacy").findOne(1e3) !== null) {
+            id("et_phone_input").findOne(-1).setText(this.ACCOUNT)
+            id("et_password").findOne(-1).setText(this.PASSWD)
             id("cb_privacy").findOne(-1).click()
             id("btn_next").findOne(-1).click()
             return true
@@ -100,14 +106,14 @@ export class DD implements App {
         return true
     }
 
-    open(try_of_num: number) {
-        openApp(this.package_id)
-        for (let index = 1; index <= try_of_num; index++) {
+    open(retry: number) {
+        openApp(this.PACKAGE_ID_LIST.DD)
+        for (let index = 1; index <= retry; index++) {
             console.info(`第${index}次登录...`)
-            backHome(this.home_id)
-            console.log("正在启动" + app.getAppName(this.package_id) + "...")
+            backHome(this.PACKAGE_ID_LIST.HOME)
+            console.log("正在启动" + app.getAppName(this.PACKAGE_ID_LIST.DD) + "...")
 
-            if (!openApp(this.package_id)) {
+            if (!openApp(this.PACKAGE_ID_LIST.DD)) {
                 console.warn("启动失败，重新启动...")
                 continue
             }
@@ -120,20 +126,20 @@ export class DD implements App {
             if (is_at_app_home) return true
             else console.warn("登录失败,重试...")
         }
-        console.error(`重试${try_of_num}次,登录失败!`)
+        console.error(`重试${retry}次,登录失败!`)
         return false
     }
 
-    punchIn(try_of_num: number) {
+    punchIn(retry: number) {
         const u = "dingtalk://dingtalkclient/page/link?url=https://attend.dingtalk.com/attend/index.html"
-        const url = this.corp_id === "" ? u : `${u}?corpId=${this.corp_id}`
+        const url = this.CORP_ID === "" ? u : `${u}?corpId=${this.CORP_ID}`
 
         const a = app.intent({
             action: "VIEW",
             data: url,
             //flags: [Intent.FLAG_ACTIVITY_NEW_TASK]
         })
-        for (let index = 1; index <= try_of_num; index++) {
+        for (let index = 1; index <= retry; index++) {
             console.info(`第${index}次尝试打卡...`)
             app.startActivity(a)
             console.log("正在进入考勤界面...")
@@ -170,18 +176,21 @@ export class DD implements App {
             console.info("打卡成功!")
             return true
         }
-        console.error(`重试${try_of_num}次,打卡失败!`)
+        console.error(`重试${retry}次,打卡失败!`)
         return false
     }
 
-    openAndPunchIn(try_of_num: number) {
+    /**
+     * @param {number} [retry=this.RETRY] 默认为config中的RETRY，也可用自己赋值
+     */
+    openAndPunchIn(retry: number = this.RETRY) {
         console.log("本地时间: " + getCurrentDate() + " " + getCurrentTime())
         console.log("开始打卡")
-        if (!this.open(try_of_num)) {
+        if (!this.open(retry)) {
             console.error("无法打开钉钉!")
             return false
         }
-        this.punchIn(try_of_num)
+        this.punchIn(retry)
         return true
     }
 }
