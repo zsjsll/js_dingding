@@ -14,5 +14,3 @@ const qq = new QQ(qq_config)
 // qq.openAndSendMsg()
 
 const L = new Listener({ OBSERVE_VOLUME_KEY: true })
-
-L.bindVolumeKey()

@@ -9,29 +9,25 @@ export class Listener implements ListenerCfg {
         this.OBSERVE_VOLUME_KEY = listenerCfg.OBSERVE_VOLUME_KEY
     }
     OBSERVE_VOLUME_KEY: boolean
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    bindVolumeKey(func?: (...args: any[]) => unknown) {
-        events.setKeyInterceptionEnabled("volume_down", this.OBSERVE_VOLUME_KEY)
+
+    bindVolumeKey(func?: (e: KeyEvent) => unknown) {
         events.setKeyInterceptionEnabled("volume_up", this.OBSERVE_VOLUME_KEY)
-        if (this.OBSERVE_VOLUME_KEY) {
-            events.observeKey()
+        events.setKeyInterceptionEnabled("volume_down", this.OBSERVE_VOLUME_KEY)
+        if (this.OBSERVE_VOLUME_KEY) events.observeKey()
+
+        const doSomething = (e: KeyEvent) => {
+            threads.shutDownAll()
+            resetPhone()
+            toastLog("按下音量键,已中断所有子线程!")
+            /* 调试脚本*/
+            if (typeof func === "function") return func(e)
+            else return
         }
-        const doSomething =
-            () =>
-            // eslint-disable-next-line @typescript-eslint/no-explicit-any
-            (...args: any[]) => {
-                resetPhone()
-                threads.shutDownAll()
-                toastLog("按下音量键,已中断所有子线程!")
-                /* 调试脚本*/
-                if (func === undefined) return
-                else return func(...args)
-            }
 
         // 监听音量+键
-        events.onKeyDown("volume_up", doSomething())
+        events.onKeyDown("volume_up", doSomething)
         // 监听音量-键
-        events.onKeyDown("volume_down", doSomething())
+        events.onKeyDown("volume_down", doSomething)
     }
 }
 
