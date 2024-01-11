@@ -1,18 +1,21 @@
-import { backHome, openApp, getCurrentDate, getCurrentTime, holdOn } from "./tools"
+import { backHome, openApp, getCurrentDate, getCurrentTime, holdOn } from "@/tools"
 
-export interface QQCfg {
+export type QQCfg = {
     PACKAGE_ID_LIST: QQ_Package_Id_List
     QQ: string
 }
 
-interface QQ_Package_Id_List {
+type QQ_Package_Id_List = {
     QQ: string
     HOME: string
 }
 
-interface App {
-    open(num: number): boolean
+type App = {
+    open(num?: number): boolean
 }
+
+
+
 
 export class QQ implements App, QQCfg {
     PACKAGE_ID_LIST: QQ_Package_Id_List
@@ -20,6 +23,7 @@ export class QQ implements App, QQCfg {
 
     constructor(QQConfig: QQCfg) {
         this.PACKAGE_ID_LIST = QQConfig.PACKAGE_ID_LIST
+
         this.QQ = QQConfig.QQ
     }
 
@@ -40,7 +44,7 @@ export class QQ implements App, QQCfg {
         console.info("发送成功")
         return true
     }
-    openAndSendMsg(message: string) {
+    openAndSendMsg(message: string = "测试") {
         console.log("发送信息")
         backHome(this.PACKAGE_ID_LIST.HOME)
         if (!this.open()) {
@@ -53,14 +57,14 @@ export class QQ implements App, QQCfg {
     }
 }
 
-export interface DDCfg {
+export type DDCfg = {
     PACKAGE_ID_LIST: DD_PACKAGE_ID_LIST
     ACCOUNT: string
     PASSWD: string
     RETRY: number
     CORP_ID?: string
 }
-interface DD_PACKAGE_ID_LIST {
+type DD_PACKAGE_ID_LIST = {
     DD: string
     HOME: string
 }

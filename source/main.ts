@@ -1,8 +1,13 @@
-import { QQ, DD } from "./module/app"
-import { config } from "./module/config"
+import { QQ, DD, QQCfg } from "@/app"
+import { config } from "@/config"
 
+const qq_config: QQCfg = {
+    PACKAGE_ID_LIST: {
+        QQ: config.PACKAGE_ID_LIST.QQ,
+        HOME: config.PACKAGE_ID_LIST.HOME,
+    },
+    QQ: "124119885",
+}
 
-
-const qq = new QQ(config.PACKAGE_ID_LIST.HOME, "com.tencent.tim", "124119885")
-const dd = new DD(config.PACKAGE_ID_LIST.HOME, config.PACKAGE_ID_LIST.DD, config.ACCOUNT, config.PASSWD)
-dd.openAndPunchIn()
+const qq = new QQ(qq_config)
+qq.openAndSendMsg()

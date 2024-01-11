@@ -10,7 +10,7 @@ const CopyPlugin = require("copy-webpack-plugin")
 const path = require("path")
 const fs = require("fs")
 
-const header = fs.readFileSync(path.resolve(__dirname, "header.js"), "utf8").trim()
+const header = fs.readFileSync(path.posix.resolve("header.js"), "utf8").trim()
 
 const headerConfig = { base64: false, advancedEngines: true, header: header }
 const cleanConfig = {
@@ -52,12 +52,11 @@ module.exports = (_, a) => {
         plugins.unshift(new JavascriptObfuscator())
     }
 
-
     const config = {
         target: "node",
         entry: "./source/main.ts",
         output: {
-            path: path.resolve(__dirname, "dist"),
+            path: path.posix.resolve("dist"),
         },
 
         plugins,
@@ -85,6 +84,9 @@ module.exports = (_, a) => {
         },
         resolve: {
             extensions: [".tsx", ".ts", ".jsx", ".js", "..."],
+            alias: {
+                "@": path.posix.resolve("source/module"),
+            },
         },
     }
 

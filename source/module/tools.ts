@@ -76,7 +76,7 @@ export function isDeviceLocked() {
     return km.isKeyguardLocked()
 }
 
-export interface UnLockScreen {
+export type UnLockScreen = {
     T: number
     Y1: number
     Y2: number
