@@ -22,22 +22,22 @@ function formatDateDigit(num: number) {
 }
 
 export function getCurrentTime() {
-    let currentDate = new Date()
-    let hours = formatDateDigit(currentDate.getHours())
-    let minute = formatDateDigit(currentDate.getMinutes())
+    const currentDate = new Date()
+    const hours = formatDateDigit(currentDate.getHours())
+    const minute = formatDateDigit(currentDate.getMinutes())
     // let second = formatDateDigit(currentDate.getSeconds())
-    let formattedTimeString = hours + ":" + minute
+    const formattedTimeString = hours + ":" + minute
     return formattedTimeString
 }
 
 export function getCurrentDate() {
-    let WEEK_DAY = ["(日)", "(一)", "(二)", "(三)", "(四)", "(五)", "(六)"]
-    let currentDate = new Date()
-    let year = formatDateDigit(currentDate.getFullYear())
-    let month = formatDateDigit(currentDate.getMonth() + 1)
-    let date = formatDateDigit(currentDate.getDate())
-    let week = currentDate.getDay()
-    let formattedDateString = year + "-" + month + "-" + date + "-" + WEEK_DAY[week]
+    const WEEK_DAY = ["(日)", "(一)", "(二)", "(三)", "(四)", "(五)", "(六)"]
+    const currentDate = new Date()
+    const year = formatDateDigit(currentDate.getFullYear())
+    const month = formatDateDigit(currentDate.getMonth() + 1)
+    const date = formatDateDigit(currentDate.getDate())
+    const week = currentDate.getDay()
+    const formattedDateString = year + "-" + month + "-" + date + "-" + WEEK_DAY[week]
     return formattedDateString
 }
 
@@ -51,7 +51,7 @@ export function holdOn(delay: number) {
     if (delay <= 0) {
         return
     } else {
-        let randomTime = random(1e3, delay * 1e3 * 60)
+        const randomTime = random(1e3, delay * 1e3 * 60)
         toastLog(Math.floor(randomTime / 1000) + "秒后启动程序" + "...")
         sleep(randomTime)
     }
@@ -72,7 +72,7 @@ export function brightScreen(brightness: number) {
 export function isDeviceLocked() {
     importClass(android.app.KeyguardManager)
     importClass(android.content.Context)
-    let km = context.getSystemService(Context.KEYGUARD_SERVICE)
+    const km = context.getSystemService(Context.KEYGUARD_SERVICE)
     return km.isKeyguardLocked()
 }
 
