@@ -2,6 +2,8 @@ import { QQ, DD, QQCfg } from "@/app"
 import { Listener } from "@/listener"
 import { config } from "@/config"
 
+
+
 const qq_config: QQCfg = {
     PACKAGE_ID_LIST: {
         QQ: config.PACKAGE_ID_LIST.QQ,
@@ -14,3 +16,6 @@ const qq = new QQ(qq_config)
 // qq.openAndSendMsg()
 
 const L = new Listener({ OBSERVE_VOLUME_KEY: true })
+L.listenNotification()
+
+events.on("info", (e: string) => console.log(e))
