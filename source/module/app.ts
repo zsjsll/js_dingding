@@ -1,4 +1,4 @@
-import { backHome, openApp, getCurrentDate, getCurrentTime, holdOn } from "@/tools"
+import { backHome, openApp, getCurrentDate, getCurrentTime } from "@/tools"
 
 export type QQCfg = {
     PACKAGE_ID_LIST: QQ_Package_Id_List
@@ -11,11 +11,8 @@ type QQ_Package_Id_List = {
 }
 
 type App = {
-    open(num?: number): boolean
+    open(retry?: number): boolean
 }
-
-
-
 
 export class QQ implements App, QQCfg {
     PACKAGE_ID_LIST: QQ_Package_Id_List
@@ -95,7 +92,7 @@ export class DD implements App, DDCfg {
     }
     // 不进行更新
     private noUpdate() {
-        let noupdate = text("暂不更新").findOne(10e3)
+        const noupdate = text("暂不更新").findOne(10e3)
         if (noupdate !== null) {
             noupdate.click()
             return true
