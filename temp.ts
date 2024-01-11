@@ -1,4 +1,6 @@
-function add1(a: number, b: number): number {
-    return a + b
+function a(f: (aa?: never) => unknown) {
+    return (...args: []) => {
+        console.log(123123)
+        return () => f(...args)
+    }
 }
-console.log(add1(1, 2))
