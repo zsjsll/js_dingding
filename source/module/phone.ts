@@ -9,7 +9,7 @@ import {
     lockScreen,
 } from "./tools"
 
-export interface PhoneCfg {
+export type PhoneCfg = {
     DEV: boolean
     SCREEN_BRIGHTNESS: number
     UNLOCKSCREEN: UnLockScreen
@@ -17,7 +17,7 @@ export interface PhoneCfg {
     PACKAGE_ID_LIST: Package_Id_List
 }
 
-interface Package_Id_List {
+type Package_Id_List = {
     HOME: string
 }
 
