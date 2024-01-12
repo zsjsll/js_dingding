@@ -16,6 +16,6 @@ const qq = new QQ(qq_config)
 // qq.openAndSendMsg()
 
 const L = new Listener({ OBSERVE_VOLUME_KEY: true })
-L.listenNotification()
+L.listenVolumeKey(()=>toastLog(123123123123))
 
 events.on("info", (e: string) => console.log(e))

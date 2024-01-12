@@ -15,17 +15,17 @@ export class Listener implements ListenerCfg {
         events.setKeyInterceptionEnabled("volume_down", this.OBSERVE_VOLUME_KEY)
         if (this.OBSERVE_VOLUME_KEY) events.observeKey()
 
-        const doSomething = (e: android.view.KeyEvent) => {
-            threads.shutDownAll()
-            resetPhone()
-            toastLog("按下音量键,已中断所有子线程!")
-            /* 调试脚本*/
-            if (typeof func === "function") return func(e)
-            else return
-        }
         // FIX:需要节流
-        events.onKeyDown("volume_up", doSomething)
-        events.onKeyDown("volume_down", doSomething)
+        events.on("key", (keycode: number, event: android.view.KeyEvent) => {
+            if ((keycode === keys.volume_up || keycode === keys.volume_down) && event.getAction() === 0) {
+                threads.shutDownAll()
+                resetPhone()
+                toastLog("按下音量键,已中断所有子线程!")
+                /* 调试脚本*/
+                if (typeof func === "function") return func(event)
+                else return
+            }
+        })
     }
 
     listenNotification() {
