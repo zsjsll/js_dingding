@@ -4,7 +4,7 @@
     "description": "My webpack project",
     "main": "index.js",
     "scripts": {
-        "build": "npx webpack --config webpack.config.js --mode=production --node-env=d",
+        "build": "npx webpack --config webpack.config.js --mode=production --node-env=p",
         "dev": "npx webpack --config webpack.config.js --mode=development --node-env=d",
         "ui": "npx webpack --config webpack.config.js --mode=development --node-env=pui"
     },
