@@ -24,12 +24,15 @@ export class Init {
 
         const saveBaseData = () => {
             account = dialogs.input("输入钉钉账号", account)
+            account ||= ""
             setStorageData(this.db_name, "ACCOUNT", account)
 
             passwd = dialogs.input("输入钉钉密码", passwd)
+            passwd ||= ""
             setStorageData(this.db_name, "PASSWD", passwd)
 
             qq = dialogs.input("输入QQ号", qq)
+            qq ||= ""
             setStorageData(this.db_name, "QQ", qq)
 
             corp_id = dialogs.input("输入钉钉corp_id(多个公司填写)", corp_id)
@@ -40,7 +43,7 @@ export class Init {
         if (account && passwd && qq) {
             const lock = threads.lock()
             const chose = lock.newCondition()
-            let c: boolean
+            let c: boolean = false
             const d = dialogs.build({ title: "是否重置信息?", positive: "是", negative: "否" })
             d.on("positive", () => {
                 c = true
@@ -49,20 +52,22 @@ export class Init {
                 lock.unlock()
             })
             d.on("negative", () => {
-                c = false
                 lock.lock()
                 chose.signal()
                 lock.unlock()
             })
             d.show()
+            threads.start(() => {
+                sleep(3000)
+                d.dismiss()
+                lock.lock()
+                chose.signal()
+                lock.unlock()
+            })
             lock.lock()
             chose.await()
             lock.unlock()
-            if (c) {
-                toast(c)
-
-                saveBaseData()
-            }
+            if (c) saveBaseData()
         } else saveBaseData()
         this.cfg.ACCOUNT = account
         this.cfg.PASSWD = passwd
