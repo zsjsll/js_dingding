@@ -2,8 +2,8 @@
     "compilerOptions": {
         "allowSyntheticDefaultImports": true,
         "noImplicitAny": true,
-        "module": "CommonJS",
-        "lib": ["ESNext", "DOM"],
+        "module": "commonjs",
+        "lib": ["es2022", "DOM"],
         "target": "es5",
         "allowJs": false,
         "typeRoots": [

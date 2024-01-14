@@ -22,5 +22,7 @@ const aa: ListenerCfg = {
 const cc = config
 
 const init = new Init(cc, "test")
-init.setConfig()
+const t = init.setConfig()
+console.log(t)
+
 // init.setlog()

@@ -23,34 +23,35 @@ export class Init {
         let corp_id = getStorageData(this.db_name, "CORP_ID")
 
         const saveBaseData = () => {
-            account = dialogs.rawInput("输入钉钉账号", account)
+            account = dialogs.input("输入钉钉账号", account)
             setStorageData(this.db_name, "ACCOUNT", account)
-            passwd = dialogs.rawInput("输入钉钉密码", passwd)
+
+            passwd = dialogs.input("输入钉钉密码", passwd)
             setStorageData(this.db_name, "PASSWD", passwd)
-            qq = dialogs.rawInput("输入QQ号", qq)
+
+            qq = dialogs.input("输入QQ号", qq)
             setStorageData(this.db_name, "QQ", qq)
-            corp_id = dialogs.rawInput("输入钉钉corp_id(多个公司填写)", corp_id)
+
+            corp_id = dialogs.input("输入钉钉corp_id(多个公司填写)", corp_id)
+            corp_id ||= ""
             setStorageData(this.db_name, "CORP_ID", corp_id)
         }
 
         if (account && passwd && qq) {
-            const d = dialogs.build({ title: "是否重置信息?", positive: "是", negative: "否" })
-            d.on("positive", () => saveBaseData())
-            d.on("negative", () => d.dismiss())
-            setTimeout(() => {
-                d.dismiss()
-            }, 5000)
+            const d = dialogs.confirm("是否重置信息?")
+            if (d) saveBaseData()
         } else saveBaseData()
-
         this.cfg.ACCOUNT = account
         this.cfg.PASSWD = passwd
         this.cfg.QQ = qq
         this.cfg.CORP_ID = corp_id
+
+        return this.cfg
     }
     setlog() {
         auto()
         // 创建运行日志
-        const log = `${this.cfg.GLOBAL_LOG_FILE_DIR}${getCurrentDate()}.log`
+        const log = files.join(this.cfg.GLOBAL_LOG_FILE_DIR, `${getCurrentDate()}.log`)
         console.setGlobalLogConfig({ file: log })
     }
 }
