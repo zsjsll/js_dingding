@@ -38,8 +38,29 @@ export class Init {
         }
 
         if (account && passwd && qq) {
-            const d = dialogs.confirm("是否重置信息?")
-            if (d) saveBaseData()
+            const lock = threads.lock()
+            const chose = lock.newCondition()
+            let c: boolean
+            const d = dialogs.build({ title: "是否重置信息?", positive: "是", negative: "否" })
+            d.on("positive", () => {
+                c = true
+                lock.lock()
+                chose.signal()
+                lock.unlock()
+            })
+            d.on("negative", () => {
+                c = false
+
+            })
+            d.show()
+            lock.lock()
+            chose.await()
+            lock.unlock()
+            if (c) {
+                toast(c)
+
+                saveBaseData()
+            }
         } else saveBaseData()
         this.cfg.ACCOUNT = account
         this.cfg.PASSWD = passwd
