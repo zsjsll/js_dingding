@@ -18,9 +18,9 @@ export type Cfg = {
 type White_list = { XMSF: string; CLOCK: string }
 
 export const config: Cfg = {
-    ACCOUNT: "19988329986",
-    PASSWD: "1313243",
-    QQ: "124119885",
+    ACCOUNT: "",
+    PASSWD: "",
+    QQ: "",
     CORP_ID: "", // 公司的钉钉CorpId, 如果只加入了一家公司, 可以不填
 
     /* 解锁屏幕参数 */

@@ -127,7 +127,7 @@ export function isInWhiteList(filter_switch: boolean = true, white_list: object,
     return some(white_list, (v) => v === package_name)
 }
 
-export function setStorageData(name: string, key: string, value: never) {
+export function setStorageData(name: string, key: string, value: string | number) {
     const storage = storages.create(name) // 创建storage对象
     storage.put(key, value)
 }

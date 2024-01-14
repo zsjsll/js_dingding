@@ -23,3 +23,4 @@ const cc = config
 
 const init = new Init(cc, "test")
 init.setConfig()
+// init.setlog()
