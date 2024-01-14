@@ -50,7 +50,9 @@ export class Init {
             })
             d.on("negative", () => {
                 c = false
-
+                lock.lock()
+                chose.signal()
+                lock.unlock()
             })
             d.show()
             lock.lock()
