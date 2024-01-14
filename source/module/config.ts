@@ -1,9 +1,23 @@
-import { QQCfg, DDCfg } from "./app"
-import { PhoneCfg } from "./phone"
+import { QQCfg, DDCfg } from "@/app"
+import { PhoneCfg } from "@/phone"
+import { ListenerCfg } from "@/listener"
+import { BASE_CONFIG } from "@/init"
 
-type Cfg = QQCfg & DDCfg & PhoneCfg
+export type Cfg = {
+    [k: string]: unknown
+    PACKAGE_ID_LIST: White_list
+    DELAY: number
+    GLOBAL_LOG_FILE_DIR: string
+    pause: boolean
+} & QQCfg &
+    DDCfg &
+    PhoneCfg &
+    ListenerCfg &
+    BASE_CONFIG
 
-export const config: Config = {
+type White_list = { XMSF: string; CLOCK: string }
+
+export const config: Cfg = {
     ACCOUNT: "19988329986",
     PASSWD: "1313243",
     QQ: "124119885",

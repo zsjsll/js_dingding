@@ -1,24 +1,55 @@
-function setConfig(target, source) {
-    if (!(source.ACCOUNT && source.PASSWD && source.QQ)) {
-        console.error("设置根目录下config.js中的ACCOUNT、PASSWD、QQ参数.如果不存在,请复制config/config.js到根目录下!")
-        return false
+import { Cfg } from "@/config"
+import { getCurrentDate, getStorageData, setStorageData } from "@/tools"
+
+export type BASE_CONFIG = {
+    ACCOUNT: string
+    PASSWD: string
+    QQ: string
+    CORP_ID?: string
+}
+
+class Dialogs {
+    D_change: Dialogs.JsDialog
+    D_account: Dialogs.JsDialog
+    D_passwd: Dialogs.JsDialog
+    D_qq: Dialogs.JsDialog
+    D_corp_id: Dialogs.JsDialog
+    constructor() {
+        this.D_change = dialogs.build({
+            title: "是否修改信息?",
+            positive: "是",
+            negative: "否",
+            cancelable: false,
+        })
+        this.D_account = dialogs.build({
+            inputHint: "12312312",
+            positive: "是",
+            negative: "否",
+        })
     }
-    let cfg = Object.assign(target, source)
-    cfg["GLOBAL_LOG_FILE_DIR"] = cfg["GLOBAL_LOG_FILE_DIR"] + tools.getCurrentDate() + ".log"
-    cfg["pause"] = false
-    return cfg
 }
+export class Init extends Dialogs {
+    cfg: Cfg
+    db_name: string
+    constructor(cfg: Cfg, db_name: string) {
+        super()
+        this.cfg = cfg
+        this.db_name = db_name
+    }
 
-/**
- *
- *
- * @param {Config} config
- */
-function setlog(config) {
-    auto()
-    // 创建运行日志
-    console.setGlobalLogConfig({ file: config.GLOBAL_LOG_FILE_PATH })
+    setConfig() {
+        this.D_change.show()
+        setTimeout(() => {
+            this.D_change.dismiss()
+        }, 3000)
+        // let base_config: BASE_CONFIG
+        // base_config.ACCOUNT = getStorageData(this.db_name, "ACCOUNT")
+    }
+    setlog() {
+        auto()
+        // 创建运行日志
+        // console.setGlobalLogConfig({ file: this.cfg.GLOBAL_LOG_FILE_PATH })
+    }
 }
-
 
 // TODO

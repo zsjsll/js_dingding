@@ -1,9 +1,2 @@
-function A(f: (...aa: Array<any>) => unknown) {
-    return (...args: [number]) => {
-        console.log(123123)
-        return f(...args)
-    }
-}
-
-const b = A((a, b) => a + b)
-console.log(b(1, 2))
+import { some } from "lodash"
+console.log(some({ DD: 123, QQ: 321 },(v)=>v===3421))

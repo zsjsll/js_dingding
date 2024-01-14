@@ -7,7 +7,7 @@
         "target": "es5",
         "allowJs": false,
         "typeRoots": [
-            "./source/types",
+            "./source/@types",
             "./node_modules/@types",
             "./node_modules/@autojs",
             "./node_modules/@sm003/autojs6-dts/declarations"

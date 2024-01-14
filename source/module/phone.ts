@@ -7,17 +7,17 @@ import {
     UnLockScreen,
     resetPhone,
     lockScreen,
-} from "./tools"
+} from "@/tools"
 
 export type PhoneCfg = {
     DEV: boolean
     SCREEN_BRIGHTNESS: number
     UNLOCKSCREEN: UnLockScreen
     VOLUME: number
-    PACKAGE_ID_LIST: Package_Id_List
+    PACKAGE_ID_LIST: Phone_Package_Id_List
 }
 
-type Package_Id_List = {
+type Phone_Package_Id_List = {
     HOME: string
 }
 
@@ -26,7 +26,7 @@ export class Phone implements PhoneCfg {
     SCREEN_BRIGHTNESS: number
     UNLOCKSCREEN: UnLockScreen
     VOLUME: number
-    PACKAGE_ID_LIST: Package_Id_List
+    PACKAGE_ID_LIST: Phone_Package_Id_List
 
     constructor(phoneCfg: PhoneCfg) {
         this.DEV = phoneCfg.DEV

@@ -1,3 +1,5 @@
+import { some } from "lodash"
+
 export function backHome(home_id: string) {
     if (currentPackage() === home_id) return
     // 先退回到桌面
@@ -118,4 +120,22 @@ export function lockScreen() {
 
 function isRoot() {
     return shell("su -v").code === 0 ? true : false
+}
+
+export function isInWhiteList(filter_switch: boolean = true, white_list: object, package_name: string) {
+    if (filter_switch === false) return true
+    return some(white_list, (v) => v === package_name)
+}
+
+export function setStorageData(name: string, key: string, value: never) {
+    const storage = storages.create(name) // 创建storage对象
+    storage.put(key, value)
+}
+
+export function getStorageData(name: string, key: string) {
+    const storage = storages.create(name)
+    if (storage.contains(key)) {
+        return storage.get(key, "")
+    }
+    // 默认返回undefined
 }

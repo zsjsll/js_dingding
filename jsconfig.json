@@ -1,8 +1,0 @@
-{
-    "compilerOptions": {
-        "module": "commonjs",
-        "target": "es6",
-        "typeRoots": ["node_modules/@sm003/autojs6-dts/declarations", "./@types"]
-    },
-    "exclude": ["node_modules"]
-}

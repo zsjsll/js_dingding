@@ -1,13 +1,35 @@
-import { resetPhone } from "@/tools"
-import _ from "lodash"
-export interface ListenerCfg {
+import { resetPhone, isInWhiteList } from "@/tools"
+import {} from "@/tools"
+import { forIn } from "lodash"
+
+export type ListenerCfg = {
     OBSERVE_VOLUME_KEY: boolean
+    NOTIFICATIONS_FILTER: boolean
+    PACKAGE_ID_LIST: White_list
+}
+
+type White_list = {
+    [k: string]: string
+}
+
+type Info = {
+    PACKAGENAME: string
+    TEXT: string
+    PRIORITY: number
+    CATEGORY: string
+    TIME: Date
+    NUMBER: number
+    TICKER_TEXT: string
 }
 
 export class Listener implements ListenerCfg {
     constructor(listenerCfg: ListenerCfg) {
         this.OBSERVE_VOLUME_KEY = listenerCfg.OBSERVE_VOLUME_KEY
+        this.NOTIFICATIONS_FILTER = listenerCfg.NOTIFICATIONS_FILTER
+        this.PACKAGE_ID_LIST = listenerCfg.PACKAGE_ID_LIST
     }
+    PACKAGE_ID_LIST: White_list
+    NOTIFICATIONS_FILTER: boolean
     OBSERVE_VOLUME_KEY: boolean
 
     listenVolumeKey(func?: (e: android.view.KeyEvent) => unknown) {
@@ -15,7 +37,6 @@ export class Listener implements ListenerCfg {
         events.setKeyInterceptionEnabled("volume_down", this.OBSERVE_VOLUME_KEY)
         if (this.OBSERVE_VOLUME_KEY) events.observeKey()
 
-        // FIX:需要节流
         events.on("key", (keycode: number, event: android.view.KeyEvent) => {
             if ((keycode === keys.volume_up || keycode === keys.volume_down) && event.getAction() === 0) {
                 threads.shutDownAll()
@@ -28,19 +49,24 @@ export class Listener implements ListenerCfg {
         })
     }
 
-    listenNotification() {
+    listenNotification(func?: (notification: Info) => unknown) {
         events.observeNotification()
 
         events.on("notification", (n: org.autojs.autojs.core.notification.Notification) => {
-            console.verbose("应用包名: " + n.getPackageName())
-            console.verbose("通知文本: " + n.getText())
-            console.verbose("通知优先级: " + n.priority)
-            console.verbose("通知目录: " + n.category)
-            console.verbose("通知时间: " + new Date(n.when))
-            console.verbose("通知数: " + n.number)
-            console.verbose("通知摘要: " + n.tickerText)
-            // FIX:需要节流
-            events.emit("info", "测试")
+            const info: Info = {
+                PACKAGENAME: n.getPackageName(),
+                TEXT: n.getText(),
+                PRIORITY: n.priority,
+                CATEGORY: n.category,
+                TIME: new Date(n.when),
+                NUMBER: n.number,
+                TICKER_TEXT: n.tickerText,
+            }
+            forIn(info, (v, k) => console.verbose(`${k}: ${v}`))
+            if (isInWhiteList(this.NOTIFICATIONS_FILTER, this.PACKAGE_ID_LIST, info.PACKAGENAME)) {
+                if (typeof func === "function") return func(info)
+                else return
+            } else return
         })
     }
 }

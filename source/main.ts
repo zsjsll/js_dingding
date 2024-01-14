@@ -1,6 +1,7 @@
 import { QQ, DD, QQCfg } from "@/app"
-import { Listener } from "@/listener"
+import { Listener, ListenerCfg } from "@/listener"
 import { config } from "@/config"
+import { Init } from "@/init"
 
 const qq_config: QQCfg = {
     PACKAGE_ID_LIST: {
@@ -13,7 +14,12 @@ const qq_config: QQCfg = {
 const qq = new QQ(qq_config)
 // qq.openAndSendMsg()
 
-const L = new Listener({ OBSERVE_VOLUME_KEY: true })
-L.listenNotification()
+const aa: ListenerCfg = {
+    OBSERVE_VOLUME_KEY: true,
+    NOTIFICATIONS_FILTER: true,
+    PACKAGE_ID_LIST: { QQ: config.PACKAGE_ID_LIST.QQ, HOME: config.PACKAGE_ID_LIST.HOME },
+}
+const cc = config
 
-events.on("info", (e: string) => console.log(e))
+const init = new Init(cc, "test")
+init.setConfig()
