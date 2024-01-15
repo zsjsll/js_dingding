@@ -1,6 +1,7 @@
 import { resetPhone, isInWhiteList } from "@/tools"
 import {} from "@/tools"
 import { forIn } from "lodash"
+import { Cfg } from "./config"
 
 export type ListenerCfg = {
     OBSERVE_VOLUME_KEY: boolean
@@ -23,10 +24,10 @@ type Info = {
 }
 
 export class Listener implements ListenerCfg {
-    constructor(listenerCfg: ListenerCfg) {
-        this.OBSERVE_VOLUME_KEY = listenerCfg.OBSERVE_VOLUME_KEY
-        this.NOTIFICATIONS_FILTER = listenerCfg.NOTIFICATIONS_FILTER
-        this.PACKAGE_ID_LIST = listenerCfg.PACKAGE_ID_LIST
+    constructor(cfg: Cfg) {
+        this.OBSERVE_VOLUME_KEY = cfg.OBSERVE_VOLUME_KEY
+        this.NOTIFICATIONS_FILTER = cfg.NOTIFICATIONS_FILTER
+        this.PACKAGE_ID_LIST = cfg.PACKAGE_ID_LIST
     }
     PACKAGE_ID_LIST: White_list
     NOTIFICATIONS_FILTER: boolean
@@ -49,7 +50,7 @@ export class Listener implements ListenerCfg {
         })
     }
 
-    listenNotification(func?: (notification: Info) => unknown) {
+    listenNotification(func?: (notification: org.autojs.autojs.core.notification.Notification) => unknown) {
         events.observeNotification()
 
         events.on("notification", (n: org.autojs.autojs.core.notification.Notification) => {
@@ -64,7 +65,7 @@ export class Listener implements ListenerCfg {
             }
             forIn(info, (v, k) => console.verbose(`${k}: ${v}`))
             if (isInWhiteList(this.NOTIFICATIONS_FILTER, this.PACKAGE_ID_LIST, info.PACKAGENAME)) {
-                if (typeof func === "function") return func(info)
+                if (typeof func === "function") return func(n)
                 else return
             } else return
         })

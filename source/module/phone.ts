@@ -8,6 +8,7 @@ import {
     resetPhone,
     lockScreen,
 } from "@/tools"
+import { Cfg } from "./config"
 
 export type PhoneCfg = {
     DEV: boolean
@@ -28,12 +29,12 @@ export class Phone implements PhoneCfg {
     VOLUME: number
     PACKAGE_ID_LIST: Phone_Package_Id_List
 
-    constructor(phoneCfg: PhoneCfg) {
-        this.DEV = phoneCfg.DEV
-        this.SCREEN_BRIGHTNESS = phoneCfg.SCREEN_BRIGHTNESS
-        this.UNLOCKSCREEN = phoneCfg.UNLOCKSCREEN
-        this.VOLUME = phoneCfg.VOLUME
-        this.PACKAGE_ID_LIST = phoneCfg.PACKAGE_ID_LIST
+    constructor(cfg: Cfg) {
+        this.DEV = cfg.DEV
+        this.SCREEN_BRIGHTNESS = cfg.SCREEN_BRIGHTNESS
+        this.UNLOCKSCREEN = cfg.UNLOCKSCREEN
+        this.VOLUME = cfg.VOLUME
+        this.PACKAGE_ID_LIST = cfg.PACKAGE_ID_LIST
     }
 
     turnOn() {

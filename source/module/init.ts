@@ -1,12 +1,5 @@
 import { Cfg } from "@/config"
-import { getCurrentDate, getStorageData, setStorageData } from "@/tools"
-
-export type BASE_CONFIG = {
-    ACCOUNT: string
-    PASSWD: string
-    QQ: string
-    CORP_ID?: string
-}
+import { getStorageData, setStorageData } from "@/tools"
 
 export class Init {
     cfg: Cfg
@@ -71,7 +64,6 @@ export class Init {
 
         return this.cfg
     }
-
 }
 
 // TODO

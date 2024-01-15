@@ -1,4 +1,5 @@
-import { backHome, openApp, getCurrentDate, getCurrentTime } from "@/tools"
+import { backHome, openApp, getCurrentDate, getCurrentTime, holdOn } from "@/tools"
+import { Cfg } from "./config"
 
 export type QQCfg = {
     PACKAGE_ID_LIST: QQ_Package_Id_List
@@ -18,10 +19,10 @@ export class QQ implements App, QQCfg {
     PACKAGE_ID_LIST: QQ_Package_Id_List
     QQ: string
 
-    constructor(QQConfig: QQCfg) {
-        this.PACKAGE_ID_LIST = QQConfig.PACKAGE_ID_LIST
+    constructor(cfg: Cfg) {
+        this.PACKAGE_ID_LIST = cfg.PACKAGE_ID_LIST
 
-        this.QQ = QQConfig.QQ
+        this.QQ = cfg.QQ
     }
 
     open() {
@@ -59,6 +60,7 @@ export type DDCfg = {
     ACCOUNT: string
     PASSWD: string
     RETRY: number
+    DELAY: number
     CORP_ID?: string
 }
 type DD_PACKAGE_ID_LIST = {
@@ -67,13 +69,15 @@ type DD_PACKAGE_ID_LIST = {
 }
 
 export class DD implements App, DDCfg {
-    constructor(ddcfg: DDCfg) {
-        this.PACKAGE_ID_LIST = ddcfg.PACKAGE_ID_LIST
-        this.ACCOUNT = ddcfg.ACCOUNT
-        this.PASSWD = ddcfg.PASSWD
-        this.RETRY = ddcfg.RETRY
-        this.CORP_ID = ddcfg.CORP_ID
+    constructor(cfg: Cfg) {
+        this.PACKAGE_ID_LIST = cfg.PACKAGE_ID_LIST
+        this.ACCOUNT = cfg.ACCOUNT
+        this.PASSWD = cfg.PASSWD
+        this.RETRY = cfg.RETRY
+        this.CORP_ID = cfg.CORP_ID
+        this.DELAY = cfg.DELAY
     }
+    DELAY: number
     PACKAGE_ID_LIST: DD_PACKAGE_ID_LIST
     ACCOUNT: string
     PASSWD: string
@@ -107,9 +111,9 @@ export class DD implements App, DDCfg {
         return true
     }
 
-    open(retry: number) {
+    open() {
         openApp(this.PACKAGE_ID_LIST.DD)
-        for (let index = 1; index <= retry; index++) {
+        for (let index = 1; index <= this.RETRY; index++) {
             console.info(`第${index}次登录...`)
             backHome(this.PACKAGE_ID_LIST.HOME)
             console.log("正在启动" + app.getAppName(this.PACKAGE_ID_LIST.DD) + "...")
@@ -127,11 +131,11 @@ export class DD implements App, DDCfg {
             if (is_at_app_home) return true
             else console.warn("登录失败,重试...")
         }
-        console.error(`重试${retry}次,登录失败!`)
+        console.error(`重试${this.RETRY}次,登录失败!`)
         return false
     }
 
-    punchIn(retry: number) {
+    punchIn() {
         const u = "dingtalk://dingtalkclient/page/link?url=https://attend.dingtalk.com/attend/index.html"
         const url = this.CORP_ID === "" ? u : `${u}?corpId=${this.CORP_ID}`
 
@@ -140,7 +144,7 @@ export class DD implements App, DDCfg {
             data: url,
             //flags: [Intent.FLAG_ACTIVITY_NEW_TASK]
         })
-        for (let index = 1; index <= retry; index++) {
+        for (let index = 1; index <= this.RETRY; index++) {
             console.info(`第${index}次尝试打卡...`)
             app.startActivity(a)
             console.log("正在进入考勤界面...")
@@ -177,21 +181,24 @@ export class DD implements App, DDCfg {
             console.info("打卡成功!")
             return true
         }
-        console.error(`重试${retry}次,打卡失败!`)
+        console.error(`重试${this.RETRY}次,打卡失败!`)
         return false
     }
 
     /**
-     * @param {number} [retry=this.RETRY] 默认为config中的RETRY，也可用自己赋值
+     * @param {number} [retry=this.DELAY] 延时打卡，默认为config中的DELAY
      */
-    openAndPunchIn(retry: number = this.RETRY) {
+    openAndPunchIn(delay: number = this.DELAY) {
         console.log("本地时间: " + getCurrentDate() + " " + getCurrentTime())
         console.log("开始打卡")
-        if (!this.open(retry)) {
+        backHome(this.PACKAGE_ID_LIST.HOME)
+        holdOn(delay)
+        if (!this.open()) {
             console.error("无法打开钉钉!")
             return false
         }
-        this.punchIn(retry)
+        this.punchIn()
+        backHome(this.PACKAGE_ID_LIST.HOME)
         return true
     }
 }
