@@ -2,6 +2,7 @@ import { QQCfg, DDCfg } from "@/app"
 import { PhoneCfg } from "@/phone"
 import { ListenerCfg } from "@/listener"
 import { BASE_CONFIG } from "@/init"
+import yaml from "js-yaml"
 
 export type Cfg = {
     PACKAGE_ID_LIST: White_list
@@ -26,9 +27,9 @@ export const config: Cfg = {
 
     /* 解锁屏幕参数 */
     UNLOCKSCREEN: {
-        T: 720, // 滑动时间：毫秒
-        Y1: 0.7, // 滑动起点 y 坐标：距离屏幕底部 10% 的位置, 华为系统需要往上一些 0.9
-        Y2: 0.3, // 滑动终点 y 坐标：距离屏幕顶部 10% 的位置 0.1
+        TIME: 720, // 滑动时间：毫秒
+        START: 0.7, // 滑动起点 y 坐标：距离屏幕底部 10% 的位置, 华为系统需要往上一些 0.9
+        END: 0.3, // 滑动终点 y 坐标：距离屏幕顶部 10% 的位置 0.1
     },
 
     SCREEN_BRIGHTNESS: 0, //运行时屏幕亮度
@@ -54,7 +55,8 @@ export class Config {
     config: Cfg
     config_path: string
     constructor() {
-        this.config_path = files.join(files.cwd(), "config.json")
+        this.config_path = files.join(files.cwd(), "config.yaml")
+
         this.config = {
             DEV: true,
 
@@ -65,9 +67,9 @@ export class Config {
 
             /* 解锁屏幕参数 */
             UNLOCKSCREEN: {
-                T: 720, // 滑动时间：毫秒
-                Y1: 0.7, // 滑动起点 y 坐标：距离屏幕底部 10% 的位置, 华为系统需要往上一些 0.9
-                Y2: 0.3, // 滑动终点 y 坐标：距离屏幕顶部 10% 的位置 0.1
+                TIME: 720, // 滑动时间：毫秒
+                START: 0.7, // 滑动起点 y 坐标：距离屏幕底部 10% 的位置, 华为系统需要往上一些 0.9
+                END: 0.3, // 滑动终点 y 坐标：距离屏幕顶部 10% 的位置 0.1
             },
 
             SCREEN_BRIGHTNESS: 0, //运行时屏幕亮度
@@ -92,19 +94,17 @@ export class Config {
 
     create() {
         if (!files.exists(this.config_path)) {
-            const j = JSON.stringify(this.config, null, 2)
+            const j = yaml.dump(this.config)
+            console.log(j)
+
             files.write(this.config_path, j)
         }
     }
     get() {
         const s = files.read(this.config_path)
         const c: Cfg = JSON.parse(s)
-        if(c!==this.config){
+        if (c !== this.config) {
             console.log(123123123)
-
         }
-
     }
-
-
 }

@@ -79,21 +79,21 @@ export function isDeviceLocked() {
 }
 
 export type UnLockScreen = {
-    T: number
-    Y1: number
-    Y2: number
+    TIME: number
+    START: number
+    END: number
 }
 
 export function unlockScreen(opt: UnLockScreen) {
     gesture(
-        opt.T, // 滑动时间：毫秒 320
+        opt.TIME, // 滑动时间：毫秒 320
         [
             device.width * 0.5, // 滑动起点 x 坐标：屏幕宽度的一半
-            device.height * opt.Y1, // 滑动起点 y 坐标：距离屏幕底部 10% 的位置, 华为系统需要往上一些
+            device.height * opt.START, // 滑动起点 y 坐标：距离屏幕底部 10% 的位置, 华为系统需要往上一些
         ],
         [
             device.width * 0.5, // 滑动终点 x 坐标：屏幕宽度的一半
-            device.height * opt.Y2, // 滑动终点 y 坐标：距离屏幕顶部 10% 的位置
+            device.height * opt.END, // 滑动终点 y 坐标：距离屏幕顶部 10% 的位置
         ]
     )
 
