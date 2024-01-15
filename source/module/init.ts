@@ -22,7 +22,7 @@ export class Init {
         let qq = getStorageData(this.db_name, "QQ")
         let corp_id = getStorageData(this.db_name, "CORP_ID")
 
-        const saveBaseData = () => {
+        const saveDateBase = () => {
             account = dialogs.rawInput("输入钉钉账号", account) ?? ""
             setStorageData(this.db_name, "ACCOUNT", account)
             passwd = dialogs.rawInput("输入钉钉密码", passwd) ?? ""
@@ -62,8 +62,8 @@ export class Init {
             lock.lock()
             chose.await()
             lock.unlock()
-            if (c) saveBaseData()
-        } else saveBaseData()
+            if (c) saveDateBase()
+        } else saveDateBase()
         this.cfg.ACCOUNT = account
         this.cfg.PASSWD = passwd
         this.cfg.QQ = qq
@@ -71,12 +71,7 @@ export class Init {
 
         return this.cfg
     }
-    setlog() {
-        auto()
-        // 创建运行日志
-        const log = files.join(files.cwd(), this.cfg.GLOBAL_LOG_FILE_DIR, `${getCurrentDate()}.log`)
-        console.setGlobalLogConfig({ file: log })
-    }
+
 }
 
 // TODO

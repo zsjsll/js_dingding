@@ -1,7 +1,7 @@
 import { QQ, DD, QQCfg } from "@/app"
 import { Listener, ListenerCfg } from "@/listener"
 import { config, Config } from "@/config"
-import { Init } from "@/init"
+
 
 const qq_config: QQCfg = {
     PACKAGE_ID_LIST: {
@@ -19,11 +19,9 @@ const aa: ListenerCfg = {
     NOTIFICATIONS_FILTER: true,
     PACKAGE_ID_LIST: { QQ: config.PACKAGE_ID_LIST.QQ, HOME: config.PACKAGE_ID_LIST.HOME },
 }
-const cc = config
 
-const init = new Init(cc, "test")
-// const t = init.setConfig()
+
 
 const c = new Config()
-c.create()
+c.createJsonFile()
 // c.get()

@@ -2,7 +2,8 @@ import { QQCfg, DDCfg } from "@/app"
 import { PhoneCfg } from "@/phone"
 import { ListenerCfg } from "@/listener"
 import { BASE_CONFIG } from "@/init"
-import yaml from "js-yaml"
+import { getCurrentDate, getStorageData, setStorageData } from "./tools"
+import { toString } from "lodash"
 
 export type Cfg = {
     PACKAGE_ID_LIST: White_list
@@ -54,11 +55,12 @@ export const config: Cfg = {
 export class Config {
     config: Cfg
     config_path: string
+
     constructor() {
-        this.config_path = files.join(files.cwd(), "config.yaml")
+        this.config_path = files.join(files.cwd(), "config.json")
 
         this.config = {
-            DEV: true,
+            DEV: false,
 
             ACCOUNT: "",
             PASSWD: "",
@@ -92,19 +94,43 @@ export class Config {
         }
     }
 
-    create() {
-        if (!files.exists(this.config_path)) {
-            const j = yaml.dump(this.config)
-            console.log(j)
-
-            files.write(this.config_path, j)
+    updateConfig(config: Cfg) {
+        let ACCOUNT = config.ACCOUNT
+        let PASSWD = config.PASSWD
+        let QQ = config.QQ
+        for (;;) {
+            if (!ACCOUNT) ACCOUNT = toString(dialogs.rawInput("输入钉钉账号"))
+            else break
         }
+        for (;;) {
+            if (!PASSWD) PASSWD = toString(dialogs.rawInput("输入钉钉密码"))
+            else break
+        }
+        for (;;) {
+            if (!QQ) QQ = toString(dialogs.rawInput("输入QQ号"))
+            else break
+        }
+        return { ...config, ACCOUNT, PASSWD, QQ }
     }
-    get() {
-        const s = files.read(this.config_path)
-        const c: Cfg = JSON.parse(s)
-        if (c !== this.config) {
-            console.log(123123123)
-        }
+
+    createJsonFile() {
+        let config: Cfg = this.config
+        if (files.exists(this.config_path)) {
+            const cfg: Cfg = JSON.parse(files.read(this.config_path))
+            config = { ...this.config, ...cfg }
+        } else console.log("不存在config.json文件,创建并使用默认配置")
+
+        const final_config = this.updateConfig(config)
+        const json = JSON.stringify(final_config, null, 2)
+        files.write(this.config_path, json)
+        console.log(final_config)
+        return final_config
+    }
+
+    createLog() {
+        auto()
+        // 创建运行日志
+        const log = files.join(files.cwd(), this.config.GLOBAL_LOG_FILE_DIR, `${getCurrentDate()}.log`)
+        console.setGlobalLogConfig({ file: log })
     }
 }
