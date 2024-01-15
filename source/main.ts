@@ -105,7 +105,7 @@ import { includes } from "lodash"
         if (!n.includes("考勤打卡")) return
         // const format = (s: string) => (s.includes("]") ? s.slice(s.indexOf("]") + 1) : s)
         const text = n.replace(/\[.*?\]/, "")
-
+// TODO
         setTimeout(() => {
             threads.shutDownAll()
             threads.start(() => {
