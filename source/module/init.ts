@@ -37,21 +37,21 @@ export class Init {
             const lock = threads.lock()
             const chose = lock.newCondition()
             let c: boolean = false
-            const d = dialogs.build({
-                title: "是否重置信息?",
-                content: "3秒后自动跳过",
-                positive: "是",
-                cancelable: false,
-                canceledOnTouchOutside: false,
-            })
-            d.on("positive", () => {
-                c = true
-                lock.lock()
-                chose.signal()
-                lock.unlock()
-            })
-
-            d.show()
+            const d = dialogs
+                .build({
+                    title: "是否重置信息?",
+                    content: "3秒后自动跳过",
+                    positive: "是",
+                    cancelable: false,
+                    canceledOnTouchOutside: false,
+                })
+                .on("positive", () => {
+                    c = true
+                    lock.lock()
+                    chose.signal()
+                    lock.unlock()
+                })
+                .show()
             threads.start(() => {
                 sleep(3000)
                 d.dismiss()
