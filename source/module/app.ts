@@ -21,7 +21,6 @@ export class QQ implements App, QQCfg {
 
     constructor(cfg: Cfg) {
         this.PACKAGE_ID_LIST = cfg.PACKAGE_ID_LIST
-
         this.QQ = cfg.QQ
     }
 
@@ -173,16 +172,16 @@ export class DD implements App, DDCfg {
                 console.log("按下打卡按钮")
             }
             if (textContains("成功").findOne(15e3) === null) {
-                // msg = `考勤打卡:${getCurrentTime()}打卡·无效\n也许未到打卡时间`
                 console.warn("打卡无效,也许未到打卡时间!")
-                return false
+                return `考勤打卡:${getCurrentTime()}打卡·无效\n也许未到打卡时间`
             }
-            // msg = `考勤打卡:${getCurrentTime()}打卡·成功\n但未收到成功消息`
+
             console.info("打卡成功!")
-            return true
+            return `考勤打卡:${getCurrentTime()}打卡·成功\n但未收到成功消息`
         }
-        console.error(`重试${this.RETRY}次,打卡失败!`)
-        return false
+        const e = `重试${this.RETRY}次,打卡失败!`
+        console.error(e)
+        return e
     }
 
     /**
@@ -194,11 +193,12 @@ export class DD implements App, DDCfg {
         backHome(this.PACKAGE_ID_LIST.HOME)
         holdOn(delay)
         if (!this.open()) {
-            console.error("无法打开钉钉!")
-            return false
+            const e = "无法打开钉钉!"
+            console.error(e)
+            return e
         }
-        this.punchIn()
+        const r = this.punchIn()
         backHome(this.PACKAGE_ID_LIST.HOME)
-        return true
+        return r
     }
 }

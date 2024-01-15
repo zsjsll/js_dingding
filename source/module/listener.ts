@@ -1,6 +1,6 @@
 import { resetPhone, isInWhiteList } from "@/tools"
 import {} from "@/tools"
-import { forIn } from "lodash"
+import { forIn, isFunction } from "lodash"
 import { Cfg } from "./config"
 
 export type ListenerCfg = {
@@ -44,7 +44,7 @@ export class Listener implements ListenerCfg {
                 resetPhone()
                 toastLog("按下音量键,已中断所有子线程!")
                 /* 调试脚本*/
-                if (typeof func === "function") return func(event)
+                if (isFunction(func)) return func(event)
                 else return
             }
         })
@@ -65,7 +65,7 @@ export class Listener implements ListenerCfg {
             }
             forIn(info, (v, k) => console.verbose(`${k}: ${v}`))
             if (isInWhiteList(this.NOTIFICATIONS_FILTER, this.PACKAGE_ID_LIST, info.PACKAGENAME)) {
-                if (typeof func === "function") return func(n)
+                if (isFunction(func)) return func(n)
                 else return
             } else return
         })

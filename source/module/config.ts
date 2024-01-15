@@ -8,6 +8,7 @@ export type Cfg = {
     PACKAGE_ID_LIST: White_list
     GLOBAL_LOG_FILE_DIR: string
     pause: boolean
+    msg: string
 } & QQCfg &
     DDCfg &
     PhoneCfg &
@@ -62,6 +63,7 @@ export class Config {
             GLOBAL_LOG_FILE_DIR: "Archive/", // 运行日志路径
 
             pause: false, //是否暂停打卡
+            msg: "",
         }
     }
 
