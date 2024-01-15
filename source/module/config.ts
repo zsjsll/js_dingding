@@ -4,7 +4,6 @@ import { ListenerCfg } from "@/listener"
 import { BASE_CONFIG } from "@/init"
 
 export type Cfg = {
-    [k: string]: unknown
     PACKAGE_ID_LIST: White_list
     DELAY: number
     GLOBAL_LOG_FILE_DIR: string

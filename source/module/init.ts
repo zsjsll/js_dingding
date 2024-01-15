@@ -23,20 +23,13 @@ export class Init {
         let corp_id = getStorageData(this.db_name, "CORP_ID")
 
         const saveBaseData = () => {
-            account = dialogs.input("输入钉钉账号", account)
-            account ||= ""
+            account = dialogs.rawInput("输入钉钉账号", account) ?? ""
             setStorageData(this.db_name, "ACCOUNT", account)
-
-            passwd = dialogs.input("输入钉钉密码", passwd)
-            passwd ||= ""
+            passwd = dialogs.rawInput("输入钉钉密码", passwd) ?? ""
             setStorageData(this.db_name, "PASSWD", passwd)
-
-            qq = dialogs.input("输入QQ号", qq)
-            qq ||= ""
+            qq = dialogs.rawInput("输入QQ号", qq) ?? ""
             setStorageData(this.db_name, "QQ", qq)
-
-            corp_id = dialogs.input("输入钉钉corp_id(多个公司填写)", corp_id)
-            corp_id ||= ""
+            corp_id = dialogs.rawInput("输入钉钉corp_id(多个公司填写)", corp_id) ?? ""
             setStorageData(this.db_name, "CORP_ID", corp_id)
         }
 
@@ -44,18 +37,20 @@ export class Init {
             const lock = threads.lock()
             const chose = lock.newCondition()
             let c: boolean = false
-            const d = dialogs.build({ title: "是否重置信息?", positive: "是", negative: "否" })
+            const d = dialogs.build({
+                title: "是否重置信息?",
+                content: "3秒后自动跳过",
+                positive: "是",
+                cancelable: false,
+                canceledOnTouchOutside: false,
+            })
             d.on("positive", () => {
                 c = true
                 lock.lock()
                 chose.signal()
                 lock.unlock()
             })
-            d.on("negative", () => {
-                lock.lock()
-                chose.signal()
-                lock.unlock()
-            })
+
             d.show()
             threads.start(() => {
                 sleep(3000)
