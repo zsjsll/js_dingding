@@ -74,7 +74,7 @@ export class Init {
     setlog() {
         auto()
         // 创建运行日志
-        const log = files.join(this.cfg.GLOBAL_LOG_FILE_DIR, `${getCurrentDate()}.log`)
+        const log = files.join(files.cwd(), this.cfg.GLOBAL_LOG_FILE_DIR, `${getCurrentDate()}.log`)
         console.setGlobalLogConfig({ file: log })
     }
 }

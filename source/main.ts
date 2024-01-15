@@ -1,6 +1,6 @@
 import { QQ, DD, QQCfg } from "@/app"
 import { Listener, ListenerCfg } from "@/listener"
-import { config } from "@/config"
+import { config, Config } from "@/config"
 import { Init } from "@/init"
 
 const qq_config: QQCfg = {
@@ -22,7 +22,8 @@ const aa: ListenerCfg = {
 const cc = config
 
 const init = new Init(cc, "test")
-const t = init.setConfig()
-console.log(t)
+// const t = init.setConfig()
 
-// init.setlog()
+const c = new Config()
+c.createConfig()
+c.getConfig()
