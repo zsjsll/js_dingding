@@ -25,5 +25,5 @@ const init = new Init(cc, "test")
 // const t = init.setConfig()
 
 const c = new Config()
-c.createConfig()
-c.getConfig()
+c.create()
+// c.get()
