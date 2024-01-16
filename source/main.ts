@@ -4,6 +4,7 @@ import { Config } from "@/config"
 import { Phone } from "@/phone"
 ;(function main() {
     auto()
+    VolumeDown()
     const config = new Config()
     const cfg = config.createJsonFile()
     config.createLog()

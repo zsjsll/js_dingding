@@ -1,15 +1,13 @@
 import { includes } from "lodash"
 
 export function backHome(home_id: string) {
-    if (currentPackage() === home_id) return
-    // 先退回到桌面
-    for (let i = 0; i < 5; i++) {
-        back()
-        sleep(200)
+    for (let i = 0; i < 8; i++) {
         if (currentPackage() === home_id) {
             sleep(1e3)
             return
         }
+        back()
+        sleep(200)
     }
     // 再点击home键
     home()
