@@ -6,11 +6,25 @@
 
 适用版本：
 
--   [autojs6](https://github.com/SuperMonster003/AutoJs6) 6.5.0
+-   [autojsx](https://github.com/kkevsekk1/AutoX) 6.5.7
 -   钉钉 7.0.42.11
 -   TIM 3.5.5.3198
 
-使用时，自行复制出`config/config.js`文件到根目录下，根据自己的需求，修改配置文件。
+本项目使用 typescript
+
+### 使用
+
+`pnpm i`
+
+### 打包
+
+`pnpm run build`
+
+打包文件存放于 `dist/`
+
+### ps
+
+使用时，会自动生成 config.json 根据需要自行修改。
 
 TIM 要发送的人的 qq 必须在消息的第一个（置顶）。
 
