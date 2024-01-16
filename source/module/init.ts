@@ -65,5 +65,3 @@ export class Init {
         return this.cfg
     }
 }
-
-// TODO
