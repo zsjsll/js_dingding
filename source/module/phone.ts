@@ -49,13 +49,11 @@ export class Phone implements PhoneCfg {
             console.log("解锁屏幕")
             unlockScreen(this.UNLOCKSCREEN)
             if (isDeviceLocked()) {
-                console.error(
-                    "上滑解锁失败, 请按脚本中的注释调整unlockScreen中的 gesture(time, [x1,y1], [x2,y2]) 方法的参数!"
-                )
+                console.error("上滑解锁失败, 请按脚本中的注释调整UNLOCKSCREEN中的 key[TIME, START, END] 的参数!")
                 return false
             }
-            console.log("屏幕已解锁")
         }
+        console.info("屏幕已解锁")
         setVolume(this.VOLUME)
         backHome(this.PACKAGE_ID_LIST.HOME)
         return true
@@ -64,6 +62,7 @@ export class Phone implements PhoneCfg {
     turnOff() {
         backHome(this.PACKAGE_ID_LIST.HOME)
         if (this.DEV) resetPhone()
+        sleep(2000)
         console.log("关闭屏幕")
         lockScreen()
         if (isDeviceLocked()) {

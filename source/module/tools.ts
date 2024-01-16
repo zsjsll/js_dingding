@@ -1,4 +1,4 @@
-import { some } from "lodash"
+import { includes } from "lodash"
 
 export function backHome(home_id: string) {
     if (currentPackage() === home_id) return
@@ -122,9 +122,18 @@ function isRoot() {
     return shell("su -v").code === 0 ? true : false
 }
 
-export function isInWhiteList(filter_switch: boolean = true, white_list: object, package_name: string) {
-    if (filter_switch === false) return true
-    return some(white_list, (v) => v === package_name)
+export type White_list = {
+    [k: string]: string
+}
+export function inWhiteList(filter_switch: boolean = true, white_list: White_list, package_name: string) {
+    if (filter_switch === false) {
+        console.log("放行")
+        return true
+    }
+    const r = includes(white_list, package_name)
+    if (r) console.info("放行")
+    else console.info("丢弃")
+    return r
 }
 
 export function setStorageData(name: string, key: string, value: unknown) {

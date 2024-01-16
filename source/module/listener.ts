@@ -1,4 +1,4 @@
-import { resetPhone, isInWhiteList } from "@/tools"
+import { resetPhone, inWhiteList, White_list } from "@/tools"
 import {} from "@/tools"
 import { forIn, isFunction } from "lodash"
 import { Cfg } from "./config"
@@ -7,10 +7,6 @@ export type ListenerCfg = {
     OBSERVE_VOLUME_KEY: boolean
     NOTIFICATIONS_FILTER: boolean
     PACKAGE_ID_LIST: White_list
-}
-
-type White_list = {
-    [k: string]: string
 }
 
 type Info = {
@@ -64,10 +60,9 @@ export class Listener implements ListenerCfg {
                 TICKER_TEXT: n.tickerText,
             }
             forIn(info, (v, k) => console.verbose(`${k}: ${v}`))
-            if (isInWhiteList(this.NOTIFICATIONS_FILTER, this.PACKAGE_ID_LIST, info.PACKAGENAME)) {
-                if (isFunction(func)) return func(n)
-                else return
-            } else return
+            if (!inWhiteList(this.NOTIFICATIONS_FILTER, this.PACKAGE_ID_LIST, info.PACKAGENAME)) return
+            if (isFunction(func)) return func(n)
+            return
         })
     }
 }

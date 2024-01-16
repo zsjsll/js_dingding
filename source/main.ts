@@ -2,12 +2,12 @@ import { QQ, DD } from "@/app"
 import { Listener } from "@/listener"
 import { Config } from "@/config"
 import { Phone } from "@/phone"
-import { includes } from "lodash"
 ;(function main() {
     auto()
     const config = new Config()
     const cfg = config.createJsonFile()
     config.createLog()
+    config.information(cfg)
 
     const qq = new QQ(cfg)
     const dd = new DD(cfg)
@@ -15,14 +15,15 @@ import { includes } from "lodash"
 
     const listener = new Listener(cfg)
     listener.listenVolumeKey()
-    listener.listenNotification((n) => {
-        listenQQ(n)
-        listenClock(n)
+    listener.listenNotification((notification) => {
+        listenQQ(notification)
+        listenClock(notification)
+        listenDD(notification)
     })
 
-    function listenQQ(notification: org.autojs.autojs.core.notification.Notification) {
-        if (notification.getPackageName() !== cfg.PACKAGE_ID_LIST.QQ) return
-        switch (notification.getText()) {
+    function listenQQ(n: org.autojs.autojs.core.notification.Notification) {
+        if (n.getPackageName() !== cfg.PACKAGE_ID_LIST.QQ) return
+        switch (n.getText()) {
             case "帮助":
                 threads.shutDownAll()
                 threads.start(() => {
@@ -37,7 +38,8 @@ import { includes } from "lodash"
                 threads.shutDownAll()
                 threads.start(() => {
                     phone.turnOn()
-                    dd.openAndPunchIn()
+                    cfg.msg = dd.openAndPunchIn(-1)
+                    qq.openAndSendMsg(cfg.msg)
                     phone.turnOff()
                 })
                 break
@@ -74,43 +76,43 @@ import { includes } from "lodash"
                 break
         }
     }
-    function listenClock(notification: org.autojs.autojs.core.notification.Notification) {
-        if (notification.getPackageName() !== cfg.PACKAGE_ID_LIST.CLOCK) return
-        if (cfg.pause) {
-            console.warn("已暂停打卡!")
-            return
-        }
-        threads.shutDownAll()
-        if (notification.getText().includes("已错过")) return
+    function listenClock(n: org.autojs.autojs.core.notification.Notification) {
+        if (n.getPackageName() !== cfg.PACKAGE_ID_LIST.CLOCK) return
+        if (n.getText().includes("已错过")) return
         sleep(1e3)
-        notification.click()
+        n.click()
 
         const btn_close = id(cfg.PACKAGE_ID_LIST.CLOCK + ":id/el").findOne(15e3)
         if (btn_close === null) return
         btn_close.click()
         console.log("关闭闹钟")
 
-        sleep(1e3)
+        if (cfg.pause) {
+            console.warn("已暂停打卡!")
+            return
+        }
+
+        threads.shutDownAll()
         threads.start(() => {
             console.log("开始打卡")
             phone.turnOn()
             cfg.msg = dd.openAndPunchIn()
+            qq.openAndSendMsg(cfg.msg)
             phone.turnOff()
         })
     }
 
-    function listenDD(notification: org.autojs.autojs.core.notification.Notification) {
-        const n = notification.getPackageName()
-        if (n !== cfg.PACKAGE_ID_LIST.DD) return
-        if (!n.includes("考勤打卡")) return
+    function listenDD(n: org.autojs.autojs.core.notification.Notification) {
+        if (n.getPackageName() !== cfg.PACKAGE_ID_LIST.DD) return
+        if (!n.getText().includes("考勤打卡")) return
         // const format = (s: string) => (s.includes("]") ? s.slice(s.indexOf("]") + 1) : s)
-        const text = n.replace(/^\[.+?\]/, "")
-// TODO
+        cfg.msg = n.getText().replace(/^\[.+?\]/, "")
+
         setTimeout(() => {
             threads.shutDownAll()
             threads.start(() => {
                 phone.turnOn()
-                qq.openAndSendMsg(text)
+                qq.openAndSendMsg(cfg.msg)
                 phone.turnOff()
             })
         }, 1000) //等待，这样可以打断锁屏，并且让console.log()输出完整

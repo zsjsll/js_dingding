@@ -49,6 +49,7 @@ export class QQ implements App, QQCfg {
             return false
         }
         const r = this.sendmsg(message)
+        sleep(1000)
         backHome(this.PACKAGE_ID_LIST.HOME)
         return r
     }
@@ -111,7 +112,6 @@ export class DD implements App, DDCfg {
     }
 
     open() {
-        openApp(this.PACKAGE_ID_LIST.DD)
         for (let index = 1; index <= this.RETRY; index++) {
             console.info(`第${index}次登录...`)
             backHome(this.PACKAGE_ID_LIST.HOME)
@@ -171,6 +171,7 @@ export class DD implements App, DDCfg {
                 btn.click()
                 console.log("按下打卡按钮")
             }
+
             if (textContains("成功").findOne(15e3) === null) {
                 console.warn("打卡无效,也许未到打卡时间!")
                 return `考勤打卡:${getCurrentTime()}打卡·无效\n也许未到打卡时间`

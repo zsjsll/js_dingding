@@ -15,7 +15,7 @@ export type Cfg = {
     ListenerCfg &
     BASE_CONFIG
 
-type White_list = { XMSF: string; CLOCK: string }
+type White_list = { [k: string]: string; XMSF: string; CLOCK: string }
 
 type BASE_CONFIG = {
     ACCOUNT: string
@@ -67,7 +67,7 @@ export class Config {
         }
     }
 
-    updateConfig(config: Cfg) {
+    private updateConfig(config: Cfg) {
         let ACCOUNT = config.ACCOUNT
         let PASSWD = config.PASSWD
         let QQ = config.QQ
@@ -83,8 +83,7 @@ export class Config {
             if (!QQ) QQ = toString(dialogs.rawInput("输入QQ号"))
             else break
         }
-        if (config.DEV) toastLog("调试模式")
-        else toastLog("正常模式")
+
         return { ...config, ACCOUNT, PASSWD, QQ }
     }
 
@@ -106,5 +105,12 @@ export class Config {
         const log = files.join(files.cwd(), this.config.GLOBAL_LOG_FILE_DIR, `${getCurrentDate()}.log`)
         console.log("创建运行日志...\n" + log)
         console.setGlobalLogConfig({ file: log })
+    }
+
+    information(final_config: Cfg) {
+        if (final_config.DEV) toastLog("调试模式")
+        else toastLog("正常模式")
+        if (final_config.NOTIFICATIONS_FILTER) toastLog("白名单已开启")
+        else toastLog("白名单已关闭")
     }
 }
