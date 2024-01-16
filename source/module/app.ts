@@ -37,6 +37,7 @@ export class QQ implements App, QQCfg {
         const input = id(this.PACKAGE_ID_LIST.QQ + ":id/input").findOne(-1)
         input.setText(`${message}\n当前电量:${device.getBattery()}%\n是否充电:${device.isCharging()}`)
         const send = text("发送").clickable().findOne(-1)
+        sleep(500)
         send.click()
         console.info("发送成功")
         return true
@@ -49,7 +50,7 @@ export class QQ implements App, QQCfg {
             return false
         }
         const r = this.sendmsg(message)
-        sleep(1000)
+        sleep(500)
         backHome(this.PACKAGE_ID_LIST.HOME)
         return r
     }

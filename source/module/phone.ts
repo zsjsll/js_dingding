@@ -64,10 +64,12 @@ export class Phone implements PhoneCfg {
         if (this.DEV) resetPhone()
         sleep(2000)
         console.log("关闭屏幕")
-        lockScreen()
-        if (isDeviceLocked()) {
-            console.info("屏幕已关闭")
-            return true
+        for (let i = 0; i < 5; i++) {
+            lockScreen()
+            if (isDeviceLocked) {
+                console.info("屏幕已关闭")
+                return true
+            }
         }
         console.error("屏幕未关闭, 请尝试其他锁屏方案, 或等待屏幕自动关闭")
         return false

@@ -6,6 +6,10 @@ export function backHome(home_id: string) {
     for (let i = 0; i < 5; i++) {
         back()
         sleep(200)
+        if (currentPackage() === home_id) {
+            sleep(1e3)
+            return
+        }
     }
     // 再点击home键
     home()
