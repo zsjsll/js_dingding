@@ -97,7 +97,6 @@ export class Config {
         const final_config = this.updateConfig(config)
         const json = JSON.stringify(final_config, null, 2)
         files.write(this.config_path, json)
-        console.log(final_config)
         return final_config
     }
 
@@ -108,6 +107,7 @@ export class Config {
     }
 
     information(final_config: Cfg) {
+        // console.log(final_config)
         if (final_config.DEV) toastLog("调试模式")
         else toastLog("正常模式")
         if (final_config.NOTIFICATIONS_FILTER) toastLog("白名单已开启")
