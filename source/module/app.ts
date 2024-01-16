@@ -171,7 +171,6 @@ export class DD implements App, DDCfg {
                 btn.click()
                 console.log("按下打卡按钮")
             }
-
             if (textContains("成功").findOne(15e3) === null) {
                 console.warn("打卡无效,也许未到打卡时间!")
                 return `考勤打卡:${getCurrentTime()}打卡·无效\n也许未到打卡时间`
