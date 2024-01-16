@@ -6,7 +6,7 @@
 
 适用版本：
 
--   [autojsx](https://github.com/kkevsekk1/AutoX) 6.5.7
+-   [autojsx](https://github.com/kkevsekk1/AutoX) 6.5.6
 -   钉钉 7.0.42.11
 -   TIM 3.5.5.3198
 
