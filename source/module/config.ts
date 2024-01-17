@@ -53,7 +53,7 @@ export class Config {
             DELAY: 4, //随机等待时间，单位：分钟,如果填写的值<:0，则跳过等待时间，目前手机设置的是5min锁屏，所以设定4min
             RETRY: 5, //登录和打卡的重试次数
             PACKAGE_ID_LIST: {
-                QQ: "com.tencent.mobileqq", //qq
+                QQ: "com.tencent.tim", // 请使用tim
                 DD: "com.alibaba.android.rimet", // 钉钉
                 XMSF: "com.xiaomi.xmsf", // 小米推送服务
                 CLOCK: "com.android.alarmclock", // 系统闹铃,自行修改
