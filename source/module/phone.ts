@@ -3,10 +3,10 @@ import {
     isDeviceLocked,
     backHome,
     setVolume,
-    unlockScreen,
+    openScreen,
     UnLockScreen,
     resetPhone,
-    lockScreen,
+    closeScreen,
 } from "@/tools"
 import { Cfg } from "./config"
 
@@ -47,7 +47,7 @@ export class Phone implements PhoneCfg {
         sleep(500)
         if (isDeviceLocked()) {
             console.log("解锁屏幕")
-            unlockScreen(this.UNLOCKSCREEN)
+            openScreen(this.UNLOCKSCREEN)
             if (isDeviceLocked()) {
                 console.error("上滑解锁失败, 请按脚本中的注释调整UNLOCKSCREEN中的 key[TIME, START, END] 的参数!")
                 return false
@@ -64,14 +64,14 @@ export class Phone implements PhoneCfg {
         if (this.DEV) resetPhone()
         sleep(2000)
         console.log("关闭屏幕")
-        for (let i = 0; i < 5; i++) {
-            lockScreen()
+        for (let i = 0; i < 10; i++) {
+            closeScreen()
             if (isDeviceLocked) {
                 console.info("屏幕已关闭")
                 return true
             }
         }
-        console.error("屏幕未关闭, 请尝试其他锁屏方案, 或等待屏幕自动关闭")
+        console.error("需root权限或Android 9 以上版本,等待屏幕自动关闭")
         return false
     }
 }

@@ -1,7 +1,7 @@
 import { includes } from "lodash"
 
 export function backHome(home_id: string) {
-    for (let i = 0; i < 8; i++) {
+    for (let i = 0; i < 10; i++) {
         if (currentPackage() === home_id) {
             sleep(1e3)
             return
@@ -86,7 +86,7 @@ export type UnLockScreen = {
     END: number
 }
 
-export function unlockScreen(opt: UnLockScreen) {
+export function openScreen(opt: UnLockScreen) {
     gesture(
         opt.TIME, // 滑动时间：毫秒 320
         [
@@ -114,9 +114,10 @@ export function resetPhone() {
     device.cancelKeepingAwake() // 取消设备常亮
 }
 
-export function lockScreen() {
+export function closeScreen() {
     device.cancelKeepingAwake() // 取消设备常亮
     if (isRoot()) Power()
+    else if (parseInt(device.release) > 9) lockScreen()
     sleep(2e3)
 }
 
