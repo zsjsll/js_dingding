@@ -49,6 +49,7 @@ export class QQ implements App, QQCfg {
             console.error("无法打开QQ!")
             return false
         }
+
         if (message.includes("无效")) console.warn("打卡无效,也许未到打卡时间!")
         console.info(message)
 
