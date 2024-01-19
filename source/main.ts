@@ -79,8 +79,7 @@ import { Phone } from "@/phone"
     }
     function listenClock(n: org.autojs.autojs.core.notification.Notification) {
         if (n.getPackageName() !== cfg.PACKAGE_ID_LIST.CLOCK) return
-        const t: string = n.getText() ?? ""
-        if (t.includes("已错过")) return
+        if (n.getText().includes("已错过")) return
         sleep(1e3)
         n.click()
 
@@ -106,8 +105,7 @@ import { Phone } from "@/phone"
 
     function listenDD(n: org.autojs.autojs.core.notification.Notification) {
         if (n.getPackageName() !== cfg.PACKAGE_ID_LIST.DD) return
-        const t = n.getText() ?? ""
-        if (!t.includes("考勤打卡")) return
+        if (!n.getText().includes("考勤打卡")) return
         cfg.msg = n.getText().replace(/^\[.+?\]/, "")
 
         setTimeout(() => {

@@ -14,7 +14,7 @@ type Info = {
     TEXT: string
     PRIORITY: number
     CATEGORY: string
-    TIME: Date
+    TIME: string
     NUMBER: number
     TICKER_TEXT: string
 }
@@ -55,11 +55,13 @@ export class Listener implements ListenerCfg {
                 TEXT: n.getText(),
                 PRIORITY: n.priority,
                 CATEGORY: n.category,
-                TIME: new Date(n.when),
+                TIME: new Date(n.when).toString(),
                 NUMBER: n.number,
                 TICKER_TEXT: n.tickerText,
             }
             forIn(info, (v, k) => console.verbose(`${k}: ${v}`))
+            if (!info.PACKAGENAME) n.getPackageName = () => ""
+            if (!info.TEXT) n.getText = () => ""
             if (!inWhiteList(this.NOTIFICATIONS_FILTER, this.PACKAGE_ID_LIST, info.PACKAGENAME)) return
             if (isFunction(func)) return func(n)
             return
