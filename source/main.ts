@@ -2,6 +2,7 @@ import { QQ, DD } from "@/app"
 import { Listener } from "@/listener"
 import { Config } from "@/config"
 import { Phone } from "@/phone"
+import { includes } from "lodash"
 ;(function main() {
     auto()
     VolumeDown()
@@ -79,7 +80,7 @@ import { Phone } from "@/phone"
     }
     function listenClock(n: org.autojs.autojs.core.notification.Notification) {
         if (n.getPackageName() !== cfg.PACKAGE_ID_LIST.CLOCK) return
-        if (n.getText().includes("已错过")) return
+        if (includes(n.getText(), "已错过")) return
         sleep(1e3)
         n.click()
 
@@ -105,7 +106,7 @@ import { Phone } from "@/phone"
 
     function listenDD(n: org.autojs.autojs.core.notification.Notification) {
         if (n.getPackageName() !== cfg.PACKAGE_ID_LIST.DD) return
-        if (!n.getText().includes("考勤打卡")) return
+        if (!includes(n.getText(), "考勤打卡")) return
         cfg.msg = n.getText().replace(/^\[.+?\]/, "")
 
         setTimeout(() => {

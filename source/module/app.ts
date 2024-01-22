@@ -1,5 +1,6 @@
 import { backHome, openApp, getCurrentDate, getCurrentTime, holdOn } from "@/tools"
 import { Cfg } from "./config"
+import { includes } from "lodash"
 
 export type QQCfg = {
     PACKAGE_ID_LIST: QQ_Package_Id_List
@@ -50,7 +51,7 @@ export class QQ implements App, QQCfg {
             return false
         }
 
-        if (message.includes("无效")) console.warn("打卡无效,也许未到打卡时间!")
+        if (includes(message, "无效")) console.warn("打卡无效,也许未到打卡时间!")
         console.info(message)
 
         const r = this.sendmsg(message)
@@ -66,7 +67,7 @@ export type DDCfg = {
     PASSWD: string
     RETRY: number
     DELAY: number
-    CORP_ID?: string
+    CORP_ID: string
 }
 type DD_PACKAGE_ID_LIST = {
     DD: string

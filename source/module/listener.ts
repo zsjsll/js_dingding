@@ -55,13 +55,11 @@ export class Listener implements ListenerCfg {
                 TEXT: n.getText(),
                 PRIORITY: n.priority,
                 CATEGORY: n.category,
-                TIME: new Date(n.when).toString(),
+                TIME: new Date(n.when).toLocaleString(),
                 NUMBER: n.number,
                 TICKER_TEXT: n.tickerText,
             }
             forIn(info, (v, k) => console.verbose(`${k}: ${v}`))
-            if (!info.PACKAGENAME) n.getPackageName = () => ""
-            if (!info.TEXT) n.getText = () => ""
             if (!inWhiteList(this.NOTIFICATIONS_FILTER, this.PACKAGE_ID_LIST, info.PACKAGENAME)) return
             if (isFunction(func)) return func(n)
             return

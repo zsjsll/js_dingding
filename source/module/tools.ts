@@ -70,7 +70,7 @@ export function brightScreen(brightness: number) {
     }
     device.cancelVibration() //取消震动
 
-    return device.isScreenOn ? true : false
+    return device.isScreenOn() ? true : false
 }
 
 export function isDeviceLocked() {

@@ -66,7 +66,7 @@ export class Phone implements PhoneCfg {
         console.log("关闭屏幕")
         for (let i = 0; i < 10; i++) {
             closeScreen()
-            if (isDeviceLocked) {
+            if (isDeviceLocked()) {
                 console.info("屏幕已关闭")
                 return true
             }
