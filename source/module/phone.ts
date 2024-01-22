@@ -62,10 +62,11 @@ export class Phone implements PhoneCfg {
     turnOff() {
         backHome(this.PACKAGE_ID_LIST.HOME)
         if (this.DEV) resetPhone()
-        sleep(2000)
         console.log("关闭屏幕")
         for (let i = 0; i < 10; i++) {
+            sleep(2000)
             closeScreen()
+            sleep(2000)
             if (isDeviceLocked()) {
                 console.info("屏幕已关闭")
                 return true
