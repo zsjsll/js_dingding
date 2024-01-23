@@ -53,10 +53,9 @@ export class QQ implements App, QQCfg {
 
         if (includes(message, "无效")) console.warn("打卡无效,也许未到打卡时间!")
         console.info(message)
-
         const r = this.sendmsg(message)
-        sleep(500)
         backHome(this.PACKAGE_ID_LIST.HOME)
+        sleep(2e3)
         return r
     }
 }
@@ -200,6 +199,7 @@ export class DD implements App, DDCfg {
         }
         const r = this.punchIn()
         backHome(this.PACKAGE_ID_LIST.HOME)
+        sleep(5e3)
         return r
     }
 }

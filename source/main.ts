@@ -86,6 +86,7 @@ import { Phone } from "@/phone"
         }
         let timer = cfg.DELAY
         if (!includes(n.getText(), "已错过")) {
+            sleep(2e3)
             n.click()
             const btn_close = id(cfg.PACKAGE_ID_LIST.CLOCK + ":id/el").findOne(2e3)
             if (btn_close !== null) {

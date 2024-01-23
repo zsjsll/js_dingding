@@ -51,21 +51,25 @@ export class Listener implements ListenerCfg {
 
         events.on(
             "notification",
-            debounce((n: org.autojs.autojs.core.notification.Notification) => {
-                const info: Info = {
-                    PACKAGENAME: n.getPackageName(),
-                    TEXT: n.getText(),
-                    PRIORITY: n.priority,
-                    CATEGORY: n.category,
-                    TIME: toString(new Date(n.when)),
-                    NUMBER: n.number,
-                    TICKER_TEXT: n.tickerText,
-                }
-                forIn(info, (v, k) => console.verbose(`${k}: ${v}`))
-                if (!inWhiteList(this.NOTIFICATIONS_FILTER, this.PACKAGE_ID_LIST, info.PACKAGENAME)) return
-                if (isFunction(func)) return func(n)
-                return
-            }, 2e3)
+            debounce(
+                (n: org.autojs.autojs.core.notification.Notification) => {
+                    const info: Info = {
+                        PACKAGENAME: n.getPackageName(),
+                        TEXT: n.getText(),
+                        PRIORITY: n.priority,
+                        CATEGORY: n.category,
+                        TIME: toString(new Date(n.when)),
+                        NUMBER: n.number,
+                        TICKER_TEXT: n.tickerText,
+                    }
+                    forIn(info, (v, k) => console.verbose(`${k}: ${v}`))
+                    if (!inWhiteList(this.NOTIFICATIONS_FILTER, this.PACKAGE_ID_LIST, info.PACKAGENAME)) return
+                    if (isFunction(func)) return func(n)
+                    return
+                },
+                1e3,
+                { leading: true, trailing: false }
+            )
         )
     }
 }
