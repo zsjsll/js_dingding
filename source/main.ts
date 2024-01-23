@@ -1,8 +1,8 @@
+import { includes } from "lodash"
 import { QQ, DD } from "@/app"
 import { Listener } from "@/listener"
 import { Config } from "@/config"
 import { Phone } from "@/phone"
-import { includes } from "lodash"
 ;(function main() {
     auto()
     VolumeDown()
