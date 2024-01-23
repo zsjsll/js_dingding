@@ -80,25 +80,27 @@ import { includes } from "lodash"
     }
     function listenClock(n: org.autojs.autojs.core.notification.Notification) {
         if (n.getPackageName() !== cfg.PACKAGE_ID_LIST.CLOCK) return
-        if (includes(n.getText(), "已错过")) return
-        sleep(1e3)
-        n.click()
-
-        const btn_close = id(cfg.PACKAGE_ID_LIST.CLOCK + ":id/el").findOne(15e3)
-        if (btn_close === null) return
-        btn_close.click()
-        console.log("关闭闹钟")
-
         if (cfg.pause) {
             console.warn("已暂停打卡!")
             return
         }
+        let timer = cfg.DELAY
+        if (!includes(n.getText(), "已错过")) {
+            n.click()
+            const btn_close = id(cfg.PACKAGE_ID_LIST.CLOCK + ":id/el").findOne(2e3)
+            if (btn_close !== null) {
+                btn_close.click()
+                console.log("关闭闹钟")
+            }
+        } else {
+            console.warn("未捕获信息!开启快速打卡")
+            timer = 1
+        }
 
         threads.shutDownAll()
         threads.start(() => {
-            console.log("开始打卡")
             phone.turnOn()
-            cfg.msg = dd.openAndPunchIn()
+            cfg.msg = dd.openAndPunchIn(timer)
             qq.openAndSendMsg(cfg.msg)
             phone.turnOff()
         })

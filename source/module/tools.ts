@@ -46,16 +46,15 @@ export function getCurrentDate() {
 }
 
 /**
- *
- *
  * @export
  * @param {number} delay 小于等于0的时候，没有延时
+ * @param {number} [limit=0.1] 最少等6s
  */
-export function holdOn(delay: number) {
+export function holdOn(delay: number, limit: number = 0.1) {
     if (delay <= 0) {
         return
     } else {
-        const randomTime = random(1e3, delay * 1e3 * 60)
+        const randomTime = random(limit * 1e3 * 60, delay * 1e3 * 60)
         toastLog(Math.floor(randomTime / 1000) + "秒后启动程序" + "...")
         sleep(randomTime)
     }

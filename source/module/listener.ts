@@ -1,6 +1,6 @@
 import { resetPhone, inWhiteList, White_list } from "@/tools"
 import {} from "@/tools"
-import { forIn, isFunction, toString } from "lodash"
+import { debounce, forIn, isFunction, toString } from "lodash"
 import { Cfg } from "./config"
 
 export type ListenerCfg = {
@@ -49,20 +49,23 @@ export class Listener implements ListenerCfg {
     listenNotification(func?: (notification: org.autojs.autojs.core.notification.Notification) => unknown) {
         events.observeNotification()
 
-        events.on("notification", (n: org.autojs.autojs.core.notification.Notification) => {
-            const info: Info = {
-                PACKAGENAME: n.getPackageName(),
-                TEXT: n.getText(),
-                PRIORITY: n.priority,
-                CATEGORY: n.category,
-                TIME: toString(new Date(n.when)),
-                NUMBER: n.number,
-                TICKER_TEXT: n.tickerText,
-            }
-            forIn(info, (v, k) => console.verbose(`${k}: ${v}`))
-            if (!inWhiteList(this.NOTIFICATIONS_FILTER, this.PACKAGE_ID_LIST, info.PACKAGENAME)) return
-            if (isFunction(func)) return func(n)
-            return
-        })
+        events.on(
+            "notification",
+            debounce((n: org.autojs.autojs.core.notification.Notification) => {
+                const info: Info = {
+                    PACKAGENAME: n.getPackageName(),
+                    TEXT: n.getText(),
+                    PRIORITY: n.priority,
+                    CATEGORY: n.category,
+                    TIME: toString(new Date(n.when)),
+                    NUMBER: n.number,
+                    TICKER_TEXT: n.tickerText,
+                }
+                forIn(info, (v, k) => console.verbose(`${k}: ${v}`))
+                if (!inWhiteList(this.NOTIFICATIONS_FILTER, this.PACKAGE_ID_LIST, info.PACKAGENAME)) return
+                if (isFunction(func)) return func(n)
+                return
+            }, 2e3)
+        )
     }
 }
