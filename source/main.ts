@@ -5,7 +5,8 @@ import { Config } from "@/config"
 import { Phone } from "@/phone"
 ;(function main() {
     auto()
-    VolumeDown()
+    // VolumeDown()
+    shell("", true)
     const config = new Config()
     const cfg = config.createJsonFile()
     config.createLog()

@@ -115,7 +115,7 @@ export function resetPhone() {
 
 export function closeScreen() {
     device.cancelKeepingAwake() // 取消设备常亮
-    if (isRoot()) Power()
+    if (isRoot()) shell("input keyevent 26", true)
     else if (parseInt(device.release) > 9) lockScreen()
     sleep(2e3)
 }
