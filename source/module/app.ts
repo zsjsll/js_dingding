@@ -176,7 +176,8 @@ export class DD implements App, DDCfg {
                 btn.click()
                 console.log("按下打卡按钮")
             }
-            if (textContains("成功").findOne(15e3) === null) return `考勤打卡:${getCurrentTime()}打卡·无效`
+            if (textContains("成功").findOne(15e3) === null)
+                return `!+!+!+!+!+!+!+!+!\n考勤打卡:${getCurrentTime()}打卡·无效`
             return `考勤打卡:${getCurrentTime()}打卡·成功\n但未收到成功消息`
         }
         const e = `重试${this.RETRY}次,打卡失败!`
