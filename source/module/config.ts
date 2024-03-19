@@ -1,4 +1,4 @@
-import { QQCfg, DDCfg } from "@/app"
+import { QQCfg, DDCfg, ClockCfg } from "@/app"
 import { PhoneCfg } from "@/phone"
 import { ListenerCfg } from "@/listener"
 import { getCurrentDate } from "./tools"
@@ -11,11 +11,12 @@ export type Cfg = {
     msg: string
 } & QQCfg &
     DDCfg &
+    ClockCfg &
     PhoneCfg &
     ListenerCfg &
     BASE_CONFIG
 
-type White_list = { [k: string]: string; XMSF: string; CLOCK: string }
+type White_list = { [k: string]: string; XMSF: string }
 
 type BASE_CONFIG = {
     ACCOUNT: string

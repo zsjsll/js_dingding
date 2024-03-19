@@ -63,14 +63,14 @@ export class QQ implements App, QQCfg {
 }
 
 export type DDCfg = {
-    PACKAGE_ID_LIST: DD_PACKAGE_ID_LIST
+    PACKAGE_ID_LIST: DD_Package_Id_List
     ACCOUNT: string
     PASSWD: string
     RETRY: number
     DELAY: number
     CORP_ID: string
 }
-type DD_PACKAGE_ID_LIST = {
+type DD_Package_Id_List = {
     DD: string
     HOME: string
 }
@@ -85,7 +85,7 @@ export class DD implements App, DDCfg {
         this.DELAY = cfg.DELAY
     }
     DELAY: number
-    PACKAGE_ID_LIST: DD_PACKAGE_ID_LIST
+    PACKAGE_ID_LIST: DD_Package_Id_List
     ACCOUNT: string
     PASSWD: string
     RETRY: number
@@ -203,5 +203,42 @@ export class DD implements App, DDCfg {
         backHome(this.PACKAGE_ID_LIST.HOME)
         sleep(5e3)
         return r
+    }
+}
+
+type CLOCK_Package_Id_List = {
+    CLOCK: string
+    HOME: string
+}
+
+export type ClockCfg = {
+    DELAY: number
+    PACKAGE_ID_LIST: CLOCK_Package_Id_List
+}
+
+export class Clock implements ClockCfg {
+    constructor(cfg: Cfg) {
+        this.PACKAGE_ID_LIST = cfg.PACKAGE_ID_LIST
+        this.DELAY = cfg.DELAY
+    }
+
+    DELAY: number
+    PACKAGE_ID_LIST: CLOCK_Package_Id_List
+
+    closeAlarmMEIZU(n: org.autojs.autojs.core.notification.Notification) {
+        let t = this.DELAY
+        if (includes(n.getText(), "已错过")) {
+            console.warn("未捕获信息!开启快速打卡")
+            t = 1
+        } else {
+            sleep(2e3)
+            n.click()
+            const btn_close = id(this.PACKAGE_ID_LIST.CLOCK + ":id/el").findOne(2e3)
+            if (btn_close !== null) {
+                btn_close.click()
+                console.log("关闭闹钟")
+            }
+        }
+        return t
     }
 }

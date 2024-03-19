@@ -1,5 +1,5 @@
 import { includes } from "lodash"
-import { QQ, DD } from "@/app"
+import { QQ, DD, Clock } from "@/app"
 import { Listener } from "@/listener"
 import { Config } from "@/config"
 import { Phone } from "@/phone"
@@ -14,8 +14,8 @@ import { Phone } from "@/phone"
 
     const qq = new QQ(cfg)
     const dd = new DD(cfg)
+    const clock = new Clock(cfg)
     const phone = new Phone(cfg)
-
     const listener = new Listener(cfg)
     listener.listenVolumeKey()
     listener.listenNotification((notification) => {
@@ -86,18 +86,7 @@ import { Phone } from "@/phone"
             return
         }
         let timer = cfg.DELAY
-        if (!includes(n.getText(), "已错过")) {
-            sleep(2e3)
-            n.click()
-            const btn_close = id(cfg.PACKAGE_ID_LIST.CLOCK + ":id/el").findOne(2e3)
-            if (btn_close !== null) {
-                btn_close.click()
-                console.log("关闭闹钟")
-            }
-        } else {
-            console.warn("未捕获信息!开启快速打卡")
-            timer = 1
-        }
+        timer = clock.closeAlarmMEIZU(n)
 
         threads.shutDownAll()
         threads.start(() => {
