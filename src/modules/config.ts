@@ -40,7 +40,7 @@ export default class Config {
       // 最小延迟时间,最大延迟时间
       RETRY: 10, //登录和打卡的重试次数
       PACKAGES: {
-        QQ: { PACKAGENAME: "com.tencent.tim", APPNAME: "TIM" }, // 请使用tim
+        QQ: { PACKAGENAME: "com.tencent.mobileqq", APPNAME: "QQ" }, // 请使用tim
         DD: {
           PACKAGENAME: "com.alibaba.android.rimet",
           APPNAME: "钉钉",
