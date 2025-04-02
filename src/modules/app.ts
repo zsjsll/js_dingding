@@ -31,20 +31,31 @@ export class QQ {
     sleep(1e3)
     let nav = id("kbi").findOne(2e3)
 
-    if (nav !== null && nav.text() === "消息") a = nav.parent().click()
-    else nav = text("消息").boundsInside(0, 2189, device.width, device.height).findOne(2e3) //双保险查找控件
-
-    if (nav !== null && nav.text() === "消息") a = nav.parent().click()
-    // else bounds(0, 2189, device.width, device.height).click() //双保险查找控件
+    if (nav !== null && nav.text() === "消息") {
+      console.log("找到消息控件")
+      a = nav.parent().click()
+    } else {
+      console.log("未找到消息控件，点击坐标")
+      nav = text("消息").boundsInside(0, 2189, device.width, device.height).findOne(2e3) //双保险查找控件
+      if (nav !== null && nav.text() === "消息") a = nav.parent().click()
+      // else bounds(0, 2189, device.width, device.height).click() //双保险查找控件
+    }
     sleep(1e3)
     // const contact = id("n19").indexInParent(1).findOne(10e3).child(0)
     let contact = id("aua").descStartsWith("123_").findOne(2e3)
-    if (contact !== null && startsWith(contact.desc(), "123_")) b = contact.click()
-    else contact = descStartsWith("123_").boundsInside(0, 351, device.width, 545).findOne(2e3) //双保险查找控件
-    if (contact !== null && startsWith(contact.desc(), "123_")) b = contact.click()
-    // else bounds(0, 351, device.width, 545).click() //双保险查找控件
+    if (contact !== null && startsWith(contact.desc(), "123_")) {
+      console.log("找到联系人")
+      b = contact.click()
+    } else {
+      console.log("未找到联系人，点击坐标")
+      contact = descStartsWith("123_").boundsInside(0, 351, device.width, 545).findOne(2e3) //双保险查找控件
+      if (contact !== null && startsWith(contact.desc(), "123_")) b = contact.click()
+      // else bounds(0, 351, device.width, 545).click() //双保险查找控件
+    }
     sleep(2e3)
-    if (!a || !b) {
+
+    if (!(a && b)) {
+      console.log("使用最后解决方案")
       app.startActivity({
         action: "android.intent.action.VIEW",
         data: "mqq://im/chat?chat_type=wpa&version=1&src_type=web&uin=" + this.QQ,
@@ -73,7 +84,6 @@ export class QQ {
       this.chat() //进入聊天界面
 
       const msgs = script.formatMsgs(message)
-
       console.info(msgs)
       this.sendmsg(msgs)
     } else console.log("消息为空，直接退出！")
