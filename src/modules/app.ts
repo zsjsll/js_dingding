@@ -26,42 +26,54 @@ export class QQ {
   private chat() {
     // 最新的tim和qq 如果用意图启动，会出错误，所以改成查找控件来进入聊天窗口
 
-    let a = false
-    let b = false
     sleep(1e3)
     let nav = id("kbi").findOne(2e3)
 
     if (nav !== null && nav.text() === "消息") {
       console.log("找到消息控件")
-      a = nav.parent().click()
+      nav.parent().click()
     } else {
-      console.log("未找到消息控件，点击坐标")
-      nav = text("消息").boundsInside(0, 2189, device.width, device.height).findOne(2e3) //双保险查找控件
-      if (nav !== null && nav.text() === "消息") a = nav.parent().click()
-      // else bounds(0, 2189, device.width, device.height).click() //双保险查找控件
+      // nav = text("消息").boundsInside(0, 2194, device.width, device.height).findOne(2e3) //双保险查找控件
+      nav = id("j_k").findOne(2e3) //双保险查找控件
+      // if (nav !== null && nav.text() === "消息") {
+      if (nav !== null) {
+        console.log("未找到消息控件，点击组件坐标")
+        const bound = nav.bounds()
+        click(bound.centerX(), bound.centerY())
+      } else {
+        console.warn("点击消息绝对坐标！")
+        bounds(0, 2194, 270, device.height).click() //3保险查找控件
+      }
     }
     sleep(1e3)
     // const contact = id("n19").indexInParent(1).findOne(10e3).child(0)
     let contact = id("aua").descStartsWith("123_").findOne(2e3)
     if (contact !== null && startsWith(contact.desc(), "123_")) {
       console.log("找到联系人")
-      b = contact.click()
+      contact.click()
     } else {
-      console.log("未找到联系人，点击坐标")
-      contact = descStartsWith("123_").boundsInside(0, 351, device.width, 545).findOne(2e3) //双保险查找控件
-      if (contact !== null && startsWith(contact.desc(), "123_")) b = contact.click()
-      // else bounds(0, 351, device.width, 545).click() //双保险查找控件
+      // contact = descStartsWith("123_").boundsInside(0, 373, device.width, 567).findOne(2e3) //双保险查找控件
+      contact = id("tm1").findOne(2e3) //双保险查找控件
+      // if (contact !== null && startsWith(contact.desc(), "123_")) {
+      if (contact !== null) {
+        console.log("未找到联系人，点击组件坐标")
+        const bound = contact.bounds()
+        click(bound.centerX(), bound.centerY())
+      } else {
+        console.warn("点击联系人绝对坐标！")
+        bounds(0, 373, device.width, 567).click() //3保险查找控件
+      }
     }
     sleep(2e3)
 
-    if (!(a && b)) {
-      console.log("使用最后解决方案")
-      app.startActivity({
-        action: "android.intent.action.VIEW",
-        data: "mqq://im/chat?chat_type=wpa&version=1&src_type=web&uin=" + this.QQ,
-        packageName: this.PACKAGESNAME.QQ,
-      })
-    }
+    // if (!(a && b)) {
+    // console.warn("使用最后解决方案")
+    app.startActivity({
+      action: "android.intent.action.VIEW",
+      data: "mqq://im/chat?chat_type=wpa&version=1&src_type=web&uin=" + this.QQ,
+      packageName: this.PACKAGESNAME.QQ,
+    })
+    // }
     sleep(2e3)
   }
 
