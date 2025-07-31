@@ -153,27 +153,26 @@ function isDrop(filter_switch = true, info: Info, app_packages: AppPackages): Fi
   }
 
   for (const app_package of Object.values(app_packages) as Package[]) {
-    if (app_package.PACKAGENAME !== info.PACKAGENAME) {
-      console.warn("× 丢弃，不在包中")
-      return FilterStates.drop
-    } else if (isEmpty(app_package.BLACKLISTS)) {
-      console.info("√ 放行，没有黑名单列表")
-      return FilterStates.pass
-      //在包中，又有黑名单，就要进行判断，黑名单中的情况
-    } else {
-      console.log("检查黑名单列表")
-      for (const black_list of app_package.BLACKLISTS as BlackListOptions[]) {
-        const is_drop = filterBlackList(info.TEXT, black_list)
-        if (!is_drop) {
-          console.info("√ 放行，没有命中关键词")
-          return FilterStates.pass
+    if (app_package.PACKAGENAME === info.PACKAGENAME) {
+      if (isEmpty(app_package.BLACKLISTS)) {
+        console.info("√ 放行，没有黑名单列表")
+        return FilterStates.pass
+      } else {
+        console.log("检查黑名单列表")
+        for (const black_list of app_package.BLACKLISTS as BlackListOptions[]) {
+          const hit_keywords = filterBlackList(info.TEXT, black_list)
+          if (hit_keywords) {
+            console.warn("× 丢弃，命中关键词")
+            return FilterStates.drop
+          }
         }
+        console.info("√ 放行，没有命中关键词")
+        return FilterStates.pass
       }
-      console.warn("× 丢弃，命中关键词")
-      return FilterStates.drop
     }
   }
-  return FilterStates.pass
+  console.warn("× 丢弃，不在包中")
+  return FilterStates.drop
 }
 
 function setStorageData(name: string, key: string, value: unknown) {
