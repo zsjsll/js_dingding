@@ -44,10 +44,7 @@ export default class Config {
         DD: {
           PACKAGENAME: "com.alibaba.android.rimet",
           APPNAME: "钉钉",
-          BLACKLISTS: [
-            { keywords: ["考勤打卡"], except: ["失败", "异常"] }, //kewords 在不同集合中（竖向关系）是或关系， 在同一个集合中（横向关系）是与关系，必须要全部满足才进行except的判断， except 是或关系
-            { keywords: ["审批统计已生成"] },
-          ],
+          BLACKLISTS: [ ["考勤打卡", "失败"] , ["考勤打卡", "异常"], ["审批统计已生成"] ],
         }, // 钉钉
         EMAIL: { PACKAGENAME: "com.tencent.androidqqmail" }, // QQ邮箱
         XMSF: { PACKAGENAME: "com.xiaomi.xmsf" }, // 小米推送服务

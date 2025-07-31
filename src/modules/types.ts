@@ -9,11 +9,7 @@ export interface SwipeScreen {
 
 export type Pause = [number, number]
 
-export interface BlackListOptions {
-  keywords: string[]
-  except?: string[]
-}
-
+export type BlackListOptions = string[]
 export interface Package {
   PACKAGENAME: string
   APPNAME?: string
@@ -23,7 +19,6 @@ export interface Package {
 export enum FilterStates {
   drop = "drop",
   pass = "pass",
-  continue = "continue",
 }
 
 //listener.ts

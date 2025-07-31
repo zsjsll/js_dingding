@@ -41,6 +41,7 @@ export class QQ {
         const bound = nav.bounds()
         click(bound.centerX(), bound.centerY())
       } else {
+        // FIXME
         console.warn("点击消息绝对坐标！")
         bounds(0, 2194, 270, device.height).click() //3保险查找控件
       }
@@ -60,6 +61,7 @@ export class QQ {
         const bound = contact.bounds()
         click(bound.centerX(), bound.centerY())
       } else {
+        // FIXME
         console.warn("点击联系人绝对坐标！")
         bounds(0, 373, device.width, 567).click() //3保险查找控件
       }

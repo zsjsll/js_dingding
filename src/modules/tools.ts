@@ -144,59 +144,36 @@ function delay([min, max]: Delay = [0, 0]) {
 }
 
 function isDrop(filter_switch = true, info: Info, app_packages: AppPackages): FilterStates {
-  const filterBlackList = (text: string, black_list: BlackListOptions): FilterStates => {
-    if (isEmpty(black_list?.keywords)) {
-      console.warn("√ 放行，黑名单为空")
+  // 根据黑名单过滤文本，判断文本中是否包含所有黑名单关键词,但是注意一下，返回ture反而是丢弃此条信息
+  const filterBlackList = (text: string, black_list: BlackListOptions): boolean => every(black_list, (kw) => includes(text, kw))
+
+  if (!filter_switch) {
+    console.info("√ 放行，过滤未开启")
+    return FilterStates.pass
+  }
+
+  for (const app_package of Object.values(app_packages) as Package[]) {
+    if (app_package.PACKAGENAME !== info.PACKAGENAME) {
+      console.warn("× 丢弃，不在包中")
+      return FilterStates.drop
+    } else if (isEmpty(app_package.BLACKLISTS)) {
+      console.info("√ 放行，没有黑名单列表")
       return FilterStates.pass
-    }
-    const ct = every(black_list?.keywords, (kw) => includes(text, kw))
-    if (ct) {
-      if (isEmpty(black_list?.except)) {
-        console.error("× 丢弃，黑名单 √")
-        return FilterStates.drop
-      }
-      for (const except of black_list.except as string[]) {
-        if (includes(text, except)) {
-          console.warn("√ 放行，黑名单 √，排除名单 √")
+      //在包中，又有黑名单，就要进行判断，黑名单中的情况
+    } else {
+      console.log("检查黑名单列表")
+      for (const black_list of app_package.BLACKLISTS as BlackListOptions[]) {
+        const is_drop = filterBlackList(info.TEXT, black_list)
+        if (!is_drop) {
+          console.info("√ 放行，没有命中关键词")
           return FilterStates.pass
         }
       }
-      console.error("× 丢弃，黑名单 √，排除名单 ×")
+      console.warn("× 丢弃，命中关键词")
       return FilterStates.drop
     }
-    return FilterStates.continue
   }
-
-  if (!filter_switch) {
-    console.warn("√ 放行，已关闭过滤")
-    return FilterStates.pass
-  }
-  // 先过滤包id
-  let is_in_packages = false
-  for (const app_package of Object.values(app_packages) as Package[]) {
-    if (app_package.PACKAGENAME === info.PACKAGENAME) {
-      if (isEmpty(app_package.BLACKLISTS)) {
-        console.warn("√ 放行，没有黑名单")
-        return FilterStates.pass
-      }
-      is_in_packages = true
-
-      for (const black_list of app_package.BLACKLISTS as BlackListOptions[]) {
-        console.log(black_list)
-
-        const r = filterBlackList(info.TEXT, black_list)
-        if (r !== FilterStates.continue) {
-          return r
-        }
-      }
-    }
-  }
-  if (is_in_packages) {
-    console.warn("√ 放行，在包中")
-    return FilterStates.pass
-  }
-  console.error("× 丢弃，不在包中")
-  return FilterStates.drop
+  return FilterStates.pass
 }
 
 function setStorageData(name: string, key: string, value: unknown) {
