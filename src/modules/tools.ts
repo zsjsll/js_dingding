@@ -1,6 +1,6 @@
 import { every, find as _find, floor, head, includes, isEmpty, last, parseInt, some, toNumber } from "lodash"
 import moment from "moment"
-import { SwipeScreen, Delay, Pause, AppPackages, Info, BlackListOptions, FilterStates, Package } from "@/types"
+import { SwipeScreen, Delay, Pause, AppPackages, Info, BlackListOptions, FilterStates, Package, XOY } from "@/types"
 
 // -----------以下函数需要root权限-----------------
 
@@ -15,6 +15,19 @@ export const system = {
   brightScreen,
   isDeviceLocked,
   setVolume,
+  clickBounds,
+}
+
+function clickBounds(bounds: android.graphics.Rect | XOY) {
+  if (bounds instanceof android.graphics.Rect) {
+    const x = bounds.centerX()
+    const y = bounds.centerY()
+    Tap(x, y)
+  } else {
+    const x = bounds[0]
+    const y = bounds[1]
+    Tap(x, y)
+  }
 }
 
 function swipeScreen(opt: SwipeScreen, root: boolean) {

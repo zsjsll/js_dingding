@@ -29,13 +29,13 @@ export class QQ {
       // 这个组件是不可以点击的，只能点击他的父组件
       console.log("点击消息组件")
       const b = nav.parent().bounds()
-      click(b.centerX(), b.centerY())
+      system.clickBounds(b)
     } else {
       console.warn("点击消息绝对坐标！")
-      // bounds(0, 2194, 270, device.height).click()
+      bounds(0, 2194, 270, device.height)
       const x = 270 / 2
       const y = device.height - 10
-      click(x, y)
+      system.clickBounds([x, y])
     }
 
     sleep(1e3)
@@ -44,24 +44,24 @@ export class QQ {
     if (contact !== null) {
       console.log("点击联系人")
       const b = contact.bounds()
-      click(b.centerX(), b.centerY())
+      system.clickBounds(b)
     } else {
       console.warn("点击联系人绝对坐标！")
-      bounds(0, 372, device.width, 566).click()
+      // bounds(0, 372, device.width, 566)
       const x = device.width / 2
       const y = 566 - 10
-      click(x, y)
+      system.clickBounds([x, y])
     }
     sleep(1e3)
 
-    // app.startActivity({
-    //   action: "android.intent.action.VIEW",
-    //   data: "mqq://im/chat?chat_type=wpa&version=1&src_type=web&uin=" + this.QQ,
-    //   packageName: this.PACKAGESNAME.QQ,
-    // })
+    app.startActivity({
+      action: "android.intent.action.VIEW",
+      data: "mqq://im/chat?chat_type=wpa&version=1&src_type=web&uin=" + this.QQ,
+      packageName: this.PACKAGESNAME.QQ,
+    })
 
-    const t = id("send_btn").findOne(5e3) !== null
-    return t
+    const t = text("发送").clickable().findOne(10e3)
+    return t !== null
   }
 
   private sendmsg(message: string) {
@@ -71,7 +71,7 @@ export class QQ {
 
     const send = text("发送").clickable().findOne(10e3)
     sleep(1000)
-    send.click()
+    system.clickBounds(send.bounds())
     console.info("发送成功")
   }
   openAndSendMsg(message: string[]) {
@@ -119,10 +119,11 @@ export class DD {
   private logining() {
     //是否为新版本的钉钉，如果是，用旧的登录方式
     if (id("tv_more").findOne(2e3) !== null) {
-      id("tv_more").findOne(10e3).click()
+      const a = id("tv_more").findOne(10e3)
+      system.clickBounds(a.bounds())
       sleep(2e3)
-      id("ll_rollback_old_login").findOne(10e3).click()
-      sleep(2e3)
+      const b = id("ll_rollback_old_login").findOne(10e3)
+      system.clickBounds(b.bounds())
       console.log("切换登录方式为旧版...")
     }
     sleep(2e3)
@@ -130,16 +131,18 @@ export class DD {
     sleep(2e3)
     id("et_password").findOne(10e3).setText(this.PASSWD)
     sleep(2e3)
-    id("cb_privacy").findOne(10e3).click()
+    const c = id("cb_privacy").findOne(10e3)
+    system.clickBounds(c.bounds())
     sleep(2e3)
-    id("btn_next").findOne(10e3).click()
+    const d = id("btn_next").findOne(10e3)
+    system.clickBounds(d.bounds())
   }
 
   // 不进行更新
   private noUpdate() {
     const noupdate = text("暂不更新").findOne(10e3)
     if (noupdate !== null) {
-      noupdate.click()
+      system.clickBounds(noupdate.bounds())
       return true
     } else return false
   }
@@ -147,9 +150,12 @@ export class DD {
   private atAppHome() {
     if (!this.isLogin()) return false
     const message = id("home_app_item").indexInParent(0).findOne(5e3)
-    if (message !== null) message.click()
-    else if (packageName(this.PACKAGESNAME.DD).findOne(2e3) !== null) click(device.width / 10, device.height * 0.95)
-    else return false
+    if (message !== null) system.clickBounds(message.bounds())
+    else if (packageName(this.PACKAGESNAME.DD).findOne(2e3) !== null) {
+      const x = device.width / 10
+      const y = device.height * 0.95
+      system.clickBounds([x, y])
+    } else return false
     return true
   }
 
@@ -205,12 +211,14 @@ export class DD {
       }
       console.info("可以打卡")
       const btn = text("上班打卡").clickable(true).findOnce() || text("下班打卡").clickable(true).findOnce() || text("迟到打卡").clickable(true).findOnce()
-      if (btn === null) {
-        click(device.width / 2, device.height * 0.6)
-        console.log("点击打卡按钮坐标")
-      } else {
-        btn.click()
+      if (btn !== null) {
+        system.clickBounds(btn.bounds())
         console.log("按下打卡按钮")
+      } else {
+        const x = device.width / 2
+        const y = device.height * 0.6
+        system.clickBounds([x, y])
+        console.log("点击打卡按钮坐标")
       }
       if (textContains("成功").findOne(15e3) === null) {
         console.warn("打卡无效,也许未到打卡时间!")

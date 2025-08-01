@@ -9,6 +9,8 @@ export interface SwipeScreen {
 
 export type Pause = [number, number]
 
+export type XOY = [number, number]
+
 export type BlackListOptions = string[]
 export interface Package {
   PACKAGENAME: string
