@@ -1,4 +1,4 @@
-import { every, floor, head, includes, isEmpty, last, parseInt, some, toNumber } from "lodash"
+import { every, find as _find, floor, head, includes, isEmpty, last, parseInt, some, toNumber } from "lodash"
 import moment from "moment"
 import { SwipeScreen, Delay, Pause, AppPackages, Info, BlackListOptions, FilterStates, Package } from "@/types"
 
@@ -144,35 +144,34 @@ function delay([min, max]: Delay = [0, 0]) {
 }
 
 function isDrop(filter_switch = true, info: Info, app_packages: AppPackages): FilterStates {
-  // 根据黑名单过滤文本，判断文本中是否包含所有黑名单关键词,但是注意一下，返回ture反而是丢弃此条信息
-  const filterBlackList = (text: string, black_list: BlackListOptions): boolean => every(black_list, (kw) => includes(text, kw))
-
   if (!filter_switch) {
     console.info("√ 放行，过滤未开启")
     return FilterStates.pass
   }
 
-  for (const app_package of Object.values(app_packages) as Package[]) {
-    if (app_package.PACKAGENAME === info.PACKAGENAME) {
-      if (isEmpty(app_package.BLACKLISTS)) {
-        console.info("√ 放行，没有黑名单列表")
-        return FilterStates.pass
-      } else {
-        console.log("检查黑名单列表")
-        for (const black_list of app_package.BLACKLISTS as BlackListOptions[]) {
-          const hit_keywords = filterBlackList(info.TEXT, black_list)
-          if (hit_keywords) {
-            console.warn("× 丢弃，命中关键词")
-            return FilterStates.drop
-          }
-        }
-        console.info("√ 放行，没有命中关键词")
-        return FilterStates.pass
-      }
-    }
+  const app_package = _find(Object.values(app_packages) as Package[], (pkg) => pkg.PACKAGENAME === info.PACKAGENAME)
+
+  if (!app_package) {
+    console.warn("× 丢弃，不在包中")
+    return FilterStates.drop
   }
-  console.warn("× 丢弃，不在包中")
-  return FilterStates.drop
+
+  if (isEmpty(app_package.BLACKLISTS)) {
+    console.info("√ 放行，没有黑名单列表")
+    return FilterStates.pass
+  }
+
+  const checkBlackLists = (text: string, blackLists: BlackListOptions[]): boolean =>
+    some(blackLists, (black_list) => every(black_list, (kw) => includes(text, kw)))
+
+  // 当有黑名单时，对比通知内容和黑名单列表
+  if (checkBlackLists(info.TEXT, app_package.BLACKLISTS as BlackListOptions[])) {
+    console.warn("× 丢弃，命中关键词")
+    return FilterStates.drop
+  }
+
+  console.info("√ 放行，没有命中关键词")
+  return FilterStates.pass
 }
 
 function setStorageData(name: string, key: string, value: unknown) {

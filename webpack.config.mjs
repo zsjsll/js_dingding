@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/ban-ts-comment */
 import { CleanWebpackPlugin } from "clean-webpack-plugin"
 import CopyPlugin from "copy-webpack-plugin"
 import TerserPlugin from "terser-webpack-plugin"
@@ -36,6 +37,7 @@ const config = {
         },
       ],
     }),
+    // @ts-expect-error
     new MomentLocalesPlugin({
       localesToKeep: ["zh-cn"],
     }),
