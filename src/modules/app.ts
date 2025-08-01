@@ -1,4 +1,4 @@
-import { isEmpty, startsWith } from "lodash"
+import { isEmpty } from "lodash"
 import { script, system } from "@/tools"
 import { QQCfg, DDCfg, ClockCfg, SwipeScreen } from "@/types"
 
@@ -15,68 +15,53 @@ export class QQ {
     this.APPNAME = cfg.PACKAGES.QQ.APPNAME as string
   }
 
-  private open() {
-    for (let i = 1; i <= this.RETRY; i++) {
-      console.info(`第${i}次打开...`)
-      if (system.openApp(this.PACKAGESNAME.QQ, this.APPNAME)) return true
-    }
+  private open(): boolean {
+    if (system.openApp(this.PACKAGESNAME.QQ, this.APPNAME)) return true
+
     console.error("无法打开QQ!")
     return false
   }
-  private chat() {
+  private chat(): boolean {
     // 最新的tim和qq 如果用意图启动，会出错误，所以改成查找控件来进入聊天窗口
+    const nav = id("j_k").findOne(2e3)
+
+    if (nav !== null) {
+      // 这个组件是不可以点击的，只能点击他的父组件
+      console.log("点击消息组件")
+      const b = nav.parent().bounds()
+      click(b.centerX(), b.centerY())
+    } else {
+      console.warn("点击消息绝对坐标！")
+      // bounds(0, 2194, 270, device.height).click()
+      const x = 270 / 2
+      const y = device.height - 10
+      click(x, y)
+    }
 
     sleep(1e3)
-    let nav = id("kbi").findOne(2e3)
-
-    if (nav !== null && nav.text() === "消息") {
-      console.log("找到消息控件")
-      nav.parent().click()
+    // const contact = id("aua").descStartsWith("123_").findOne(2e3)
+    const contact = id("to2").indexInParent(1).findOne(2e3)
+    if (contact !== null) {
+      console.log("点击联系人")
+      const b = contact.bounds()
+      click(b.centerX(), b.centerY())
     } else {
-      // nav = text("消息").boundsInside(0, 2194, device.width, device.height).findOne(2e3) //双保险查找控件
-      nav = id("j_k").findOne(2e3) //双保险查找控件
-      // if (nav !== null && nav.text() === "消息") {
-      if (nav !== null) {
-        console.log("未找到消息控件，点击组件坐标")
-        const bound = nav.bounds()
-        click(bound.centerX(), bound.centerY())
-      } else {
-        // FIXME
-        console.warn("点击消息绝对坐标！")
-        bounds(0, 2194, 270, device.height).click() //3保险查找控件
-      }
+      console.warn("点击联系人绝对坐标！")
+      bounds(0, 372, device.width, 566).click()
+      const x = device.width / 2
+      const y = 566 - 10
+      click(x, y)
     }
     sleep(1e3)
-    // const contact = id("n19").indexInParent(1).findOne(10e3).child(0)
-    let contact = id("aua").descStartsWith("123_").findOne(2e3)
-    if (contact !== null && startsWith(contact.desc(), "123_")) {
-      console.log("找到联系人")
-      contact.click()
-    } else {
-      // contact = descStartsWith("123_").boundsInside(0, 373, device.width, 567).findOne(2e3) //双保险查找控件
-      contact = id("tm1").findOne(2e3) //双保险查找控件
-      // if (contact !== null && startsWith(contact.desc(), "123_")) {
-      if (contact !== null) {
-        console.log("未找到联系人，点击组件坐标")
-        const bound = contact.bounds()
-        click(bound.centerX(), bound.centerY())
-      } else {
-        // FIXME
-        console.warn("点击联系人绝对坐标！")
-        bounds(0, 373, device.width, 567).click() //3保险查找控件
-      }
-    }
-    sleep(2e3)
 
-    // if (!(a && b)) {
-    // console.warn("使用最后解决方案")
-    app.startActivity({
-      action: "android.intent.action.VIEW",
-      data: "mqq://im/chat?chat_type=wpa&version=1&src_type=web&uin=" + this.QQ,
-      packageName: this.PACKAGESNAME.QQ,
-    })
-    // }
-    sleep(2e3)
+    // app.startActivity({
+    //   action: "android.intent.action.VIEW",
+    //   data: "mqq://im/chat?chat_type=wpa&version=1&src_type=web&uin=" + this.QQ,
+    //   packageName: this.PACKAGESNAME.QQ,
+    // })
+
+    const t = id("send_btn").findOne(5e3) !== null
+    return t
   }
 
   private sendmsg(message: string) {
@@ -91,18 +76,22 @@ export class QQ {
   }
   openAndSendMsg(message: string[]) {
     if (!isEmpty(message)) {
-      console.log("发送信息")
-      system.backHome(this.PACKAGESNAME.HOME)
-      if (!this.open()) return false
-
-      this.chat() //进入聊天界面
-
-      const msgs = script.formatMsgs(message)
-      console.info(msgs)
-      this.sendmsg(msgs)
+      for (let i = 1; i <= this.RETRY; i++) {
+        console.info(`第${i}次运行QQ...`)
+        system.backHome(this.PACKAGESNAME.HOME)
+        if (!this.open()) continue
+        sleep(1e3)
+        if (!this.chat()) continue
+        sleep(1e3)
+        console.log("发送信息")
+        const msgs = script.formatMsgs(message)
+        console.info(msgs)
+        this.sendmsg(msgs)
+        break
+      }
     } else console.log("消息为空，直接退出！")
 
-    sleep(1e3)
+    sleep(2e3)
     system.backHome(this.PACKAGESNAME.HOME)
   }
 }
