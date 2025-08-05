@@ -18,11 +18,6 @@ export interface Package {
   BLACKLISTS?: BlackListOptions[]
 }
 
-export enum FilterStates {
-  drop = "drop",
-  pass = "pass",
-}
-
 //listener.ts
 export interface ListenerCfg {
   OBSERVE_VOLUME_KEY_UP: boolean

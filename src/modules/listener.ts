@@ -1,6 +1,6 @@
 import { script, system } from "./tools"
 import { debounce, forIn, isFunction } from "lodash"
-import { AppPackages, FilterStates, Info, ListenerCfg } from "@/types"
+import { AppPackages, Info, ListenerCfg } from "@/types"
 
 export default class Listener {
   constructor(cfg: ListenerCfg) {
@@ -64,7 +64,7 @@ export default class Listener {
             TICKER_TEXT: n.tickerText,
           }
           forIn(info, (v, k) => console.verbose(`${k}: ${v}`))
-          if (script.isDrop(this.NOTIFICATIONS_FILTER, info, this.PACKAGES) === FilterStates.drop) return
+          if (!script.passNotification(this.NOTIFICATIONS_FILTER, info, this.PACKAGES)) return
           if (isFunction(func)) return func(n)
         },
         200,

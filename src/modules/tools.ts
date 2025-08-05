@@ -1,6 +1,6 @@
 import { every, find as _find, floor, head, includes, isEmpty, last, parseInt, some, toNumber } from "lodash"
 import moment from "moment"
-import { SwipeScreen, Delay, Pause, AppPackages, Info, BlackListOptions, FilterStates, Package, XOY } from "@/types"
+import { SwipeScreen, Delay, Pause, AppPackages, Info, BlackListOptions, Package, XOY } from "@/types"
 
 // -----------以下函数需要root权限-----------------
 
@@ -156,22 +156,22 @@ function delay([min, max]: Delay = [0, 0]) {
   }
 }
 
-function isDrop(filter_switch = true, info: Info, app_packages: AppPackages): FilterStates {
+function passNotification(filter_switch = true, info: Info, app_packages: AppPackages): boolean {
   if (!filter_switch) {
     console.info("√ 放行，过滤未开启")
-    return FilterStates.pass
+    return true
   }
 
   const app_package = _find(Object.values(app_packages) as Package[], (pkg) => pkg.PACKAGENAME === info.PACKAGENAME)
 
   if (!app_package) {
     console.warn("× 丢弃，不在包中")
-    return FilterStates.drop
+    return false
   }
 
   if (isEmpty(app_package.BLACKLISTS)) {
     console.info("√ 放行，没有黑名单列表")
-    return FilterStates.pass
+    return true
   }
 
   const checkBlackLists = (text: string, blackLists: BlackListOptions[]): boolean =>
@@ -180,11 +180,11 @@ function isDrop(filter_switch = true, info: Info, app_packages: AppPackages): Fi
   // 当有黑名单时，对比通知内容和黑名单列表
   if (checkBlackLists(info.TEXT, app_package.BLACKLISTS as BlackListOptions[])) {
     console.warn("× 丢弃，命中关键词")
-    return FilterStates.drop
+    return false
   }
 
   console.info("√ 放行，没有命中关键词")
-  return FilterStates.pass
+  return true
 }
 
 function setStorageData(name: string, key: string, value: unknown) {
@@ -264,7 +264,7 @@ export const script = {
   reloadScript,
   onlyRunOneScript,
   delay,
-  isDrop,
+  passNotification,
   setStorageData,
   getStorageData,
   formatTime,
