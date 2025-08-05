@@ -15,8 +15,30 @@ export class QQ {
     this.APPNAME = cfg.PACKAGES.QQ.APPNAME as string
   }
 
+  // 不进行更新
+  private cancelUpdate() {
+    // const window = id("6kp").findOne(3e3) //这个就是那个取消按键的id
+    const window = text("发现新版本").findOne(3e3)
+    if (window !== null) {
+      const closeButton = window.parent().parent().child(1)
+      system.clickBounds(closeButton.bounds())
+      console.info("取消更新弹窗")
+    }
+    const banner = text("点击更新").findOne(3e3)
+    if (banner !== null) {
+      const closeButton = banner.parent().child(3)
+      system.clickBounds(closeButton.bounds())
+      console.info("取消更新横幅")
+    }
+    if (window === null && banner === null) console.log("无更新信息")
+  }
+
   private open(): boolean {
-    if (system.openApp(this.PACKAGESNAME.QQ, this.APPNAME)) return true
+    if (system.openApp(this.PACKAGESNAME.QQ, this.APPNAME)) {
+      sleep(3e3)
+      this.cancelUpdate()
+      return true
+    }
 
     console.error("无法打开QQ!")
     return false
@@ -24,12 +46,11 @@ export class QQ {
   private chat(): boolean {
     // 最新的tim和qq 如果用意图启动，会出错误，所以改成查找控件来进入聊天窗口
     const nav = id("j_k").findOne(2e3)
-
     if (nav !== null) {
       // 这个组件是不可以点击的，只能点击他的父组件
       console.log("点击消息组件")
-      const b = nav.parent().bounds()
-      system.clickBounds(b)
+      const b = nav.parent()
+      system.clickBounds(b.bounds())
     } else {
       console.warn("点击消息绝对坐标！")
       bounds(0, 2194, 270, device.height)
@@ -43,8 +64,8 @@ export class QQ {
     const contact = id("to2").indexInParent(1).findOne(2e3)
     if (contact !== null) {
       console.log("点击联系人")
-      const b = contact.bounds()
-      system.clickBounds(b)
+      const b = contact
+      system.clickBounds(b.bounds())
     } else {
       console.warn("点击联系人绝对坐标！")
       // bounds(0, 372, device.width, 566)
@@ -139,12 +160,12 @@ export class DD {
   }
 
   // 不进行更新
-  private noUpdate() {
-    const noupdate = text("暂不更新").findOne(10e3)
-    if (noupdate !== null) {
-      system.clickBounds(noupdate.bounds())
-      return true
-    } else return false
+  private cancelUpdate() {
+    const window = text("暂不更新").findOne(10e3)
+    if (window !== null) {
+      system.clickBounds(window.bounds())
+      console.info("取消更新")
+    } else console.log("无更新消息")
   }
   // 强制回到app的home界面
   private atAppHome() {
@@ -174,8 +195,7 @@ export class DD {
         console.log("正在登录...")
         this.logining()
       } else console.log("可能已登录")
-      if (this.noUpdate()) console.info("取消更新")
-      else console.log("无更新消息")
+      this.cancelUpdate()
       sleep(5e3) //如果设置了极速打卡或者蓝牙自动打卡， 会在这段时间完成打卡
       if (this.atAppHome()) return true
       else console.warn("登录失败,重试...")

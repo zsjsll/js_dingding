@@ -1,12 +1,5 @@
-import { ECDH } from "crypto"
-import { every, includes } from "lodash"
-
-const a = ['1', '2', '3', '4']
-
-const b = every(a, (kw) => includes('nihao 1,jsdk,234', kw))
-console.log(b)
-
-
-function add(a, b) {
-  return a + b
-}
+const obj = { a: 1, b: 2, c: 3 }
+const k = { a: undefined, b: undefined }
+Object.keys(k).forEach((key) => {
+  k[key as keyof typeof k] = obj[key as keyof typeof obj]
+})
