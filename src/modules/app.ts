@@ -18,13 +18,13 @@ export class QQ {
   // 不进行更新
   private cancelUpdate() {
     // const window = id("6kp").findOne(3e3) //这个就是那个取消按键的id
-    const window = text("发现新版本").findOne(3e3)
+    const window = text("发现新版本").findOne(2e3)
     if (window !== null) {
       const closeButton = window.parent().parent().child(1)
       system.clickBounds(closeButton.bounds())
       console.info("取消更新弹窗")
     }
-    const banner = text("点击更新").findOne(3e3)
+    const banner = text("点击更新").findOne(2e3)
     if (banner !== null) {
       const closeButton = banner.parent().child(3)
       system.clickBounds(closeButton.bounds())
@@ -35,7 +35,7 @@ export class QQ {
 
   private open(): boolean {
     if (system.openApp(this.PACKAGESNAME.QQ, this.APPNAME)) {
-      sleep(3e3)
+      sleep(2e3)
       this.cancelUpdate()
       return true
     }
