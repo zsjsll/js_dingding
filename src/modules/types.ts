@@ -95,8 +95,3 @@ export interface PhoneCfg {
   SWIPESCREEN: SwipeScreen
   VOLUME: number
 }
-
-export enum Step {
-  next = "next",
-  exit = "exit",
-}

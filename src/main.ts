@@ -34,11 +34,10 @@ import { QQ, DD, Clock } from "@/app"
   toastLog("运行中。。。")
 
   //重写发送函数
-  const sendMsg = (final_msg: string[]) => {
+  const isSendAllMsg = (final_msg: string[]) => {
     qq.openAndSendMsg(final_msg)
     cfg.info = []
-    if (isEmpty(cfg.info)) return phone.next
-    else return phone.exit
+    return isEmpty(cfg.info)
   }
 
   function listenMsg(n: org.autojs.autojs.core.notification.Notification) {
@@ -47,7 +46,7 @@ import { QQ, DD, Clock } from "@/app"
       cfg.thread = threads.start(() => {
         phone.turnOn(cfg.ROOT)
         const msg = [...f(), ...cfg.info]
-        if (sendMsg(msg) === phone.exit) return
+        if (!isSendAllMsg(msg)) return
         phone.turnOff(cfg.ROOT)
       })
     }
@@ -102,7 +101,7 @@ import { QQ, DD, Clock } from "@/app"
         script.delay(cfg.DELAY) //随机延迟打卡
         msg = dd.openAndPunchIn()
       } else msg = pause_tatus_msg
-      if (sendMsg(msg) === phone.exit) return
+      if (!isSendAllMsg(msg)) return
       phone.turnOff(cfg.ROOT)
     })
   }
@@ -121,13 +120,13 @@ import { QQ, DD, Clock } from "@/app"
         old_thread?.join(0)
         phone.turnOn(cfg.ROOT)
         if (isEmpty(cfg.info)) return
-        if (sendMsg(cfg.info) === phone.exit) return
+        if (!isSendAllMsg(cfg.info)) return
         phone.turnOff(cfg.ROOT)
       })
     } else
       cfg.thread = threads.start(() => {
         phone.turnOn(cfg.ROOT)
-        if (sendMsg(cfg.info) === phone.exit) return
+        if (!isSendAllMsg(cfg.info)) return
         phone.turnOff(cfg.ROOT)
       })
   }

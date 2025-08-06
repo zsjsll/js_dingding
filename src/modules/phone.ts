@@ -1,5 +1,5 @@
 import { system } from "./tools"
-import { PhoneCfg, Step, SwipeScreen } from "@/types"
+import { PhoneCfg, SwipeScreen } from "@/types"
 
 export default class Phone {
   private readonly DEV: boolean
@@ -8,8 +8,7 @@ export default class Phone {
   private readonly VOLUME: number
   private readonly PACKAGESNAME: { HOME: string }
 
-  public readonly next: Step = Step.next
-  public readonly exit: Step = Step.exit
+
 
   constructor(cfg: PhoneCfg) {
     this.DEV = cfg.DEV
