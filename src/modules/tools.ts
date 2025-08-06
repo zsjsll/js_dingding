@@ -1,5 +1,6 @@
 import { every, find as _find, floor, head, includes, isEmpty, last, parseInt, some, toNumber } from "lodash"
-import moment from "moment"
+import dayjs from "dayjs"
+
 import { SwipeScreen, Delay, Pause, AppPackages, Info, BlackListOptions, Package, XOY } from "@/types"
 
 // -----------以下函数需要root权限-----------------
@@ -202,8 +203,8 @@ function getStorageData(name: string, key: string) {
 }
 
 function formatTime(style: string, timestamp?: number) {
-  if (timestamp) return moment(timestamp).format(style)
-  else return moment().format(style)
+  if (timestamp) return dayjs(timestamp).format(style)
+  else return dayjs().format(style)
 }
 
 function formatPauseInput(input: string): Pause {

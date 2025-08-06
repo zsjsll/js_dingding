@@ -22,7 +22,6 @@
     "eslint": "^9.18.0",
     "eslint-plugin-sonarjs": "^3.0.1",
     "globals": "^15.14.0",
-    "moment-locales-webpack-plugin": "^1.2.0",
     "swc-loader": "^0.2.6",
     "terser-webpack-plugin": "^5.3.11",
     "typescript": "^5.7.3",
@@ -31,7 +30,7 @@
     "webpack-cli": "^6.0.1"
   },
   "dependencies": {
-    "lodash": "^4.17.21",
-    "moment": "^2.30.1"
+    "dayjs": "^1.11.13",
+    "lodash": "^4.17.21"
   }
 }

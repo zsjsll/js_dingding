@@ -1,9 +1,8 @@
-/* eslint-disable @typescript-eslint/ban-ts-comment */
+ 
 import { CleanWebpackPlugin } from "clean-webpack-plugin"
 import CopyPlugin from "copy-webpack-plugin"
 import TerserPlugin from "terser-webpack-plugin"
 import AutoxDeployPlugin from "./webpack/autox-deploy-webpack-plugin/index.js"
-import MomentLocalesPlugin from "moment-locales-webpack-plugin"
 import path from "path"
 
 const entry_path = "./src"
@@ -37,10 +36,7 @@ const config = {
         },
       ],
     }),
-    // @ts-expect-error
-    new MomentLocalesPlugin({
-      localesToKeep: ["zh-cn"],
-    }),
+
     new AutoxDeployPlugin({
       type: "save",
       path: output_path,
