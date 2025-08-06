@@ -10,7 +10,6 @@ import { QQ, DD, Clock } from "@/app"
   script.onlyRunOneScript() //停止其他脚本，只运行当前脚本
   setScreenMetrics(device.width, device.height)
   auto()
-  shell("", true)
   console.log("完成初始化脚本")
 
   //初始化设置

@@ -44,7 +44,7 @@ export default class Config {
         DD: {
           PACKAGENAME: "com.alibaba.android.rimet",
           APPNAME: "钉钉",
-          BLACKLISTS: [ ["考勤打卡", "失败"] , ["考勤打卡", "异常"], ["审批统计已生成"] ],
+          BLACKLISTS: [["考勤打卡", "失败"], ["考勤打卡", "异常"], ["审批统计已生成"]],
         }, // 钉钉
         EMAIL: { PACKAGENAME: "com.tencent.androidqqmail" }, // QQ邮箱
         XMSF: { PACKAGENAME: "com.xiaomi.xmsf" }, // 小米推送服务
@@ -96,6 +96,10 @@ export default class Config {
 
   initCfg() {
     this.VARIABLE.ROOT = system.isRoot()
+    if (this.VARIABLE.ROOT) {
+      shell("", true)
+      console.info("开启ROOT模式")
+    } else console.warn("未获取ROOT权限")
     const cfg = this.createJsonFile()
     const final_config: Cfg = { ...cfg, ...this.VARIABLE }
     return final_config
