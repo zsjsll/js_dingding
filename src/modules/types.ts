@@ -20,10 +20,10 @@ export interface Package {
 
 //listener.ts
 export interface ListenerCfg {
+  PACKAGES: AppPackages
   OBSERVE_VOLUME_KEY_UP: boolean
   OBSERVE_VOLUME_KEY_DOWN: boolean
   NOTIFICATIONS_FILTER: boolean
-  PACKAGES: AppPackages
 }
 
 export interface Info {
@@ -37,73 +37,11 @@ export interface Info {
   TICKER_TEXT: string
 }
 
-// app.ts
-
-interface QQPackages extends PhonePackages {
-  QQ: Package
-}
-
-export interface QQCfg {
-  PACKAGES: QQPackages
-  RETRY: number
-  QQ: string
-}
-
-interface DDPackages extends PhonePackages {
-  DD: Package
-}
-
-export interface DDCfg {
-  PACKAGES: DDPackages
-  ACCOUNT: string
-  PASSWD: string
-  RETRY: number
-
-  CORP_ID: string
-}
-
-interface ClockPackages extends PhonePackages {
-  CLOCK: Package
-}
-
-export interface ClockCfg {
-  PACKAGES: ClockPackages
-  SWIPESCREEN: SwipeScreen
-  RETRY: number
-}
-
-interface EmailPackages extends PhonePackages {
-  EMAIL: Package
-}
-
-export interface EmailCfg {
-  PACKAGES: EmailPackages
-}
-
-// Phone.ts
-
-export interface PhoneCfg {
-  DEV: boolean
-  SCREEN_BRIGHTNESS: number
-  SWIPESCREEN: SwipeScreen
-  VOLUME: number
-  PACKAGES: PhonePackages
-}
-
-interface PhonePackages {
-  HOME: Package
-}
-export enum Step {
-  next = "next",
-  exit = "exit",
-}
 //config.ts
 
-type ExtendPackages = "XMSF" | "HWID"
+type AppPackagesKey = "HOME" | "QQ" | "DD" | "CLOCK" | "EMAIL" | "XMSF" | "HWID"
 
-type ExtendPackagesMap = Record<ExtendPackages, Package>
-
-export type AppPackages = PhonePackages & QQPackages & DDPackages & ClockPackages & EmailPackages & ExtendPackagesMap
+export type AppPackages = CreateAppPackages<AppPackagesKey>
 
 export interface Json extends DDCfg, QQCfg, PhoneCfg, ListenerCfg {
   PACKAGES: AppPackages
@@ -119,3 +57,46 @@ export interface Variable {
 }
 
 export type Cfg = Variable & Json
+
+// app.ts
+
+type CreateAppPackages<K extends AppPackagesKey> = Record<K, Package> & { HOME: Package }
+
+export interface QQCfg {
+  PACKAGES: CreateAppPackages<"QQ">
+  RETRY: number
+  QQ: string
+}
+
+export interface DDCfg {
+  PACKAGES: CreateAppPackages<"DD">
+  ACCOUNT: string
+  PASSWD: string
+  RETRY: number
+  CORP_ID: string
+}
+
+export interface ClockCfg {
+  PACKAGES: CreateAppPackages<"CLOCK">
+  SWIPESCREEN: SwipeScreen
+  RETRY: number
+}
+
+export interface EmailCfg {
+  PACKAGES: CreateAppPackages<"EMAIL">
+}
+
+// Phone.ts
+
+export interface PhoneCfg {
+  PACKAGES: CreateAppPackages<"HOME">
+  DEV: boolean
+  SCREEN_BRIGHTNESS: number
+  SWIPESCREEN: SwipeScreen
+  VOLUME: number
+}
+
+export enum Step {
+  next = "next",
+  exit = "exit",
+}
