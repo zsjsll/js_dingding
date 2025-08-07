@@ -43,20 +43,20 @@ type AppPackagesKey = "HOME" | "QQ" | "DD" | "CLOCK" | "EMAIL" | "XMSF" | "HWID"
 
 export type AppPackages = CreateAppPackages<AppPackagesKey>
 
-export interface Json extends DDCfg, QQCfg, PhoneCfg, ListenerCfg {
+export interface Json extends Omit<DDCfg & QQCfg & PhoneCfg & ListenerCfg, "ROOT"> {
   PACKAGES: AppPackages
   GLOBAL_LOG_FILE_DIR: string
   DELAY: Delay
 }
 
-export interface Variable {
+export interface ExtendProp {
   ROOT: boolean
   pause: Pause
   thread: org.autojs.autojs.core.looper.TimerThread | undefined
   info: string[]
 }
 
-export type Cfg = Variable & Json
+export type Cfg = ExtendProp & Json
 
 // app.ts
 
@@ -66,6 +66,7 @@ export interface QQCfg {
   PACKAGES: CreateAppPackages<"QQ">
   RETRY: number
   QQ: string
+  ROOT: boolean
 }
 
 export interface DDCfg {
@@ -74,16 +75,19 @@ export interface DDCfg {
   PASSWD: string
   RETRY: number
   CORP_ID: string
+  ROOT: boolean
 }
 
 export interface ClockCfg {
   PACKAGES: CreateAppPackages<"CLOCK">
   SWIPESCREEN: SwipeScreen
   RETRY: number
+  ROOT: boolean
 }
 
 export interface EmailCfg {
   PACKAGES: CreateAppPackages<"EMAIL">
+  ROOT: boolean
 }
 
 // Phone.ts
@@ -94,4 +98,5 @@ export interface PhoneCfg {
   SCREEN_BRIGHTNESS: number
   SWIPESCREEN: SwipeScreen
   VOLUME: number
+  ROOT: boolean
 }

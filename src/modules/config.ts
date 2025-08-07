@@ -1,14 +1,14 @@
 import { system, script } from "./tools"
 import { toString } from "lodash"
-import { Cfg, Json, Variable } from "@/types"
+import { Cfg, Json, ExtendProp } from "@/types"
 
 export default class Config {
   private readonly CONFIG: Json
   private readonly CONFIG_PATH: string
-  private readonly VARIABLE: Variable
+  private readonly EXTENDPROP: ExtendProp
 
   constructor() {
-    this.VARIABLE = {
+    this.EXTENDPROP = {
       ROOT: false,
       pause: [0, 0],
       thread: undefined,
@@ -95,13 +95,13 @@ export default class Config {
   }
 
   initCfg() {
-    this.VARIABLE.ROOT = system.isRoot()
-    if (this.VARIABLE.ROOT) {
+    this.EXTENDPROP.ROOT = system.isRoot()
+    if (this.EXTENDPROP.ROOT) {
       shell("", true)
       console.info("开启ROOT模式")
     } else console.warn("未获取ROOT权限")
     const cfg = this.createJsonFile()
-    const final_config: Cfg = { ...cfg, ...this.VARIABLE }
+    const final_config: Cfg = { ...cfg, ...this.EXTENDPROP }
     return final_config
   }
 
@@ -115,7 +115,7 @@ export default class Config {
     // console.log(final_config)
     if (final_config.DEV) toastLog("调试模式")
     else console.log("正常模式")
-    if (!final_config.NOTIFICATIONS_FILTER) toastLog("白名单已关闭")
-    else console.log("白名单已开启")
+    if (!final_config.NOTIFICATIONS_FILTER) toastLog("过滤模式已关闭")
+    else console.log("过滤模式已开启")
   }
 }

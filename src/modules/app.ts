@@ -7,12 +7,14 @@ export class QQ {
   private readonly APPNAME: string
   private readonly QQ: string
   private readonly RETRY: number
+  private readonly ROOT: boolean
 
   constructor(cfg: QQCfg) {
     this.PACKAGESNAME = { QQ: cfg.PACKAGES.QQ.PACKAGENAME, HOME: cfg.PACKAGES.HOME.PACKAGENAME }
     this.QQ = cfg.QQ
     this.RETRY = cfg.RETRY
     this.APPNAME = cfg.PACKAGES.QQ.APPNAME as string
+    this.ROOT = cfg.ROOT
   }
 
   // 不进行更新
@@ -124,6 +126,7 @@ export class DD {
   private readonly PASSWD: string
   private readonly RETRY: number
   private readonly CORP_ID: string
+  private readonly ROOT: boolean
 
   constructor(cfg: DDCfg) {
     this.PACKAGESNAME = { DD: cfg.PACKAGES.DD.PACKAGENAME, HOME: cfg.PACKAGES.HOME.PACKAGENAME }
@@ -132,6 +135,7 @@ export class DD {
     this.PASSWD = cfg.PASSWD
     this.RETRY = cfg.RETRY
     this.CORP_ID = cfg.CORP_ID
+    this.ROOT = cfg.ROOT
   }
   private isLogin() {
     return !id(this.PACKAGESNAME.DD + ":id/cb_privacy").findOne(5e3)
@@ -272,11 +276,13 @@ export class Clock {
   private readonly PACKAGESNAME: { CLOCK: string; HOME: string }
   private readonly SWIPESCREEN: SwipeScreen
   private readonly RETRY: number
+  private readonly ROOT: boolean
 
   constructor(cfg: ClockCfg) {
     this.PACKAGESNAME = { CLOCK: cfg.PACKAGES.CLOCK.PACKAGENAME, HOME: cfg.PACKAGES.HOME.PACKAGENAME }
     this.SWIPESCREEN = cfg.SWIPESCREEN
     this.RETRY = cfg.RETRY
+    this.ROOT = cfg.ROOT
   }
   //需要root
   closeAlarm(root: boolean) {

@@ -1,5 +1,13 @@
-const obj = { a: 1, b: 2, c: 3 }
-const k = { a: undefined, b: undefined }
-Object.keys(k).forEach((key) => {
-  k[key as keyof typeof k] = obj[key as keyof typeof obj]
-})
+interface Test {
+  a: string
+  b: number
+  c: boolean
+}
+
+type H = "a" | "b" | "c"
+
+type AA<T, K> = T extends K ? never : T
+
+type PP<T, K extends keyof T> = { [U in K]: T[U] }
+
+const a: AA<H, "a"> = "a"

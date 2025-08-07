@@ -7,8 +7,7 @@ export default class Phone {
   private readonly SWIPESCREEN: SwipeScreen
   private readonly VOLUME: number
   private readonly PACKAGESNAME: { HOME: string }
-
-
+  private readonly ROOT: boolean
 
   constructor(cfg: PhoneCfg) {
     this.DEV = cfg.DEV
@@ -16,6 +15,7 @@ export default class Phone {
     this.SWIPESCREEN = cfg.SWIPESCREEN
     this.VOLUME = cfg.VOLUME
     this.PACKAGESNAME = { HOME: cfg.PACKAGES.HOME.PACKAGENAME }
+    this.ROOT = cfg.ROOT
   }
 
   turnOn(root: boolean) {
