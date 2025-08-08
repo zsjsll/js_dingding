@@ -1,5 +1,5 @@
 import { isEmpty } from "lodash"
-import { script, system } from "@/tools"
+import { tools, auto } from "@/tools"
 import { QQCfg, DDCfg, ClockCfg, SwipeScreen } from "@/types"
 
 export class QQ {
@@ -7,14 +7,12 @@ export class QQ {
   private readonly APPNAME: string
   private readonly QQ: string
   private readonly RETRY: number
-  private readonly ROOT: boolean
 
   constructor(cfg: QQCfg) {
     this.PACKAGESNAME = { QQ: cfg.PACKAGES.QQ.PACKAGENAME, HOME: cfg.PACKAGES.HOME.PACKAGENAME }
     this.QQ = cfg.QQ
     this.RETRY = cfg.RETRY
     this.APPNAME = cfg.PACKAGES.QQ.APPNAME as string
-    this.ROOT = cfg.ROOT
   }
 
   // 不进行更新
@@ -23,20 +21,20 @@ export class QQ {
     const window = text("发现新版本").findOne(2e3)
     if (window !== null) {
       const closeButton = window.parent().parent().child(1)
-      system.clickBounds(closeButton.bounds())
+      auto.clickBounds(closeButton.bounds())
       console.info("取消更新弹窗")
     }
     const banner = text("点击更新").findOne(2e3)
     if (banner !== null) {
       const closeButton = banner.parent().child(3)
-      system.clickBounds(closeButton.bounds())
+      auto.clickBounds(closeButton.bounds())
       console.info("取消更新横幅")
     }
     if (window === null && banner === null) console.log("无更新信息")
   }
 
   private open(): boolean {
-    if (system.openApp(this.PACKAGESNAME.QQ, this.APPNAME)) {
+    if (auto.openApp(this.PACKAGESNAME.QQ, this.APPNAME)) {
       sleep(2e3)
       this.cancelUpdate()
       return true
@@ -52,13 +50,13 @@ export class QQ {
       // 这个组件是不可以点击的，只能点击他的父组件
       console.log("点击消息组件")
       const b = nav.parent()
-      system.clickBounds(b.bounds())
+      auto.clickBounds(b.bounds())
     } else {
       console.warn("点击消息绝对坐标！")
       bounds(0, 2194, 270, device.height)
       const x = 270 / 2
       const y = device.height - 10
-      system.clickBounds([x, y])
+      auto.clickBounds([x, y])
     }
 
     sleep(1e3)
@@ -67,13 +65,13 @@ export class QQ {
     if (contact !== null) {
       console.log("点击联系人")
       const b = contact
-      system.clickBounds(b.bounds())
+      auto.clickBounds(b.bounds())
     } else {
       console.warn("点击联系人绝对坐标！")
       // bounds(0, 372, device.width, 566)
       const x = device.width / 2
       const y = 566 - 10
-      system.clickBounds([x, y])
+      auto.clickBounds([x, y])
     }
     sleep(1e3)
 
@@ -94,20 +92,20 @@ export class QQ {
 
     const send = text("发送").clickable().findOne(10e3)
     sleep(1000)
-    system.clickBounds(send.bounds())
+    auto.clickBounds(send.bounds())
     console.info("发送成功")
   }
   openAndSendMsg(message: string[]) {
     if (!isEmpty(message)) {
       for (let i = 1; i <= this.RETRY; i++) {
         console.info(`第${i}次运行QQ...`)
-        system.backHome(this.PACKAGESNAME.HOME)
+        auto.backHome(this.PACKAGESNAME.HOME)
         if (!this.open()) continue
         sleep(1e3)
         if (!this.chat()) continue
         sleep(1e3)
         console.log("发送信息")
-        const msgs = script.formatMsgs(message)
+        const msgs = tools.formatMsgs(message)
         console.info(msgs)
         this.sendmsg(msgs)
         break
@@ -115,7 +113,7 @@ export class QQ {
     } else console.log("消息为空，直接退出！")
 
     sleep(2e3)
-    system.backHome(this.PACKAGESNAME.HOME)
+    auto.backHome(this.PACKAGESNAME.HOME)
   }
 }
 
@@ -126,7 +124,6 @@ export class DD {
   private readonly PASSWD: string
   private readonly RETRY: number
   private readonly CORP_ID: string
-  private readonly ROOT: boolean
 
   constructor(cfg: DDCfg) {
     this.PACKAGESNAME = { DD: cfg.PACKAGES.DD.PACKAGENAME, HOME: cfg.PACKAGES.HOME.PACKAGENAME }
@@ -135,7 +132,6 @@ export class DD {
     this.PASSWD = cfg.PASSWD
     this.RETRY = cfg.RETRY
     this.CORP_ID = cfg.CORP_ID
-    this.ROOT = cfg.ROOT
   }
   private isLogin() {
     return !id(this.PACKAGESNAME.DD + ":id/cb_privacy").findOne(5e3)
@@ -145,10 +141,10 @@ export class DD {
     //是否为新版本的钉钉，如果是，用旧的登录方式
     if (id("tv_more").findOne(2e3) !== null) {
       const a = id("tv_more").findOne(10e3)
-      system.clickBounds(a.bounds())
+      auto.clickBounds(a.bounds())
       sleep(2e3)
       const b = id("ll_rollback_old_login").findOne(10e3)
-      system.clickBounds(b.bounds())
+      auto.clickBounds(b.bounds())
       console.log("切换登录方式为旧版...")
     }
     sleep(2e3)
@@ -157,17 +153,17 @@ export class DD {
     id("et_password").findOne(10e3).setText(this.PASSWD)
     sleep(2e3)
     const c = id("cb_privacy").findOne(10e3)
-    system.clickBounds(c.bounds())
+    auto.clickBounds(c.bounds())
     sleep(2e3)
     const d = id("btn_next").findOne(10e3)
-    system.clickBounds(d.bounds())
+    auto.clickBounds(d.bounds())
   }
 
   // 不进行更新
   private cancelUpdate() {
     const window = text("暂不更新").findOne(10e3)
     if (window !== null) {
-      system.clickBounds(window.bounds())
+      auto.clickBounds(window.bounds())
       console.info("取消更新")
     } else console.log("无更新消息")
   }
@@ -175,11 +171,11 @@ export class DD {
   private atAppHome() {
     if (!this.isLogin()) return false
     const message = id("home_app_item").indexInParent(0).findOne(5e3)
-    if (message !== null) system.clickBounds(message.bounds())
+    if (message !== null) auto.clickBounds(message.bounds())
     else if (packageName(this.PACKAGESNAME.DD).findOne(2e3) !== null) {
       const x = device.width / 10
       const y = device.height * 0.95
-      system.clickBounds([x, y])
+      auto.clickBounds([x, y])
     } else return false
     return true
   }
@@ -187,10 +183,10 @@ export class DD {
   private open() {
     for (let index = 1; index <= this.RETRY; index++) {
       console.info(`第${index}次登录...`)
-      system.backHome(this.PACKAGESNAME.HOME)
+      auto.backHome(this.PACKAGESNAME.HOME)
       console.log("正在启动" + app.getAppName(this.PACKAGESNAME.DD) + "...")
 
-      if (!system.openApp(this.PACKAGESNAME.DD, this.APPNAME)) {
+      if (!auto.openApp(this.PACKAGESNAME.DD, this.APPNAME)) {
         console.warn("启动失败，重新启动...")
         continue
       }
@@ -236,20 +232,20 @@ export class DD {
       console.info("可以打卡")
       const btn = text("上班打卡").clickable(true).findOnce() || text("下班打卡").clickable(true).findOnce() || text("迟到打卡").clickable(true).findOnce()
       if (btn !== null) {
-        system.clickBounds(btn.bounds())
+        auto.clickBounds(btn.bounds())
         console.log("按下打卡按钮")
       } else {
         const x = device.width / 2
         const y = device.height * 0.6
-        system.clickBounds([x, y])
+        auto.clickBounds([x, y])
         console.log("点击打卡按钮坐标")
       }
       if (textContains("成功").findOne(15e3) === null) {
         console.warn("打卡无效,也许未到打卡时间!")
-        return [`考勤打卡:${script.formatTime("HH:mm")} 打卡·无效`]
+        return [`考勤打卡:${tools.formatTime("HH:mm")} 打卡·无效`]
       }
       // return `考勤打卡:${formatTime("HH:mm")}打卡·成功\n但未收到成功消息`
-      return [`考勤打卡:${script.formatTime("HH:mm")} 打卡·成功`]
+      return [`考勤打卡:${tools.formatTime("HH:mm")} 打卡·成功`]
     }
     const e = [`重试${this.RETRY}次, 打卡失败!`]
     console.error(e)
@@ -257,9 +253,9 @@ export class DD {
   }
 
   openAndPunchIn(): string[] {
-    console.log("本地时间: " + script.formatTime("YYYY-MM-DD HH:mm:ss"))
+    console.log("本地时间: " + tools.formatTime("YYYY-MM-DD HH:mm:ss"))
     console.log("开始打卡")
-    system.backHome(this.PACKAGESNAME.HOME)
+    auto.backHome(this.PACKAGESNAME.HOME)
     if (!this.open()) {
       const e = ["无法打开钉钉!"]
       console.error(e)
@@ -267,7 +263,7 @@ export class DD {
     }
     const r = this.punchIn()
     sleep(3e3)
-    system.backHome(this.PACKAGESNAME.HOME)
+    auto.backHome(this.PACKAGESNAME.HOME)
     return r
   }
 }
@@ -276,35 +272,25 @@ export class Clock {
   private readonly PACKAGESNAME: { CLOCK: string; HOME: string }
   private readonly SWIPESCREEN: SwipeScreen
   private readonly RETRY: number
-  private readonly ROOT: boolean
 
   constructor(cfg: ClockCfg) {
     this.PACKAGESNAME = { CLOCK: cfg.PACKAGES.CLOCK.PACKAGENAME, HOME: cfg.PACKAGES.HOME.PACKAGENAME }
     this.SWIPESCREEN = cfg.SWIPESCREEN
     this.RETRY = cfg.RETRY
-    this.ROOT = cfg.ROOT
   }
+
   //需要root
-  closeAlarm(root: boolean) {
+  closeAlarm() {
     sleep(2e3)
     for (let i = 1; i <= this.RETRY; i++) {
       console.log(`第${i}次关闭闹钟...`)
-      if (root) {
-        VolumeDown()
-        sleep(1e3)
-        if (!packageName(this.PACKAGESNAME.CLOCK).findOne(500)) {
-          console.log("已闭闹钟")
-          return true
-        } else {
-          system.swipeScreen(this.SWIPESCREEN, true)
-        }
+      VolumeDown()
+      sleep(1e3)
+      if (!packageName(this.PACKAGESNAME.CLOCK).findOne(500)) {
+        console.log("已闭闹钟")
+        return true
       } else {
-        console.warn("没有root权限，通过滑动关闭闹钟")
-        system.swipeScreen(this.SWIPESCREEN, false)
-        if (!packageName(this.PACKAGESNAME.CLOCK).findOne(500)) {
-          console.log("已闭闹钟")
-          return true
-        }
+        auto.swipeScreen(this.SWIPESCREEN)
       }
     }
     console.warn(`重试${this.RETRY}次, 可能未关闭!`)

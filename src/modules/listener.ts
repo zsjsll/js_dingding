@@ -1,4 +1,4 @@
-import { script, system } from "./tools"
+import { tools, auto } from "./tools"
 import { debounce, forIn, isFunction } from "lodash"
 import { AppPackages, Info, ListenerCfg } from "@/types"
 
@@ -23,9 +23,9 @@ export default class Listener {
       events.on("key", (keycode: number, event: android.view.KeyEvent) => {
         if (keycode === keys.volume_up && event.getAction() === 0) {
           threads.shutDownAll()
-          system.resetPhone()
+          auto.resetPhone()
           toastLog("按下音量+,重启程序!")
-          script.reloadScript()
+          tools.reloadScript()
           if (isFunction(func)) return func(event)
           else return
         }
@@ -36,7 +36,7 @@ export default class Listener {
       events.on("key", (keycode: number, event: android.view.KeyEvent) => {
         if (keycode === keys.volume_down && event.getAction() === 0) {
           threads.shutDownAll()
-          system.resetPhone()
+          auto.resetPhone()
           toastLog("按下音量-,中断所有子线程!")
           /* 调试脚本*/
           if (isFunction(func)) return func(event)
@@ -59,12 +59,12 @@ export default class Listener {
             TEXT: n.getText(),
             PRIORITY: n.priority,
             CATEGORY: n.category,
-            TIME: script.formatTime("YYYY-MM-DD HH:mm:ss", n.when),
+            TIME: tools.formatTime("YYYY-MM-DD HH:mm:ss", n.when),
             NUMBER: n.number,
             TICKER_TEXT: n.tickerText,
           }
           forIn(info, (v, k) => console.verbose(`${k}: ${v}`))
-          if (!script.passNotification(this.NOTIFICATIONS_FILTER, info, this.PACKAGES)) return
+          if (!tools.passNotification(this.NOTIFICATIONS_FILTER, info, this.PACKAGES)) return
           if (isFunction(func)) return func(n)
         },
         200,

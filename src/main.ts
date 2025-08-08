@@ -1,13 +1,13 @@
 import { includes, isEmpty } from "lodash"
 
-import { script } from "@/tools"
+import { tools } from "@/tools"
 import Listener from "@/listener"
 import Config from "@/config"
 import Phone from "@/phone"
 import { QQ, DD, Clock } from "@/app"
 ;(function main() {
   //初始化脚本
-  script.onlyRunOneScript() //停止其他脚本，只运行当前脚本
+  tools.onlyRunOneScript() //停止其他脚本，只运行当前脚本
   setScreenMetrics(device.width, device.height)
   auto()
   console.log("完成初始化脚本")
@@ -43,28 +43,28 @@ import { QQ, DD, Clock } from "@/app"
     const doIt = (f: () => string[]) => {
       threads.shutDownAll()
       cfg.thread = threads.start(() => {
-        phone.turnOn(cfg.ROOT)
+        phone.turnOn()
         const msg = [...f(), ...cfg.info]
         if (!isSendAllMsg(msg)) return
-        phone.turnOff(cfg.ROOT)
+        phone.turnOff()
       })
     }
-    if (n.getText() === "邮件提醒: 你有一封新邮件") cfg.thread = threads.start(() => phone.turnOn(cfg.ROOT))
+    if (n.getText() === "邮件提醒: 你有一封新邮件") cfg.thread = threads.start(() => phone.turnOn())
 
     if (n.getText() === "帮助") {
       const default_msg = ["帮助: 显示所有指令内容", "打卡: 马上打卡", "锁屏: 停止当前动作后锁屏", "{n}暂停{m}: 延迟{n}次,暂停{m}次", "恢复: 恢复自动打卡"]
-      doIt(() => [...default_msg, ...script.pauseStatus(cfg.pause)])
+      doIt(() => [...default_msg, ...tools.pauseStatus(cfg.pause)])
       return
     }
 
     if (n.getText() === "打卡") {
-      doIt(() => [...dd.openAndPunchIn(), ...script.pauseStatus(cfg.pause)])
+      doIt(() => [...dd.openAndPunchIn(), ...tools.pauseStatus(cfg.pause)])
       return
     }
 
     if (includes(n.getText(), "暂停")) {
-      cfg.pause = script.formatPauseInput(n.getText())
-      const pause_tatus_msg = isEmpty(script.pauseStatus(cfg.pause)) ? ["暂停0次, 恢复定时打卡"] : script.pauseStatus(cfg.pause)
+      cfg.pause = tools.formatPauseInput(n.getText())
+      const pause_tatus_msg = isEmpty(tools.pauseStatus(cfg.pause)) ? ["暂停0次, 恢复定时打卡"] : tools.pauseStatus(cfg.pause)
       doIt(() => [...pause_tatus_msg])
       return
     }
@@ -76,7 +76,7 @@ import { QQ, DD, Clock } from "@/app"
     }
 
     if (n.getText() === "锁屏") {
-      doIt(() => ["已停止当前动作", ...script.pauseStatus(cfg.pause)])
+      doIt(() => ["已停止当前动作", ...tools.pauseStatus(cfg.pause)])
       return
     }
 
@@ -88,20 +88,20 @@ import { QQ, DD, Clock } from "@/app"
   function listenClock(n: org.autojs.autojs.core.notification.Notification) {
     if (n.getPackageName() !== cfg.PACKAGES.CLOCK.PACKAGENAME) return
     threads.shutDownAll()
-    clock.closeAlarm(cfg.ROOT)
+    clock.closeAlarm()
     let msg: string[]
     const daka = cfg.pause[0] > 0 || cfg.pause[1] === 0 //执行打卡操作，或者直接输出现在状态
-    cfg.pause = script.changePause(cfg.pause) //修改pause参数
-    const pause_tatus_msg = isEmpty(script.pauseStatus(cfg.pause)) ? ["! 暂停打卡结束 !"] : script.pauseStatus(cfg.pause)
+    cfg.pause = tools.changePause(cfg.pause) //修改pause参数
+    const pause_tatus_msg = isEmpty(tools.pauseStatus(cfg.pause)) ? ["! 暂停打卡结束 !"] : tools.pauseStatus(cfg.pause)
 
     cfg.thread = threads.start(() => {
-      phone.turnOn(cfg.ROOT)
+      phone.turnOn()
       if (daka) {
-        script.delay(cfg.DELAY) //随机延迟打卡
+        tools.delay(cfg.DELAY) //随机延迟打卡
         msg = dd.openAndPunchIn()
       } else msg = pause_tatus_msg
       if (!isSendAllMsg(msg)) return
-      phone.turnOff(cfg.ROOT)
+      phone.turnOff()
     })
   }
 
@@ -109,7 +109,7 @@ import { QQ, DD, Clock } from "@/app"
     if (n.getPackageName() !== cfg.PACKAGES.DD.PACKAGENAME) return
     // if (includes(n.getText(), "考勤打卡") && (includes(n.getText(), "成功") || includes(n.getText(), "全部正常"))) return
 
-    cfg.info.push(script.formatNotification(n))
+    cfg.info.push(tools.formatNotification(n))
 
     if (cfg.thread?.isAlive()) {
       console.log("alive")
@@ -117,16 +117,16 @@ import { QQ, DD, Clock } from "@/app"
       if (isEmpty(cfg.info)) return
       cfg.thread = threads.start(() => {
         old_thread?.join(0)
-        phone.turnOn(cfg.ROOT)
+        phone.turnOn()
         if (isEmpty(cfg.info)) return
         if (!isSendAllMsg(cfg.info)) return
-        phone.turnOff(cfg.ROOT)
+        phone.turnOff()
       })
     } else
       cfg.thread = threads.start(() => {
-        phone.turnOn(cfg.ROOT)
+        phone.turnOn()
         if (!isSendAllMsg(cfg.info)) return
-        phone.turnOff(cfg.ROOT)
+        phone.turnOff()
       })
   }
 })()

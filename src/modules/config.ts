@@ -1,4 +1,4 @@
-import { system, script } from "./tools"
+import { tools } from "./tools"
 import { toString } from "lodash"
 import { Cfg, Json, ExtendProp } from "@/types"
 
@@ -9,7 +9,6 @@ export default class Config {
 
   constructor() {
     this.EXTENDPROP = {
-      ROOT: false,
       pause: [0, 0],
       thread: undefined,
       info: [],
@@ -95,8 +94,7 @@ export default class Config {
   }
 
   initCfg() {
-    this.EXTENDPROP.ROOT = system.isRoot()
-    if (this.EXTENDPROP.ROOT) {
+    if (tools.isRoot) {
       shell("", true)
       console.info("开启ROOT模式")
     } else console.warn("未获取ROOT权限")
@@ -106,7 +104,7 @@ export default class Config {
   }
 
   createLog() {
-    const log = files.join(files.cwd(), this.CONFIG.GLOBAL_LOG_FILE_DIR, `${script.formatTime("YYYY-MM-DD-(d)")}.log`)
+    const log = files.join(files.cwd(), this.CONFIG.GLOBAL_LOG_FILE_DIR, `${tools.formatTime("YYYY-MM-DD-(d)")}.log`)
     console.log("创建运行日志...\n" + log)
     console.setGlobalLogConfig({ file: log })
   }
