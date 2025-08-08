@@ -1,6 +1,5 @@
 import { every, find, floor, head, includes, isEmpty, last, parseInt, some, toNumber, isFunction, debounce, forIn, toString } from "lodash-es"
 import dayjs from "dayjs"
-
 import { SwipeScreen, Delay, Pause, AppPackages, Info, BlackListOptions, Package, XOY } from "@/types"
 
 export const _ = {

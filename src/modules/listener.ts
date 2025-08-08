@@ -1,5 +1,4 @@
 import { tools, auto, _ } from "./tools"
-
 import { AppPackages, Info, ListenerCfg } from "@/types"
 
 export default class Listener {

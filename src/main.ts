@@ -1,6 +1,4 @@
-
-
-import { tools ,_} from "@/tools"
+import { tools, _ } from "@/tools"
 import Listener from "@/listener"
 import Config from "@/config"
 import Phone from "@/phone"

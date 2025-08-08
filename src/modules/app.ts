@@ -1,5 +1,4 @@
-
-import { tools, auto,_ } from "@/tools"
+import { tools, auto, _ } from "@/tools"
 import { QQCfg, DDCfg, ClockCfg, SwipeScreen } from "@/types"
 
 export class QQ {
