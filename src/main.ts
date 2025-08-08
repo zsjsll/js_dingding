@@ -1,6 +1,6 @@
-import { includes, isEmpty } from "lodash"
 
-import { tools } from "@/tools"
+
+import { tools ,_} from "@/tools"
 import Listener from "@/listener"
 import Config from "@/config"
 import Phone from "@/phone"
@@ -36,7 +36,7 @@ import { QQ, DD, Clock } from "@/app"
   const isSendAllMsg = (final_msg: string[]) => {
     qq.openAndSendMsg(final_msg)
     cfg.info = []
-    return isEmpty(cfg.info)
+    return _.isEmpty(cfg.info)
   }
 
   function listenMsg(n: org.autojs.autojs.core.notification.Notification) {
@@ -62,9 +62,9 @@ import { QQ, DD, Clock } from "@/app"
       return
     }
 
-    if (includes(n.getText(), "暂停")) {
+    if (_.includes(n.getText(), "暂停")) {
       cfg.pause = tools.formatPauseInput(n.getText())
-      const pause_tatus_msg = isEmpty(tools.pauseStatus(cfg.pause)) ? ["暂停0次, 恢复定时打卡"] : tools.pauseStatus(cfg.pause)
+      const pause_tatus_msg = _.isEmpty(tools.pauseStatus(cfg.pause)) ? ["暂停0次, 恢复定时打卡"] : tools.pauseStatus(cfg.pause)
       doIt(() => [...pause_tatus_msg])
       return
     }
@@ -92,7 +92,7 @@ import { QQ, DD, Clock } from "@/app"
     let msg: string[]
     const daka = cfg.pause[0] > 0 || cfg.pause[1] === 0 //执行打卡操作，或者直接输出现在状态
     cfg.pause = tools.changePause(cfg.pause) //修改pause参数
-    const pause_tatus_msg = isEmpty(tools.pauseStatus(cfg.pause)) ? ["! 暂停打卡结束 !"] : tools.pauseStatus(cfg.pause)
+    const pause_tatus_msg = _.isEmpty(tools.pauseStatus(cfg.pause)) ? ["! 暂停打卡结束 !"] : tools.pauseStatus(cfg.pause)
 
     cfg.thread = threads.start(() => {
       phone.turnOn()
@@ -114,11 +114,11 @@ import { QQ, DD, Clock } from "@/app"
     if (cfg.thread?.isAlive()) {
       console.log("alive")
       const old_thread = cfg.thread
-      if (isEmpty(cfg.info)) return
+      if (_.isEmpty(cfg.info)) return
       cfg.thread = threads.start(() => {
         old_thread?.join(0)
         phone.turnOn()
-        if (isEmpty(cfg.info)) return
+        if (_.isEmpty(cfg.info)) return
         if (!isSendAllMsg(cfg.info)) return
         phone.turnOff()
       })

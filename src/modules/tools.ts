@@ -1,10 +1,24 @@
-import { every, find as _find, floor, head, includes, isEmpty, last, parseInt, some, toNumber } from "lodash"
+import { every, find, floor, head, includes, isEmpty, last, parseInt, some, toNumber, isFunction, debounce, forIn, toString } from "lodash-es"
 import dayjs from "dayjs"
 
 import { SwipeScreen, Delay, Pause, AppPackages, Info, BlackListOptions, Package, XOY } from "@/types"
 
-
-// -----------以下函数需要root权限-----------------
+export const _ = {
+  every,
+  find,
+  floor,
+  head,
+  includes,
+  isEmpty,
+  last,
+  parseInt,
+  some,
+  toNumber,
+  isFunction,
+  debounce,
+  forIn,
+  toString,
+}
 
 class Auto {
   public readonly isRoot: boolean
@@ -55,7 +69,7 @@ class Auto {
     if (this.isRoot) {
       const wifi_info = shell("settings get global wifi_on", true)
       if (wifi_info.error !== "") console.error("无法获取wifi信息")
-      const r = toNumber(wifi_info.result)
+      const r = _.toNumber(wifi_info.result)
       if (r === 0) {
         console.info("wifi已关闭，正在打开中，等待5s。。。")
         shell("svc wifi enable", true)
@@ -161,20 +175,20 @@ class Tools {
       return true
     }
 
-    const app_package = _find(Object.values(app_packages) as Package[], (pkg) => pkg.PACKAGENAME === info.PACKAGENAME)
+    const app_package = _.find(Object.values(app_packages) as Package[], (pkg) => pkg.PACKAGENAME === info.PACKAGENAME)
 
     if (!app_package) {
       console.warn("× 丢弃，不在包中")
       return false
     }
 
-    if (isEmpty(app_package.BLACKLISTS)) {
+    if (_.isEmpty(app_package.BLACKLISTS)) {
       console.info("√ 放行，没有黑名单列表")
       return true
     }
 
     const checkBlackLists = (text: string, blackLists: BlackListOptions[]): boolean =>
-      some(blackLists, (black_list) => every(black_list, (kw) => includes(text, kw)))
+      _.some(blackLists, (black_list) => _.every(black_list, (kw) => _.includes(text, kw)))
 
     // 当有黑名单时，对比通知内容和黑名单列表
     if (checkBlackLists(info.TEXT, app_package.BLACKLISTS as BlackListOptions[])) {
@@ -209,7 +223,7 @@ class Tools {
     input = "0" + input //在字符串前面添加一个0
     //匹配所有数字，包括小数
     const pause = input.match(/[\d.]+/g)?.map((v) => {
-      let num = floor(toNumber(v)) //变成数字，向下取整
+      let num = _.floor(_.toNumber(v)) //变成数字，向下取整
       if (isNaN(num)) num = 1 //判断NaN，如果是 变成1
       return num
     }) ?? [0, 1]
@@ -245,9 +259,9 @@ class Tools {
 
   public formatMsgs(msgs: string[]): string {
     const base_msgs = `\n当前电量: ${device.getBattery()}%\n是否充电: ${device.isCharging()}`
-    const findSomething = (list: string[], val: string) => some(list, (v) => includes(v, val))
-    const del_head_line = head(msgs) === this.line.default || head(msgs) === "\n"
-    const del_last_line = last(msgs) === "\n"
+    const findSomething = (list: string[], val: string) => _.some(list, (v) => _.includes(v, val))
+    const del_head_line = _.head(msgs) === this.line.default || _.head(msgs) === "\n"
+    const del_last_line = _.last(msgs) === "\n"
     const add_warn = findSomething(msgs, "无效") || findSomething(msgs, "失败")
     if (del_head_line) msgs.shift()
     if (del_last_line) msgs.pop()

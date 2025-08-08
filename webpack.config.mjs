@@ -1,4 +1,3 @@
- 
 import { CleanWebpackPlugin } from "clean-webpack-plugin"
 import CopyPlugin from "copy-webpack-plugin"
 import TerserPlugin from "terser-webpack-plugin"
@@ -62,11 +61,13 @@ const config = {
     },
   },
   optimization: {
+    usedExports: true,
     minimize: true,
     minimizer: [
       new TerserPlugin({
         extractComments: false, //不将注释提取到单独的文件中
         terserOptions: {
+          compress: { unused: true },
           format: {
             comments: false, //删除注释
           },

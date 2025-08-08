@@ -1,5 +1,4 @@
-import { tools } from "./tools"
-import { toString } from "lodash"
+import { tools, _ } from "./tools"
 import { Cfg, Json, ExtendProp } from "@/types"
 
 export default class Config {
@@ -61,15 +60,15 @@ export default class Config {
     let PASSWD = config.PASSWD
     let QQ = config.QQ
     for (;;) {
-      if (!ACCOUNT) ACCOUNT = toString(dialogs.rawInput("输入钉钉账号"))
+      if (!ACCOUNT) ACCOUNT = _.toString(dialogs.rawInput("输入钉钉账号"))
       else break
     }
     for (;;) {
-      if (!PASSWD) PASSWD = toString(dialogs.rawInput("输入钉钉密码"))
+      if (!PASSWD) PASSWD = _.toString(dialogs.rawInput("输入钉钉密码"))
       else break
     }
     for (;;) {
-      if (!QQ) QQ = toString(dialogs.rawInput("输入QQ号"))
+      if (!QQ) QQ = _.toString(dialogs.rawInput("输入QQ号"))
       else break
     }
 

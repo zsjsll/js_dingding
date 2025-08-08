@@ -1,5 +1,5 @@
-import { tools, auto } from "./tools"
-import { debounce, forIn, isFunction } from "lodash"
+import { tools, auto, _ } from "./tools"
+
 import { AppPackages, Info, ListenerCfg } from "@/types"
 
 export default class Listener {
@@ -26,7 +26,7 @@ export default class Listener {
           auto.resetPhone()
           toastLog("按下音量+,重启程序!")
           tools.reloadScript()
-          if (isFunction(func)) return func(event)
+          if (_.isFunction(func)) return func(event)
           else return
         }
       })
@@ -39,7 +39,7 @@ export default class Listener {
           auto.resetPhone()
           toastLog("按下音量-,中断所有子线程!")
           /* 调试脚本*/
-          if (isFunction(func)) return func(event)
+          if (_.isFunction(func)) return func(event)
           else return
         }
       })
@@ -51,7 +51,7 @@ export default class Listener {
 
     events.on(
       "notification",
-      debounce(
+      _.debounce(
         (n: org.autojs.autojs.core.notification.Notification) => {
           const info: Info = {
             PACKAGENAME: n.getPackageName(),
@@ -63,9 +63,9 @@ export default class Listener {
             NUMBER: n.number,
             TICKER_TEXT: n.tickerText,
           }
-          forIn(info, (v, k) => console.verbose(`${k}: ${v}`))
+          _.forIn(info, (v, k) => console.verbose(`${k}: ${v}`))
           if (!tools.passNotification(this.NOTIFICATIONS_FILTER, info, this.PACKAGES)) return
-          if (isFunction(func)) return func(n)
+          if (_.isFunction(func)) return func(n)
         },
         200,
         { leading: true, trailing: false }

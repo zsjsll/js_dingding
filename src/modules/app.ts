@@ -1,5 +1,5 @@
-import { isEmpty } from "lodash"
-import { tools, auto } from "@/tools"
+
+import { tools, auto,_ } from "@/tools"
 import { QQCfg, DDCfg, ClockCfg, SwipeScreen } from "@/types"
 
 export class QQ {
@@ -96,7 +96,7 @@ export class QQ {
     console.info("发送成功")
   }
   openAndSendMsg(message: string[]) {
-    if (!isEmpty(message)) {
+    if (!_.isEmpty(message)) {
       for (let i = 1; i <= this.RETRY; i++) {
         console.info(`第${i}次运行QQ...`)
         auto.backHome(this.PACKAGESNAME.HOME)
