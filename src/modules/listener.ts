@@ -66,7 +66,7 @@ export default class Listener {
           if (!tools.passNotification(this.NOTIFICATIONS_FILTER, info, this.PACKAGES)) return
           if (_.isFunction(func)) return func(n)
         },
-        200,
+        0,
         { leading: true, trailing: false }
       )
     )
