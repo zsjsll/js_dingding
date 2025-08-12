@@ -42,7 +42,7 @@ export default class Config {
         DD: {
           PACKAGENAME: "com.alibaba.android.rimet",
           APPNAME: "钉钉",
-          BLACKLISTS: [["考勤打卡", "失败"], ["考勤打卡", "异常"], ["审批统计已生成"]],
+          BLACKLISTS: [["打卡提醒"], ["考勤全部正常"], ["考勤打卡", "失败"], ["考勤打卡", "成功"], ["审批统计已生成"]],
         }, // 钉钉
         EMAIL: { PACKAGENAME: "com.tencent.androidqqmail" }, // QQ邮箱
         XMSF: { PACKAGENAME: "com.xiaomi.xmsf" }, // 小米推送服务
