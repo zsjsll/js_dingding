@@ -278,12 +278,11 @@ export class Clock {
     this.RETRY = cfg.RETRY
   }
 
-  //需要root
   closeAlarm() {
     sleep(2e3)
     for (let i = 1; i <= this.RETRY; i++) {
       console.log(`第${i}次关闭闹钟...`)
-      VolumeDown()
+      auto.pressVolumeDown()
       sleep(1e3)
       if (!packageName(this.PACKAGESNAME.CLOCK).findOne(500)) {
         console.log("已闭闹钟")

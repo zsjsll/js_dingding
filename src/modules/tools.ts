@@ -25,6 +25,11 @@ class Auto {
     this.isRoot = Tools.isRoot()
   }
 
+  public pressVolumeDown() {
+    if (this.isRoot) VolumeDown()
+    else console.warn("未root，暂时没有替代的方法，不执行该操作")
+  }
+
   public clickBounds(bounds: android.graphics.Rect | XOY) {
     let xoy: XOY
     if (bounds instanceof android.graphics.Rect) xoy = [bounds.centerX(), bounds.centerY()]
