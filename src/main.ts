@@ -22,7 +22,13 @@ import { QQ, DD, Clock } from "@/app"
   const qq = new QQ(cfg)
   const dd = new DD(cfg)
   const clock = new Clock(cfg)
+
+  Listener.debug = () => {
+    console.log()
+  }
+
   listener.listenVolumeKey() //可以添加自己需要的调试函数
+
   listener.listenNotification((notification) => {
     listenMsg(notification)
     listenClock(notification)

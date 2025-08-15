@@ -13,7 +13,10 @@ export default class Listener {
   private readonly PACKAGES: AppPackages
   private readonly NOTIFICATIONS_FILTER: boolean
 
-  listenVolumeKey(func?: (e: android.view.KeyEvent) => unknown) {
+  // eslint-disable-next-line sonarjs/public-static-readonly
+  static debug: (e?: android.view.KeyEvent) => unknown
+
+  listenVolumeKey() {
     events.setKeyInterceptionEnabled("volume_up", this.OBSERVE_VOLUME_KEY_UP)
     events.setKeyInterceptionEnabled("volume_down", this.OBSERVE_VOLUME_KEY_DOWN)
     if (this.OBSERVE_VOLUME_KEY_UP || this.OBSERVE_VOLUME_KEY_DOWN) events.observeKey()
@@ -23,10 +26,10 @@ export default class Listener {
         if (keycode === keys.volume_up && event.getAction() === 0) {
           threads.shutDownAll()
           auto.resetPhone()
-          toastLog("按下音量+,重启程序!")
+          toastLog("按下音量+，重启程序!")
+          console.log("重写Listener.debug，进行测试")
+          if (_.isFunction(Listener.debug)) Listener.debug(event)
           tools.reloadScript()
-          if (_.isFunction(func)) return func(event)
-          else return
         }
       })
     }
@@ -36,10 +39,8 @@ export default class Listener {
         if (keycode === keys.volume_down && event.getAction() === 0) {
           threads.shutDownAll()
           auto.resetPhone()
-          toastLog("按下音量-,中断所有子线程!")
+          toastLog("按下音量-，中断所有子线程!")
           /* 调试脚本*/
-          if (_.isFunction(func)) return func(event)
-          else return
         }
       })
     }

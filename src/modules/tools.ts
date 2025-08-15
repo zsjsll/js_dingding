@@ -72,18 +72,41 @@ class Auto {
   public openWifi() {
     if (this.isRoot) {
       const wifi_info = shell("settings get global wifi_on", true)
-      if (wifi_info.error !== "") console.error("无法获取wifi信息")
-      const r = _.toNumber(wifi_info.result)
-      if (r === 0) {
-        console.info("wifi已关闭，正在打开中，等待5s。。。")
-        shell("svc wifi enable", true)
-        sleep(5e3)
-      } else {
-        console.log("wifi已打开")
-        shell("svc wifi enable", true)
-      }
-    } else console.warn("没有root，跳过此操作")
+      if (wifi_info.error !== "") console.error("无法获取WiFi信息")
+      const r = wifi_info.result
+      if (_.includes(r, "0")) console.info("WiFi已关闭，正在打开中...")
+      shell("svc wifi enable", true)
+    } else console.warn("没有root，请确认已打开WiFi")
   }
+
+  public openBluetooth() {
+    if (this.isRoot) {
+      const bluetooth_info = shell("settings get global bluetooth_on", true)
+      if (bluetooth_info.error !== "") console.error("无法获取Bluetooth信息")
+      const r = bluetooth_info.result
+
+      if (_.includes(r, "0")) console.info("Bluetooth已关闭，正在打开中...")
+      shell("svc bluetooth enable", true)
+    } else console.warn("没有root，请确认已打开Bluetooth")
+  }
+
+  public openGPS() {
+    if (this.isRoot) {
+      const GPS_info = shell("settings get secure location_providers_allowed", true)
+      if (GPS_info.error !== "") console.error("无法获取GPS信息")
+      const r = GPS_info.result
+      if (!_.includes(r, "gps")) console.info("GPS已关闭，正在打开中...")
+      shell("settings put secure location_providers_allowed +gps", true)
+    } else console.warn("没有root，请确认已打开GPS")
+  }
+
+  public openSilentMode() {
+    if (this.isRoot) {
+      shell("settings put global mode_ringer 0", true)
+      shell("settings put system haptic_feedback_enabled 0", true)
+    } else console.warn("没有root，请确认已打开静音模式")
+  }
+
   // -----------以上函数需要root权限-----------------
   public resetPhone() {
     // device.setBrightnessMode(1) // 自动亮度模式
@@ -274,6 +297,8 @@ class Tools {
 
     // message = message.replace(/^[\n-]+|[\n]+$/g, "") //如果开头有很多的-或者\n，则去掉  如果结尾有\n 去除
   }
+
+
 }
 
 export const auto = new Auto()

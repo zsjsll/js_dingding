@@ -34,7 +34,10 @@ export default class Phone {
     console.info("屏幕已解锁")
     auto.setVolume(this.VOLUME)
     auto.backHome(this.PACKAGESNAME.HOME)
+    auto.openSilentMode()
+    auto.openGPS()
     auto.openWifi()
+    auto.openBluetooth()
     return true
   }
 
