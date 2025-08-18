@@ -102,8 +102,11 @@ class Auto {
 
   public openSilentMode() {
     if (this.isRoot) {
+      shell("settings put global zen_mode 0", true) //就是这一条起了作用
       shell("settings put global mode_ringer 0", true)
+      shell("settings put system vibrate_on 0", true)
       shell("settings put system haptic_feedback_enabled 0", true)
+      shell("settings put global notification_vibration 0", true)
     } else console.warn("没有root，请确认已打开静音模式")
   }
 
@@ -298,7 +301,17 @@ class Tools {
     // message = message.replace(/^[\n-]+|[\n]+$/g, "") //如果开头有很多的-或者\n，则去掉  如果结尾有\n 去除
   }
 
-
+  public redo(fn: () => boolean, limit?: number) {
+    if (typeof limit === "number") {
+      for (let i = 1; i <= limit; i++) {
+        fn()
+      }
+    } else {
+      for (;;) {
+        fn()
+      }
+    }
+  }
 }
 
 export const auto = new Auto()
