@@ -1,4 +1,4 @@
-import { tools, auto, _ } from "./tools"
+import { tools, ctrl, _ } from "./tools"
 import { AppPackages, Info, ListenerCfg } from "@/types"
 
 export default class Listener {
@@ -25,7 +25,7 @@ export default class Listener {
       events.on("key", (keycode: number, event: android.view.KeyEvent) => {
         if (keycode === keys.volume_up && event.getAction() === 0) {
           threads.shutDownAll()
-          auto.resetPhone()
+          ctrl.resetPhone()
           toastLog("按下音量+，重启程序!")
           console.log("重写Listener.debug，进行测试")
           if (_.isFunction(Listener.debug)) Listener.debug(event)
@@ -38,7 +38,7 @@ export default class Listener {
       events.on("key", (keycode: number, event: android.view.KeyEvent) => {
         if (keycode === keys.volume_down && event.getAction() === 0) {
           threads.shutDownAll()
-          auto.resetPhone()
+          ctrl.resetPhone()
           toastLog("按下音量-，中断所有子线程!")
           /* 调试脚本*/
         }
@@ -51,7 +51,7 @@ export default class Listener {
 
     events.on(
       "notification",
-      _.debounce(
+      _.throttle(
         (n: org.autojs.autojs.core.notification.Notification) => {
           const info: Info = {
             PACKAGENAME: n.getPackageName(),
@@ -64,6 +64,7 @@ export default class Listener {
             TICKER_TEXT: n.tickerText,
           }
           _.forIn(info, (v, k) => console.verbose(`${k}: ${v}`))
+          n.delete()
           if (!tools.passNotification(this.NOTIFICATIONS_FILTER, info, this.PACKAGES)) return
           if (_.isFunction(func)) return func(n)
         },

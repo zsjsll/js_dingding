@@ -5,6 +5,7 @@ export default class Config {
   private readonly CONFIG: Json
   private readonly CONFIG_PATH: string
   private readonly EXTENDPROP: ExtendProp
+  // static readonly RETRY = 10
 
   constructor() {
     this.EXTENDPROP = {
@@ -48,7 +49,7 @@ export default class Config {
         XMSF: { PACKAGENAME: "com.xiaomi.xmsf" }, // 小米推送服务
         HWID: { PACKAGENAME: "com.huawei.hwid" }, // 华为手机标识服务
         CLOCK: { PACKAGENAME: "com.android.deskclock" }, // 系统闹铃,自行修改
-        HOME: { PACKAGENAME: "com.miui.home.launcher.ScreenView" }, //桌面的包名称，自行修改
+        HOME: { PACKAGENAME: "com.miui.home" }, //桌面的包名称，自行修改
       },
 
       GLOBAL_LOG_FILE_DIR: "Archive/", // 运行日志路径

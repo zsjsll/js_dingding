@@ -1,4 +1,4 @@
-import { auto } from "./tools"
+import { ctrl } from "./tools"
 import { PhoneCfg, SwipeScreen } from "@/types"
 
 export default class Phone {
@@ -18,35 +18,35 @@ export default class Phone {
 
   turnOn() {
     const screen_brightness = this.DEV ? -1 : this.SCREEN_BRIGHTNESS
-    if (!auto.brightScreen(screen_brightness)) {
+    if (!ctrl.brightScreen(screen_brightness)) {
       console.error("唤醒设备失败!")
       return false
     }
     sleep(500)
-    if (auto.isDeviceLocked()) {
+    if (ctrl.isDeviceLocked()) {
       console.log("解锁屏幕")
-      auto.swipeScreen(this.SWIPESCREEN)
-      if (auto.isDeviceLocked()) {
+      ctrl.swipeScreen(this.SWIPESCREEN)
+      if (ctrl.isDeviceLocked()) {
         console.error("上滑解锁失败, 请按脚本中的注释调整UNLOCKSCREEN中的 key[TIME, START, END] 的参数!")
         return false
       }
     }
     console.info("屏幕已解锁")
-    auto.setVolume(this.VOLUME)
-    auto.backHome(this.PACKAGESNAME.HOME)
-    auto.openSilentMode()
-    auto.openGPS()
-    auto.openWifi()
-    auto.openBluetooth()
+    ctrl.setVolume(this.VOLUME)
+    ctrl.backHome(this.PACKAGESNAME.HOME)
+    ctrl.openSilentMode()
+    ctrl.openGPS()
+    ctrl.openWifi()
+    ctrl.openBluetooth()
     return true
   }
 
   turnOff() {
-    auto.backHome(this.PACKAGESNAME.HOME)
-    if (this.DEV) auto.resetPhone()
+    ctrl.backHome(this.PACKAGESNAME.HOME)
+    if (this.DEV) ctrl.resetPhone()
     console.log("关闭屏幕")
     for (let i = 0; i < 10; i++) {
-      auto.closeScreen()
+      ctrl.closeScreen()
       if (!device.isScreenOn()) {
         console.info("屏幕已关闭")
         return true

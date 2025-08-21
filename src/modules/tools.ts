@@ -1,4 +1,7 @@
-import { every, find, floor, head, includes, isEmpty, last, parseInt, some, toNumber, isFunction, debounce, forIn, toString } from "lodash-es"
+/* eslint-disable @typescript-eslint/no-empty-function */
+/* eslint-disable sonarjs/no-nested-functions */
+/* eslint-disable @typescript-eslint/no-unsafe-function-type */
+import { forEach, every, find, floor, head, includes, isEmpty, last, parseInt, some, toNumber, isFunction, forIn, toString, throttle, range } from "lodash-es"
 import dayjs from "dayjs"
 import { SwipeScreen, Delay, Pause, AppPackages, Info, BlackListOptions, Package, XOY } from "@/types"
 
@@ -14,12 +17,35 @@ export const _ = {
   some,
   toNumber,
   isFunction,
-  debounce,
+  throttle,
   forIn,
   toString,
+  forEach,
+  range,
 }
 
-class Auto {
+export const decorator = {
+  silent: function (): MethodDecorator {
+    return (_: unknown, _propertyKey: symbol | string, descriptor: PropertyDescriptor) => {
+      const originalMethod = descriptor.value as Function
+      descriptor.value = function (...args: unknown[]) {
+        const originalConsole = { ...console }
+        const consoleMethods = ["log", "warn", "error", "info", "verbose"] as const
+        forEach(consoleMethods, (v) => {
+          console[v] = () => {}
+        })
+        try {
+          return originalMethod.apply(this, args)
+        } finally {
+          Object.assign(console, originalConsole)
+        }
+      }
+      return descriptor
+    }
+  },
+}
+
+class Ctrl {
   public readonly isRoot: boolean
   constructor() {
     this.isRoot = Tools.isRoot()
@@ -117,15 +143,16 @@ class Auto {
     device.cancelKeepingAwake() // 取消设备常亮
   }
 
+  @decorator.silent()
   public backHome(home_id: string) {
-    for (let i = 0; i < 10; i++) {
-      if (currentPackage() === home_id) break
+    forEach(range(10), (i) => {
+      console.info(`按下back键第${i + 1}次...`)
+      if (currentPackage() === home_id) return true
       back()
-      sleep(200)
-    }
-    // 再点击home键
+      sleep(50)
+      return false
+    })
     home()
-    sleep(1e3)
   }
 
   public openApp(package_name: string, app_name: string) {
@@ -300,19 +327,7 @@ class Tools {
 
     // message = message.replace(/^[\n-]+|[\n]+$/g, "") //如果开头有很多的-或者\n，则去掉  如果结尾有\n 去除
   }
-
-  public redo(fn: () => boolean, limit?: number) {
-    if (typeof limit === "number") {
-      for (let i = 1; i <= limit; i++) {
-        fn()
-      }
-    } else {
-      for (;;) {
-        fn()
-      }
-    }
-  }
 }
 
-export const auto = new Auto()
+export const ctrl = new Ctrl()
 export const tools = new Tools()

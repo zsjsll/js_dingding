@@ -49,6 +49,18 @@ const config = {
         use: [
           {
             loader: "swc-loader",
+            options: {
+              jsc: {
+                parser: {
+                  syntax: "typescript",
+                  decorators: true
+                },
+                transform: {
+                  legacyDecorator: true,
+                  decoratorMetadata: true
+                }
+              }
+            }
           },
         ],
       },
