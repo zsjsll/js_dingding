@@ -57,8 +57,7 @@ export class QQ {
       const y = device.height - 10
       ctrl.clickBounds([x, y])
     }
-
-    sleep(1e3)
+    sleep(500)
     // const contact = id("aua").descStartsWith("123_").findOne(2e3)
     const contact = id("to2").indexInParent(1).findOne(2e3)
     if (contact !== null) {
@@ -72,13 +71,13 @@ export class QQ {
       const y = 566 - 10
       ctrl.clickBounds([x, y])
     }
-    sleep(1e3)
 
-    app.startActivity({
-      action: "android.intent.action.VIEW",
-      data: "mqq://im/chat?chat_type=wpa&version=1&src_type=web&uin=" + this.QQ,
-      packageName: this.PACKAGESNAME.QQ,
-    })
+    // sleep(1000)
+    //     app.startActivity({
+    //       action: "android.intent.action.VIEW",
+    //       data: "mqq://im/chat?chat_type=wpa&version=1&src_type=web&uin=" + this.QQ,
+    //       packageName: this.PACKAGESNAME.QQ,
+    //     })
 
     const t = text("发送").clickable().findOne(10e3)
     return t !== null
@@ -90,25 +89,23 @@ export class QQ {
     input.setText(message)
 
     const send = text("发送").clickable().findOne(10e3)
-    sleep(1000)
+    sleep(500)
     ctrl.clickBounds(send.bounds())
     console.info("发送成功")
   }
   openAndSendMsg(message: string[]) {
     if (!_.isEmpty(message)) {
-      _.some(_.range(this.RETRY), (i) => {
-        console.info(`第${i + 1}次运行QQ...`)
+      for (let i = 1; i <= this.RETRY; i++) {
+        console.info(`第${i}次运行QQ...`)
         ctrl.backHome(this.PACKAGESNAME.HOME)
-        if (!this.open()) return false
-        sleep(1e3)
-        if (!this.chat()) return false
-        sleep(1e3)
+        if (!this.open()) continue
+        if (!this.chat()) continue
         console.log("发送信息")
         const msgs = tools.formatMsgs(message)
         console.info(msgs)
         this.sendmsg(msgs)
-        return true
-      })
+        break
+      }
     } else console.log("消息为空，直接退出！")
 
     sleep(2e3)
@@ -180,14 +177,14 @@ export class DD {
   }
 
   private open() {
-    return _.some(_.range(this.RETRY), (index) => {
-      console.info(`第${index + 1}次登录...`)
+    for (let index = 1; index <= this.RETRY; index++) {
+      console.info(`第${index}次登录...`)
       ctrl.backHome(this.PACKAGESNAME.HOME)
       console.log("正在启动" + app.getAppName(this.PACKAGESNAME.DD) + "...")
 
       if (!ctrl.openApp(this.PACKAGESNAME.DD, this.APPNAME)) {
         console.warn("启动失败，重新启动...")
-        return false
+        continue
       }
 
       if (!this.isLogin()) {
@@ -195,16 +192,15 @@ export class DD {
         this.logining()
       } else console.log("可能已登录")
       this.cancelUpdate()
-      sleep(5e3) //如果设置了极速打卡或者蓝牙自动打卡， 会在这段时间完成打卡
-      if (!this.atAppHome()) {
-        console.warn("登录失败,重试...")
-        return false
-      }
-      return true
-    })
+      // sleep(5e3) //如果设置了极速打卡或者蓝牙自动打卡， 会在这段时间完成打卡
+      if (this.atAppHome()) return true
+      else console.warn("登录失败,重试...")
+    }
+    console.error(`重试${this.RETRY}次,登录失败!`)
+    return false
   }
 
-  private punchIn(): boolean {
+  private punchIn(): string[] {
     const u = "dingtalk://dingtalkclient/page/link?url=https://attend.dingtalk.com/attend/index.html"
     const url = this.CORP_ID === "" ? u : `${u}?corpId=${this.CORP_ID}`
 
@@ -213,22 +209,21 @@ export class DD {
       data: url,
       //flags: [Intent.FLAG_ACTIVITY_NEW_TASK]
     })
-
-    return _.some(_.range(this.RETRY), (index) => {
-      console.info(`第${index + 1}次尝试打卡...`)
+    for (let index = 1; index <= this.RETRY; index++) {
+      console.info(`第${index}次尝试打卡...`)
       app.startActivity(a)
       console.log("正在进入考勤界面...")
       if (text("申请").findOne(15e3) === null) {
         console.error("连接错误,重新进入考勤界面!")
         ctrl.pressBack()
-        return false
+        continue
       }
       console.log("已进入考勤界面")
       console.log("等待连接到考勤机...")
       if (textContains("考勤").findOne(15e3) === null) {
         console.error("不符合打卡规则,重新进入考勤界面!")
         ctrl.pressBack()
-        return false
+        continue
       }
       console.info("可以打卡")
       const btn = text("上班打卡").clickable(true).findOnce() || text("下班打卡").clickable(true).findOnce() || text("迟到打卡").clickable(true).findOnce()
@@ -241,13 +236,21 @@ export class DD {
         ctrl.clickBounds([x, y])
         console.log("点击打卡按钮坐标")
       }
-      if (textContains("成功").findOne(15e3) === null) {
-        console.warn("打卡无效,也许未到打卡时间!")
-        return false
+      if (textContains("成功").findOne(5e3) === null) {
+        if (textContains("早退").findOne(1e3) !== null) {
+          console.warn("打卡无效,未到打卡时间!")
+          return [`考勤打卡:${tools.formatTime("HH:mm")} 打卡·无效`]
+        } else {
+          console.warn("未知原因，打卡失败")
+          return [`考勤打卡:${tools.formatTime("HH:mm")} 打卡·失败`]
+        }
       }
       // return `考勤打卡:${formatTime("HH:mm")}打卡·成功\n但未收到成功消息`
-      return true
-    })
+      return [`考勤打卡:${tools.formatTime("HH:mm")} 打卡·成功`]
+    }
+    const e = [`重试${this.RETRY}次, 打卡失败!`]
+    console.error(e)
+    return e
   }
 
   openAndPunchIn(): string[] {
@@ -259,8 +262,8 @@ export class DD {
       console.error(e)
       return e
     }
-    let r = [`考勤打卡:${tools.formatTime("HH:mm")} 打卡·成功`]
-    if (!this.punchIn()) r = [`考勤打卡:${tools.formatTime("HH:mm")} 打卡·无效`]
+    const r = this.punchIn()
+    sleep(3e3)
 
     ctrl.backHome(this.PACKAGESNAME.HOME)
     return r
@@ -282,18 +285,19 @@ export class Clock {
     return !packageName(this.PACKAGESNAME.CLOCK).findOne(500)
   }
 
-  closeAlarm(): boolean {
-    return _.some(_.range(this.RETRY), (i) => {
-      console.info(`第${i + 1}次尝试关闭闹铃...`)
-      sleep(2e3)
+  closeAlarm() {
+    sleep(2e3)
+    for (let i = 1; i <= this.RETRY; i++) {
+      console.log(`第${i}次关闭闹钟...`)
       ctrl.pressVolumeDown()
       sleep(1e3)
-      if (!this.isCloseAlarm()) {
-        ctrl.swipeScreen(this.SWIPESCREEN)
-        return false
+      if (!this.isCloseAlarm()) ctrl.swipeScreen(this.SWIPESCREEN)
+      else {
+        console.log("已闭闹钟")
+        return true
       }
-      console.log("已闭闹钟")
-      return true
-    })
+    }
+    console.warn(`重试${this.RETRY}次, 可能未关闭!`)
+    return false
   }
 }

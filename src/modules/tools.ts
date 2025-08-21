@@ -136,11 +136,6 @@ class Ctrl {
     } else console.warn("没有root，请确认已打开静音模式")
   }
 
-  public pressBack() {
-    if (this.isRoot) Back()
-    else back()
-  }
-
   @decorator.silent()
   public backHome(home_id: string) {
     forEach(range(10), (i) => {
@@ -154,6 +149,10 @@ class Ctrl {
   }
 
   // -----------以上函数需要root权限-----------------
+
+  public pressBack() {
+    back()
+  }
   public resetPhone() {
     // device.setBrightnessMode(1) // 自动亮度模式
     device.setBrightness(600)
