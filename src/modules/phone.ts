@@ -43,10 +43,12 @@ export default class Phone {
 
   turnOff() {
     ctrl.backHome(this.PACKAGESNAME.HOME)
+    sleep(1000)
     if (this.DEV) ctrl.resetPhone()
     console.log("关闭屏幕")
     for (let i = 0; i < 10; i++) {
       ctrl.closeScreen()
+      sleep(1000)
       if (!device.isScreenOn()) {
         console.info("屏幕已关闭")
         return true

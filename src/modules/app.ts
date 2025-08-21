@@ -17,7 +17,7 @@ export class QQ {
   // 不进行更新
   private cancelUpdate() {
     // const window = id("6kp").findOne(3e3) //这个就是那个取消按键的id
-    const window = text("发现新版本").findOne(2e3)
+    const window = text("发现新版本").findOne(3e3)
     if (window !== null) {
       const closeButton = window.parent().parent().child(1)
       ctrl.clickBounds(closeButton.bounds())
@@ -34,11 +34,9 @@ export class QQ {
 
   private open(): boolean {
     if (ctrl.openApp(this.PACKAGESNAME.QQ, this.APPNAME)) {
-      sleep(2e3)
       this.cancelUpdate()
       return true
     }
-
     console.error("无法打开QQ!")
     return false
   }
@@ -57,7 +55,7 @@ export class QQ {
       const y = device.height - 10
       ctrl.clickBounds([x, y])
     }
-    sleep(500)
+    sleep(1000)
     // const contact = id("aua").descStartsWith("123_").findOne(2e3)
     const contact = id("to2").indexInParent(1).findOne(2e3)
     if (contact !== null) {
@@ -88,9 +86,11 @@ export class QQ {
 
     input.setText(message)
 
+
     const send = text("发送").clickable().findOne(10e3)
     sleep(500)
     ctrl.clickBounds(send.bounds())
+    sleep(1000)
     console.info("发送成功")
   }
   openAndSendMsg(message: string[]) {
@@ -98,6 +98,7 @@ export class QQ {
       for (let i = 1; i <= this.RETRY; i++) {
         console.info(`第${i}次运行QQ...`)
         ctrl.backHome(this.PACKAGESNAME.HOME)
+        sleep(1000)
         if (!this.open()) continue
         if (!this.chat()) continue
         console.log("发送信息")
@@ -107,9 +108,6 @@ export class QQ {
         break
       }
     } else console.log("消息为空，直接退出！")
-
-    sleep(2e3)
-    ctrl.backHome(this.PACKAGESNAME.HOME)
   }
 }
 
@@ -180,6 +178,7 @@ export class DD {
     for (let index = 1; index <= this.RETRY; index++) {
       console.info(`第${index}次登录...`)
       ctrl.backHome(this.PACKAGESNAME.HOME)
+      sleep(1000)
       console.log("正在启动" + app.getAppName(this.PACKAGESNAME.DD) + "...")
 
       if (!ctrl.openApp(this.PACKAGESNAME.DD, this.APPNAME)) {
@@ -257,6 +256,7 @@ export class DD {
     console.log("本地时间: " + tools.formatTime("YYYY-MM-DD HH:mm:ss"))
     console.log("开始打卡")
     ctrl.backHome(this.PACKAGESNAME.HOME)
+    sleep(1000)
     if (!this.open()) {
       const e = ["无法打开钉钉!"]
       console.error(e)
