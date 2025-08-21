@@ -1,4 +1,4 @@
-import { tools, _, ctrl } from "@/tools"
+import { tools, _ } from "@/tools"
 import Listener from "@/listener"
 import Config from "@/config"
 import Phone from "@/phone"
@@ -25,7 +25,6 @@ import { QQ, DD, Clock } from "@/app"
 
   Listener.debug = () => {
     console.log()
-    ctrl.backHome(cfg.PACKAGES.HOME.PACKAGENAME)
   }
 
   listener.listenVolumeKey() //可以添加自己需要的调试函数

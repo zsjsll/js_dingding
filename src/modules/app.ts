@@ -220,14 +220,14 @@ export class DD {
       console.log("正在进入考勤界面...")
       if (text("申请").findOne(15e3) === null) {
         console.error("连接错误,重新进入考勤界面!")
-        back()
+        ctrl.pressBack()
         return false
       }
       console.log("已进入考勤界面")
       console.log("等待连接到考勤机...")
       if (textContains("考勤").findOne(15e3) === null) {
         console.error("不符合打卡规则,重新进入考勤界面!")
-        back()
+        ctrl.pressBack()
         return false
       }
       console.info("可以打卡")

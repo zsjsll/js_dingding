@@ -136,11 +136,9 @@ class Ctrl {
     } else console.warn("没有root，请确认已打开静音模式")
   }
 
-  // -----------以上函数需要root权限-----------------
-  public resetPhone() {
-    // device.setBrightnessMode(1) // 自动亮度模式
-    device.setBrightness(600)
-    device.cancelKeepingAwake() // 取消设备常亮
+  public pressBack() {
+    if (this.isRoot) Back()
+    else back()
   }
 
   @decorator.silent()
@@ -148,11 +146,18 @@ class Ctrl {
     forEach(range(10), (i) => {
       console.info(`按下back键第${i + 1}次...`)
       if (currentPackage() === home_id) return true
-      back()
+      this.pressBack()
       sleep(50)
       return false
     })
     home()
+  }
+
+  // -----------以上函数需要root权限-----------------
+  public resetPhone() {
+    // device.setBrightnessMode(1) // 自动亮度模式
+    device.setBrightness(600)
+    device.cancelKeepingAwake() // 取消设备常亮
   }
 
   public openApp(package_name: string, app_name: string) {
