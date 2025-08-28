@@ -91,7 +91,6 @@ class Ctrl {
     else {
       // console.error("root手机或者提升系统版本9.0以上，还不行的话换手机或者想想其他办法吧！")
     }
-
   }
 
   public openWifi() {

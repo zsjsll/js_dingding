@@ -83,15 +83,23 @@ export class QQ {
 
   private sendmsg(message: string) {
     const input = id(this.PACKAGESNAME.QQ + ":id/input").findOne(10e3)
-
+    ctrl.clickBounds(input.bounds())
+    sleep(1000)
     input.setText(message)
 
-
     const send = text("发送").clickable().findOne(10e3)
-    sleep(500)
-    ctrl.clickBounds(send.bounds())
     sleep(1000)
+    ctrl.clickBounds(send.bounds())
+    sleep(1500)
     console.info("发送成功")
+    ctrl.pressBack()
+    sleep(500)
+    ctrl.pressBack()
+    sleep(500)
+    ctrl.pressBack()
+    sleep(500)
+    ctrl.pressBack()
+    sleep(500)
   }
   openAndSendMsg(message: string[]) {
     if (!_.isEmpty(message)) {
@@ -103,8 +111,8 @@ export class QQ {
         if (!this.chat()) continue
         console.log("发送信息")
         const msgs = tools.formatMsgs(message)
-        console.info(msgs)
         this.sendmsg(msgs)
+        console.info(msgs)
         break
       }
     } else console.log("消息为空，直接退出！")
