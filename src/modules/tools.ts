@@ -138,12 +138,10 @@ class Ctrl {
   public backHome(home_id: string) {
     forEach(range(10), (i) => {
       console.info(`按下back键第${i + 1}次...`)
-      if (currentPackage() === home_id) return true
       this.pressBack()
       sleep(50)
-      return false
     })
-    home()
+    if (currentPackage() !== home_id) home()
   }
 
   // -----------以上函数需要root权限-----------------
