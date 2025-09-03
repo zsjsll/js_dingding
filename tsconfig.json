@@ -1,26 +1,19 @@
 {
   "compilerOptions": {
-    "experimentalDecorators": true,
-    "emitDecoratorMetadata": true,
+    "target": "esnext",
+    "useDefineForClassFields": true,
+    "module": "nodenext",
+    "moduleResolution": "nodenext",
     "strict": true,
-    "allowSyntheticDefaultImports": true,
-    "noImplicitAny": true,
-    "module": "CommonJS",
-    "lib": ["es2022", "DOM"],
-    "target": "ES5",
-    "allowJs": false,
-    "typeRoots": ["./node_modules/@sm003/autojs6-dts/declarations", "./node_modules/@types", "types"],
 
+    "resolveJsonModule": true,
+    "isolatedModules": false,
     "esModuleInterop": true,
-    "outDir": "./dist",
-    "baseUrl": "src",
+    "lib": ["ESNext"],
+    "skipLibCheck": true,
     "paths": {
-      "@/*": ["modules/*"]
+      "@/*": ["./src/*"]
     }
   },
-  "ts-node": {
-    "transpileOnly": true,
-    "swc": true
-  },
-  "exclude": ["node_modules"]
+  "include": ["src/**/*.ts", "src/**/*.d.ts"]
 }

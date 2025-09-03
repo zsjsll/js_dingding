@@ -1,0 +1,17 @@
+{
+  "compilerOptions": {
+    "declaration": true,
+    "outDir": "./dist",
+    "rootDir": "./src",
+    "target": "esnext",
+    "moduleResolution": "nodenext",
+    "module": "nodenext",
+    "lib": ["DOM", "ESNext"],
+    "esModuleInterop": true,
+    "forceConsistentCasingInFileNames": true,
+    "useDefineForClassFields": true,
+    "strict": true,
+    "noImplicitAny": true
+  },
+  "include": ["src/**/*.ts"]
+}
