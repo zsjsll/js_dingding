@@ -1,9 +1,8 @@
-// import { get } from "http"
 import { posix } from "path"
 import axios from "axios"
 import fs from "fs/promises"
 
-interface Package_json {
+interface PackageJson {
   name: string
   main: string
   version: string
@@ -14,7 +13,7 @@ interface Package_json {
 interface Option {
   hook?: string
   params: string
-  package_json: Package_json
+  package_json: PackageJson
 }
 
 interface Project {
@@ -24,6 +23,23 @@ interface Project {
   packageName: string
   versionName: string
   versionCode: number
+}
+
+function silent(consoleProps: string[]) {
+  return (target: any, propertyKey: string | symbol, descriptor: PropertyDescriptor) => {
+    const originalMethod = descriptor.value
+    descriptor.value = function (...args: any[]) {
+      const originalConsole = { ...console }
+      consoleProps.forEach((v) => (console[v] = () => undefined))
+      try {
+        return originalMethod.apply(this, args)
+      } finally {
+        consoleProps.forEach((v) => {
+          console[v] = originalConsole[v]
+        })
+      }
+    }
+  }
 }
 
 class AutoxDeployPlugin {
@@ -58,10 +74,11 @@ class AutoxDeployPlugin {
           path: this.dir,
         },
       })
-      console.log(req.data)
+      console.info(req.data)
     } catch (error) {
       console.error("自动部署失败,autox.js服务未启动")
       console.error("请启动auto.js服务")
+      return error
     }
   }
 
@@ -71,11 +88,13 @@ class AutoxDeployPlugin {
     const jsonString = JSON.stringify(this.project, null, 2)
     try {
       await fs.writeFile(path, jsonString, { encoding: "utf8", flag: "w+" })
+      console.info(`已写入${dirName}`)
     } catch (error) {
-      console.log(`${dirName}已存在`)
+      console.error(`${dirName}已存在`)
+      return error
     }
   }
-
+  @silent(["info"])
   public getPlugin() {
     return {
       name: "AutoxDeploy",

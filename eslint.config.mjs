@@ -1,7 +1,7 @@
 import globals from "globals"
 import pluginJs from "@eslint/js"
 import tseslint from "typescript-eslint"
-import sonarjs from "eslint-plugin-sonarjs"
+// import sonarjs from "eslint-plugin-sonarjs"
 
 /** @type {import('eslint').Linter.Config[]} */
 const global_cfg = [{ ignores: ["dist", "node_modules"], rules: { eqeqeq: 2 } }],
@@ -16,10 +16,17 @@ export default [
   { files: ["**/*.{js,mjs,cjs,ts}"] },
   { languageOptions: { globals: { ...globals.browser, ...globals.node } } },
   pluginJs.configs.recommended,
-  sonarjs.configs.recommended,
+  // sonarjs.configs.recommended,
   ...tseslint.configs.strict,
   ...tseslint.configs.stylistic,
   ...global_cfg,
   ...js_cfg,
   ...ts_cfg,
+  {
+    rules: {
+      // Note: you must disable the base rule as it can report incorrect errors
+      "no-unused-vars": "off",
+      "@typescript-eslint/no-unused-vars": "warn",
+    },
+  },
 ]

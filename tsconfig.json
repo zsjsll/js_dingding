@@ -8,6 +8,7 @@
 
     "resolveJsonModule": true,
     "isolatedModules": false,
+    "experimentalDecorators": true,
     "esModuleInterop": true,
     "lib": ["ESNext"],
     "skipLibCheck": true,

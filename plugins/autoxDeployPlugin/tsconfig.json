@@ -8,6 +8,7 @@
     "module": "nodenext",
     "lib": ["DOM", "ESNext"],
     "esModuleInterop": true,
+    "experimentalDecorators": true,
     "forceConsistentCasingInFileNames": true,
     "useDefineForClassFields": true,
     "strict": true,

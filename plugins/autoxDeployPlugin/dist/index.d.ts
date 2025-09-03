@@ -1,4 +1,4 @@
-interface Package_json {
+interface PackageJson {
     name: string;
     main: string;
     version: string;
@@ -10,7 +10,7 @@ interface Package_json {
 interface Option {
     hook?: string;
     params: string;
-    package_json: Package_json;
+    package_json: PackageJson;
 }
 export default function autoxDeployPlugin(options: Option): {
     [x: string]: string | (() => Promise<void>);

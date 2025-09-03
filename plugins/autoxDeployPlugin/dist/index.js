@@ -1,7 +1,29 @@
-// import { get } from "http"
+var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
+};
 import { posix } from "path";
 import axios from "axios";
 import fs from "fs/promises";
+function silent(consoleProps) {
+    return (target, propertyKey, descriptor) => {
+        const originalMethod = descriptor.value;
+        descriptor.value = function (...args) {
+            const originalConsole = { ...console };
+            consoleProps.forEach((v) => (console[v] = () => undefined));
+            try {
+                return originalMethod.apply(this, args);
+            }
+            finally {
+                consoleProps.forEach((v) => {
+                    console[v] = originalConsole[v];
+                });
+            }
+        };
+    };
+}
 class AutoxDeployPlugin {
     cmd;
     dir;
@@ -33,11 +55,12 @@ class AutoxDeployPlugin {
                     path: this.dir,
                 },
             });
-            console.log(req.data);
+            console.info(req.data);
         }
         catch (error) {
             console.error("自动部署失败,autox.js服务未启动");
             console.error("请启动auto.js服务");
+            return error;
         }
     }
     async createProjectFile() {
@@ -46,9 +69,11 @@ class AutoxDeployPlugin {
         const jsonString = JSON.stringify(this.project, null, 2);
         try {
             await fs.writeFile(path, jsonString, { encoding: "utf8", flag: "w+" });
+            console.info(`已写入${dirName}`);
         }
         catch (error) {
-            console.log(`${dirName}已存在`);
+            console.error(`${dirName}已存在`);
+            return error;
         }
     }
     getPlugin() {
@@ -61,6 +86,9 @@ class AutoxDeployPlugin {
         };
     }
 }
+__decorate([
+    silent(["info"])
+], AutoxDeployPlugin.prototype, "getPlugin", null);
 export default function autoxDeployPlugin(options) {
     const instance = new AutoxDeployPlugin(options);
     return instance.getPlugin();
