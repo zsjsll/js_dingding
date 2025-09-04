@@ -19,25 +19,34 @@ interface Option {
 interface Project {
   name: string
   main: string
-  ignore: [string]
+  ignore: string[]
   packageName: string
   versionName: string
   versionCode: number
 }
 
-function silent(consoleProps: string[]) {
-  return (target: any, propertyKey: string | symbol, descriptor: PropertyDescriptor) => {
+type UnionConsolePropKey = "log" | "warn" | "debug" | "info" | "assert" | "error"
+
+function silent(consolePropKey: UnionConsolePropKey[]) {
+  const keys = new Set(consolePropKey)
+  return (_target: unknown, _propertyKey: string | symbol, descriptor: PropertyDescriptor) => {
     const originalMethod = descriptor.value
-    descriptor.value = function (...args: any[]) {
+    descriptor.value = function (...args: unknown[]) {
       const originalConsole = { ...console }
-      consoleProps.forEach((v) => (console[v] = () => undefined))
-      try {
-        return originalMethod.apply(this, args)
-      } finally {
-        consoleProps.forEach((v) => {
-          console[v] = originalConsole[v]
+
+      const restore = () => {
+        keys.forEach((key) => {
+          console[key] = originalConsole[key]
         })
       }
+
+      const result = originalMethod.apply(this, args)
+      if (result instanceof Promise) {
+        result.finally(() => restore())
+      } else {
+        restore()
+      }
+      return result
     }
   }
 }
@@ -65,7 +74,7 @@ class AutoxDeployPlugin {
       versionCode: Number(option.package_json.version.split(".")[0]),
     }
   }
-
+  @silent(["info"])
   private async sendUrl() {
     try {
       const req = await axios.get(this.url, {
@@ -81,7 +90,7 @@ class AutoxDeployPlugin {
       return error
     }
   }
-
+  @silent(["info"])
   private async createProjectFile() {
     const dirName = "project.json"
     const path = posix.join(this.dir, dirName)
@@ -94,7 +103,7 @@ class AutoxDeployPlugin {
       return error
     }
   }
-  @silent(["info"])
+
   public getPlugin() {
     return {
       name: "AutoxDeploy",

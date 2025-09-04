@@ -7,20 +7,25 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 import { posix } from "path";
 import axios from "axios";
 import fs from "fs/promises";
-function silent(consoleProps) {
-    return (target, propertyKey, descriptor) => {
+function silent(consolePropKey) {
+    const keys = new Set(consolePropKey);
+    return (_target, _propertyKey, descriptor) => {
         const originalMethod = descriptor.value;
         descriptor.value = function (...args) {
             const originalConsole = { ...console };
-            consoleProps.forEach((v) => (console[v] = () => undefined));
-            try {
-                return originalMethod.apply(this, args);
-            }
-            finally {
-                consoleProps.forEach((v) => {
-                    console[v] = originalConsole[v];
+            const restore = () => {
+                keys.forEach((key) => {
+                    console[key] = originalConsole[key];
                 });
+            };
+            const result = originalMethod.apply(this, args);
+            if (result instanceof Promise) {
+                result.finally(() => restore());
             }
+            else {
+                restore();
+            }
+            return result;
         };
     };
 }
@@ -88,7 +93,10 @@ class AutoxDeployPlugin {
 }
 __decorate([
     silent(["info"])
-], AutoxDeployPlugin.prototype, "getPlugin", null);
+], AutoxDeployPlugin.prototype, "sendUrl", null);
+__decorate([
+    silent(["info"])
+], AutoxDeployPlugin.prototype, "createProjectFile", null);
 export default function autoxDeployPlugin(options) {
     const instance = new AutoxDeployPlugin(options);
     return instance.getPlugin();
