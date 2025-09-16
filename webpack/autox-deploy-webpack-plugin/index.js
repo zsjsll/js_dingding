@@ -35,13 +35,7 @@ export default class AutoxDeployPlugin {
    */
   constructor(options = this.opt) {
     this.options = options
-
   }
-
-
-
-
-
 
   /**
    * @param {{ hooks: { done: { tap: (arg0: string, arg1: () => void) => void; }; }; }} compiler

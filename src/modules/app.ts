@@ -70,6 +70,7 @@ export class QQ {
       ctrl.clickBounds([x, y])
     }
 
+
     // sleep(1000)
     //     app.startActivity({
     //       action: "android.intent.action.VIEW",
