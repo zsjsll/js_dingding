@@ -2,7 +2,6 @@ import { posix } from "path"
 import { get } from "http"
 
 export default class AutoxDeployPlugin {
-
   /**
    * @param {string} cmd
    * @param {string} path
@@ -36,20 +35,19 @@ export default class AutoxDeployPlugin {
    */
   constructor(options = this.opt) {
     this.options = options
-    this.changFile = undefined
+
   }
+
+
+
+
+
 
   /**
    * @param {{ hooks: { done: { tap: (arg0: string, arg1: () => void) => void; }; }; }} compiler
    */
   apply(compiler) {
     if (this.options === this.opt) return console.log("没有options，不进行任何操作！")
-
-    // compiler.hooks.watchRun.tap("AutoxDeployPlugin", () => {
-    //   this.changFile ??= compiler?.modifiedFiles?.values()?.next()?.value
-    //   if (this.changFile) this.changFile = path.posix.normalize(this.changFile)
-    //   console.log("重新编译，改变的文件：", this.changFile)
-    // })
     compiler.hooks.done.tap("AutoxDeployPlugin", () => {
       if (typeof this.options.path !== "string") {
         throw new Error("必须提供一个有效的相对路径")

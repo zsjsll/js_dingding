@@ -29,8 +29,7 @@ const config = {
     new CopyPlugin({
       patterns: [
         {
-          from: path.posix.resolve(entry_path),
-          to: path.posix.resolve(output_path),
+          from: entry_path,
           globOptions: { ignore: ["**/*.js", "**/*.ts"] },
         },
       ],
@@ -53,14 +52,14 @@ const config = {
               jsc: {
                 parser: {
                   syntax: "typescript",
-                  decorators: true
+                  decorators: true,
                 },
                 transform: {
                   legacyDecorator: true,
-                  decoratorMetadata: true
-                }
-              }
-            }
+                  decoratorMetadata: true,
+                },
+              },
+            },
           },
         ],
       },
@@ -89,6 +88,7 @@ const config = {
   },
 }
 
+// @ts-expect-error aaaaaaaaaaaaaaaaaaa
 export default (_, a) => {
   console.log(a)
 
@@ -108,7 +108,5 @@ export default (_, a) => {
     config.optimization.minimize = true
   }
 
-  // if (a.env.WEBPACK_BUILD) {
-  // }
   return config
 }
