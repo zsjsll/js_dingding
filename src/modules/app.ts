@@ -244,7 +244,7 @@ export class DD {
         ctrl.clickBounds([x, y])
         console.log("点击打卡按钮坐标")
       }
-      if (textContains("成功").findOne(5e3) === null) {
+      if (textContains("成功").findOne(10e3) === null) {
         if (textContains("早退").findOne(1e3) !== null) {
           console.warn("打卡无效,未到打卡时间!")
           return [`考勤打卡:${tools.formatTime("HH:mm")} 打卡·无效`]

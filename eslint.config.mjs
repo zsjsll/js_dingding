@@ -22,4 +22,15 @@ export default [
   ...global_cfg,
   ...js_cfg,
   ...ts_cfg,
+  {
+    rules: {
+      // Note: you must disable the base rule as it can report incorrect errors
+      "no-unused-vars": "warn",
+      "@typescript-eslint/no-unused-vars": "warn",
+
+      "sonarjs/no-nested-functions": "off",
+      "sonarjs/no-commented-code": "off",
+      "@typescript-eslint/no-explicit-any": "warn",
+    },
+  },
 ]
