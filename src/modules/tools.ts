@@ -1,5 +1,4 @@
 /* eslint-disable @typescript-eslint/no-empty-function */
-/* eslint-disable sonarjs/no-nested-functions */
 /* eslint-disable @typescript-eslint/no-unsafe-function-type */
 import { forEach, every, find, floor, head, includes, isEmpty, last, parseInt, some, toNumber, isFunction, forIn, toString, throttle, range } from "lodash-es"
 import dayjs from "dayjs"

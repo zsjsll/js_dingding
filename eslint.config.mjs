@@ -25,7 +25,7 @@ export default [
   {
     rules: {
       // Note: you must disable the base rule as it can report incorrect errors
-      "no-unused-vars": "warn",
+      // "no-unused-vars": "warn",
       "@typescript-eslint/no-unused-vars": "warn",
 
       "sonarjs/no-nested-functions": "off",
