@@ -207,7 +207,7 @@ export class DD {
     return false
   }
 
-  private punchIn(): string[] {
+  private goToAttendView() {
     const u = "dingtalk://dingtalkclient/page/link?url=https://attend.dingtalk.com/attend/index.html"
     const url = this.CORP_ID === "" ? u : `${u}?corpId=${this.CORP_ID}`
 
@@ -233,8 +233,12 @@ export class DD {
         continue
       }
       console.info("可以打卡")
+      return true
     }
+    return false
+  }
 
+  private punchIn(): string[] {
     for (let index = 1; index <= this.RETRY; index++) {
       console.info(`第${index}次尝试打卡...`)
       const btn = text("上班打卡").clickable(true).findOnce() || text("下班打卡").clickable(true).findOnce() || text("迟到打卡").clickable(true).findOnce()
@@ -269,11 +273,18 @@ export class DD {
     console.log("开始打卡")
     ctrl.backHome(this.PACKAGESNAME.HOME)
     sleep(1000)
-    if (!this.open()) {
-      const e = ["无法打开钉钉!"]
-      console.error(e)
-      return e
+    try {
+      if (!this.open()) {
+        throw ["无法打开钉钉!"]
+      }
+      if (!this.goToAttendView()) {
+        throw ["无法进入打卡界面!"]
+      }
+    } catch (error) {
+      console.log(error)
+      return error as string[]
     }
+
     const r = this.punchIn()
     sleep(3e3)
 
