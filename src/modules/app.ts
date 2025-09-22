@@ -217,7 +217,7 @@ export class DD {
       //flags: [Intent.FLAG_ACTIVITY_NEW_TASK]
     })
     for (let index = 1; index <= this.RETRY; index++) {
-      console.info(`第${index}次尝试打卡...`)
+      console.info(`第${index}次尝试进入考勤界面...`)
       app.startActivity(a)
       console.log("正在进入考勤界面...")
       if (text("申请").findOne(15e3) === null) {
@@ -233,6 +233,10 @@ export class DD {
         continue
       }
       console.info("可以打卡")
+    }
+
+    for (let index = 1; index <= this.RETRY; index++) {
+      console.info(`第${index}次尝试打卡...`)
       const btn = text("上班打卡").clickable(true).findOnce() || text("下班打卡").clickable(true).findOnce() || text("迟到打卡").clickable(true).findOnce()
 
       // 好像btn.bounds()  会无法获取，那就直接点击，相当于按下了3次按键，
@@ -245,16 +249,14 @@ export class DD {
       console.log("点击打卡按钮坐标")
 
       if (textContains("成功").findOne(10e3) === null) {
-        if (textContains("早退").findOne(1e3) !== null) {
-          console.warn("打卡无效,未到打卡时间!")
-          return [`考勤打卡:${tools.formatTime("HH:mm")} 打卡·无效`]
-        } else {
+        if (textContains("早退").findOne(1e3) === null) {
           console.warn("未知原因，打卡失败")
           continue
-          // return [`考勤打卡:${tools.formatTime("HH:mm")} 打卡·失败`]
+        } else {
+          console.warn("打卡无效,未到打卡时间!")
+          return [`考勤打卡:${tools.formatTime("HH:mm")} 打卡·无效（未到时间）`]
         }
       }
-      // return `考勤打卡:${formatTime("HH:mm")}打卡·成功\n但未收到成功消息`
       return [`考勤打卡:${tools.formatTime("HH:mm")} 打卡·成功`]
     }
     const e = [`重试${this.RETRY}次, 打卡失败!`]
