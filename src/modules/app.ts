@@ -70,7 +70,6 @@ export class QQ {
       ctrl.clickBounds([x, y])
     }
 
-
     // sleep(1000)
     //     app.startActivity({
     //       action: "android.intent.action.VIEW",
@@ -235,22 +234,24 @@ export class DD {
       }
       console.info("可以打卡")
       const btn = text("上班打卡").clickable(true).findOnce() || text("下班打卡").clickable(true).findOnce() || text("迟到打卡").clickable(true).findOnce()
-      if (btn !== null) {
-        ctrl.clickBounds(btn.bounds())
-        console.log("按下打卡按钮")
-      } else {
-        const x = device.width / 2
-        const y = device.height * 0.6
-        ctrl.clickBounds([x, y])
-        console.log("点击打卡按钮坐标")
-      }
+
+      // 好像btn.bounds()  会无法获取，那就直接点击，相当于按下了3次按键，
+      ctrl.clickBounds(btn.bounds())
+      btn.click()
+      console.log("按下打卡按钮")
+      const x = device.width / 2
+      const y = device.height * 0.6
+      ctrl.clickBounds([x, y])
+      console.log("点击打卡按钮坐标")
+
       if (textContains("成功").findOne(10e3) === null) {
         if (textContains("早退").findOne(1e3) !== null) {
           console.warn("打卡无效,未到打卡时间!")
           return [`考勤打卡:${tools.formatTime("HH:mm")} 打卡·无效`]
         } else {
           console.warn("未知原因，打卡失败")
-          return [`考勤打卡:${tools.formatTime("HH:mm")} 打卡·失败`]
+          continue
+          // return [`考勤打卡:${tools.formatTime("HH:mm")} 打卡·失败`]
         }
       }
       // return `考勤打卡:${formatTime("HH:mm")}打卡·成功\n但未收到成功消息`
