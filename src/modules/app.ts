@@ -1,6 +1,12 @@
 import { tools, ctrl, _ } from "@/tools"
 import { QQCfg, DDCfg, ClockCfg, SwipeScreen } from "@/types"
 
+enum StatusCode {
+  SUCCESS = 200,
+  BAD_REQUEST = 400,
+  TOO_EARLY = 425,
+}
+
 export class QQ {
   private readonly PACKAGESNAME: { QQ: string; HOME: string }
   private readonly APPNAME: string
@@ -238,7 +244,7 @@ export class DD {
     return false
   }
 
-  private punchIn(): string[] {
+  private punchIn(): StatusCode {
     for (let index = 1; index <= this.RETRY; index++) {
       console.info(`第${index}次尝试打卡...`)
       const btn = text("上班打卡").clickable(true).findOnce() || text("下班打卡").clickable(true).findOnce() || text("迟到打卡").clickable(true).findOnce()
@@ -257,15 +263,12 @@ export class DD {
           console.warn("未知原因，打卡失败")
           continue
         } else {
-          console.warn("打卡无效,未到打卡时间!")
-          return [`考勤打卡:${tools.formatTime("HH:mm")} 打卡·无效（未到时间）`]
+          return StatusCode.TOO_EARLY
         }
       }
-      return [`考勤打卡:${tools.formatTime("HH:mm")} 打卡·成功`]
+      return StatusCode.SUCCESS
     }
-    const e = [`重试${this.RETRY}次, 打卡失败!`]
-    console.error(e)
-    return e
+    return StatusCode.BAD_REQUEST
   }
 
   openAndPunchIn(): string[] {
@@ -280,16 +283,21 @@ export class DD {
       if (!this.goToAttendView()) {
         throw ["无法进入打卡界面!"]
       }
+      switch (this.punchIn()) {
+        case StatusCode.SUCCESS:
+          return [`考勤打卡:${tools.formatTime("HH:mm")} 打卡·成功`]
+        case StatusCode.TOO_EARLY:
+          throw [`考勤打卡:${tools.formatTime("HH:mm")} 打卡·无效（未到时间）`]
+        case StatusCode.BAD_REQUEST:
+          throw [`重试${this.RETRY}次, 打卡失败!`]
+      }
     } catch (error) {
-      console.log(error)
+      console.log((error as string[])[0])
       return error as string[]
+    } finally {
+      sleep(2e3)
+      ctrl.backHome(this.PACKAGESNAME.HOME)
     }
-
-    const r = this.punchIn()
-    sleep(3e3)
-
-    ctrl.backHome(this.PACKAGESNAME.HOME)
-    return r
   }
 }
 
