@@ -302,7 +302,8 @@ class Tools {
   }
 
   public changePause(pause: Pause) {
-    if (pause[0] > 0) pause[0] -= 1 //如果有延迟打卡， 延迟打卡减1次
+    if (pause[0] > 0)
+      pause[0] -= 1 //如果有延迟打卡， 延迟打卡减1次
     else if (pause[1] > 0) pause[1] -= 1 //如果没有延迟打卡次数，且有暂停打卡次数， 暂停打卡减1次
     return pause
   }

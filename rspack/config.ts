@@ -1,18 +1,13 @@
 // import AutoxDeployPlugin from "./webpack/autox-deploy-webpack-plugin/index.js"
-// import { SwcJsMinimizerRspackPlugin } from "@rspack/core"
+
 import type { RspackOptions } from "@rspack/core"
 import path from "path/posix"
 
-// const entry_path = "./src"
-// const entry_file = path.resolve(path.join(entry_path, "main.ts"))
 const entry_file = path.resolve("./src/main.ts")
 const alias_path = path.resolve("./src/modules")
 const output_path = path.resolve("./dist")
 
-export default (env: { RSPACK_WATCH: boolean }) => {
-  const isWatch = env.RSPACK_WATCH
-  console.log(env)
-
+function createConfig(isWatch: boolean): RspackOptions {
   const config: RspackOptions = {
     devtool: false,
 
@@ -23,12 +18,14 @@ export default (env: { RSPACK_WATCH: boolean }) => {
       watchFiles: ["src/**/*"],
       port: 3200,
     },
-    watch: true,
-    // watchOptions: {
-    //   ignored: ["**/*.js", "**/*.json", "**/node_modules", "**/webpack", "**/.git"],
-    //   // aggregateTimeout: 1000,
-    //   poll: true,
-    // },
+
+    ...(isWatch && {
+      watchOptions: {
+        ignored: ["**/*.js", "**/*.json", "**/node_modules", "**/webpack"],
+        // aggregateTimeout: 1000,
+        poll: 1000,
+      },
+    }),
 
     mode: "production",
     target: ["web", "es3"],
@@ -72,14 +69,17 @@ export default (env: { RSPACK_WATCH: boolean }) => {
     resolve: {
       // tsConfig: "./tsconfig.json",
       extensions: [".tsx", ".ts", ".jsx", ".js", "..."],
+      modules: ["node_modules"],
       alias: {
         "@": alias_path,
       },
     },
 
-    optimization: {
-      minimize: isWatch ? false : true,
-    },
+    ...(isWatch && {
+      optimization: {
+        minimize: false,
+      },
+    }),
   }
 
   if (isWatch) {
@@ -98,3 +98,5 @@ export default (env: { RSPACK_WATCH: boolean }) => {
 
   return config
 }
+
+export default createConfig

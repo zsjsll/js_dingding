@@ -3,25 +3,24 @@
     "experimentalDecorators": true,
     "emitDecoratorMetadata": true,
     "strict": true,
-    "allowSyntheticDefaultImports": true,
     "noImplicitAny": true,
-    "module": "esnext",
-    "moduleResolution": "bundler",
-    "lib": ["es2022", "DOM"],
-    "target": "ES5",
-    "allowJs": false,
-    "typeRoots": ["./node_modules/@sm003/autojs6-dts/declarations", "./node_modules/@types", "types"],
+    "skipLibCheck": true,
 
     "esModuleInterop": true,
+    "allowSyntheticDefaultImports": true,
+
+    "resolveJsonModule": true,
+
+    "module": "nodenext",
+    "moduleResolution": "nodenext",
+    "target": "ES5",
+    "typeRoots": ["./node_modules/@sm003/autojs6-dts/declarations", "./node_modules/@types", "types"],
+
     "outDir": "./dist",
     "baseUrl": "src",
     "paths": {
       "@/*": ["modules/*"]
     }
-  }
-  // "ts-node": {
-  //   "transpileOnly": true,
-  //   "swc": true
-  // },
-  // "exclude": ["node_modules"]
+  },
+  "exclude": ["node_modules"]
 }
