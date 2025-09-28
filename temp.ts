@@ -1,8 +1,11 @@
-const x = 0
-const y = 0
-try {
-  if (x === 0) throw "x"
-  if (y === 0) throw "y"
-} catch (error) {
-  console.log(error)
+const a = {
+  b: 123,
+  ...(true && { c: 2 }),
 }
+
+const aa = false && { c: 2 }
+console.log(aa)
+
+const bb=...{false}
+
+console.log(bb)

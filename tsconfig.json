@@ -5,7 +5,8 @@
     "strict": true,
     "allowSyntheticDefaultImports": true,
     "noImplicitAny": true,
-    "module": "CommonJS",
+    "module": "esnext",
+    "moduleResolution": "bundler",
     "lib": ["es2022", "DOM"],
     "target": "ES5",
     "allowJs": false,
@@ -17,10 +18,10 @@
     "paths": {
       "@/*": ["modules/*"]
     }
-  },
-  "ts-node": {
-    "transpileOnly": true,
-    "swc": true
-  },
-  "exclude": ["node_modules"]
+  }
+  // "ts-node": {
+  //   "transpileOnly": true,
+  //   "swc": true
+  // },
+  // "exclude": ["node_modules"]
 }
