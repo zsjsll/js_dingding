@@ -1,6 +1,6 @@
 import type { RspackOptions, Compiler, RspackPluginInstance } from "@rspack/core"
 import path from "path/posix"
-import axios from "axios"
+import { get } from "http"
 import fs from "fs/promises"
 
 // 自己编写的插件
@@ -8,50 +8,74 @@ class AutoxDeployPlugin implements RspackPluginInstance {
   private readonly cmd: string
   private readonly srcPath: string
   private readonly url: string
-  // private readonly project: Project
+  private readonly package_json: PackageJson
 
   constructor(option: Option) {
     this.cmd = option.type
-    const dirname = path.dirname(path.resolve(option.srcPath))
     this.srcPath = path.resolve(option.srcPath)
-
-    if (this.cmd === "rerun") {
-      this.srcPath = dirname
-    } else {
-      this.srcPath = dirname
-    }
-
     this.url = `http://127.0.0.1:9317/exec`
+    this.package_json = require("./package.json")
   }
 
   private async sendUrl() {
-    try {
-      const req = await axios.get(this.url, {
-        params: {
-          cmd: this.cmd,
-          path: this.srcPath,
-        },
-      })
-      console.info(req.data)
-    } catch (error) {
-      console.error("自动部署失败,autox.js服务未启动")
-      console.error("请启动auto.js服务")
-      return error
+    let paramsPath = this.srcPath
+    if (this.cmd === "rerun") {
+      paramsPath = path.join(this.srcPath, this.package_json.main)
     }
+    const url = `${this.url}?cmd=${this.cmd}&path=${encodeURI(paramsPath)}`
+    return new Promise((resolve, reject) => {
+      const req = get(url, (res) => {
+        res.setEncoding("utf8")
+        if (res.statusCode === undefined || res.statusCode < 200 || res.statusCode >= 300) {
+          return reject(new Error(`请求失败，状态码: ${res.statusCode}`))
+        }
+        let data = ""
+        res.on("data", (chunk) => {
+          data += chunk
+        })
+        res
+          .on("end", () => {
+            return resolve(data)
+          })
+          .on("error", (err) => {
+            reject("返回数据错误")
+          })
+      })
+      req.on("error", () => {
+        reject("自动部署失败,autox.js服务未启动\n请启动auto.js服务")
+      })
+    })
   }
+
+  // private async sendUrl() {
+  //   let paramsPath = this.srcPath
+  //   if (this.cmd === "rerun") {
+  //     paramsPath = path.join(this.srcPath, this.package_json.main)
+  //   }
+  //   try {
+  //     const req = await axios.get(this.url, {
+  //       params: {
+  //         cmd: this.cmd,
+  //         path: paramsPath,
+  //       },
+  //     })
+  //     return req.data
+  //   } catch (error) {
+  //     return "自动部署失败,autox.js服务未启动\n请启动auto.js服务"
+  //   }
+  // }
 
   private async createProjectFile() {
     const dirName = "project.json"
     const projectPath = path.join(this.srcPath, dirName)
 
-    const package_json = require("./package.json")
     const project = {
-      name: package_json.name,
-      main: package_json.main,
+      name: this.package_json.name,
+      main: this.package_json.main,
       ignore: ["build"],
-      packageName: `com.autojs.${package_json.name}`,
-      versionName: package_json.version,
-      versionCode: Number(package_json.version.split(".")[0]),
+      packageName: `com.autojs.${this.package_json.name}`,
+      versionName: this.package_json.version,
+      versionCode: Number(this.package_json.version.split(".")[0]),
     }
     const jsonString = JSON.stringify(project, null, 2)
     try {
@@ -64,11 +88,11 @@ class AutoxDeployPlugin implements RspackPluginInstance {
   }
 
   apply(compiler: Compiler) {
-    // if (this.options === this.opt) return console.log("没有options，不进行任何操作！")
     compiler.hooks.done.tap("AutoxDeployPlugin", async () => {
       try {
         await this.createProjectFile()
-        await this.sendUrl()
+        const req = await this.sendUrl()
+        console.log("\x1b[32m" + req + "\x1b[0m")
       } catch (error) {
         console.error(error)
       }
@@ -77,32 +101,15 @@ class AutoxDeployPlugin implements RspackPluginInstance {
 }
 
 const entry_file = path.resolve("./src/main.ts")
-const entry_file_name = path.basename(entry_file)
 const alias_path = path.resolve("./src/modules")
 const output_path = path.resolve("./dist")
-const src_apth = path.join(output_path, entry_file_name)
-console.log(src_apth)
 
 export default (env: { RSPACK_WATCH: boolean }) => {
   const isWatch = env.RSPACK_WATCH
-  console.log(env)
 
   const config: RspackOptions = {
     devtool: false,
-
     entry: entry_file,
-
-    devServer: {
-      hot: true,
-      watchFiles: ["src/**/*"],
-      port: 3200,
-    },
-    watch: true,
-    // watchOptions: {
-    //   ignored: ["**/*.js", "**/*.json", "**/node_modules", "**/webpack", "**/.git"],
-    //   // aggregateTimeout: 1000,
-    //   poll: true,
-    // },
 
     mode: "production",
     target: ["web", "es3"],
@@ -113,7 +120,7 @@ export default (env: { RSPACK_WATCH: boolean }) => {
     plugins: [
       new AutoxDeployPlugin({
         type: isWatch ? "rerun" : "save",
-        srcPath: src_apth,
+        srcPath: output_path,
       }),
     ],
 
