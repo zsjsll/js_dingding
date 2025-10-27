@@ -17,9 +17,8 @@
     "typeRoots": ["./node_modules/@sm003/autojs6-dts/declarations", "./node_modules/@types", "types"],
 
     "outDir": "./dist",
-    "baseUrl": "src",
     "paths": {
-      "@/*": ["modules/*"]
+      "@/*": ["./src/modules/*"]
     }
   },
   "exclude": ["node_modules"]

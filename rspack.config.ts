@@ -3,6 +3,8 @@ import path from "path/posix"
 import { get } from "http"
 import fs from "fs/promises"
 
+
+
 // 自己编写的插件
 class AutoxDeployPlugin implements RspackPluginInstance {
   private readonly cmd: string
@@ -14,6 +16,7 @@ class AutoxDeployPlugin implements RspackPluginInstance {
     this.cmd = option.type
     this.srcPath = path.resolve(option.srcPath)
     this.url = `http://127.0.0.1:9317/exec`
+    // eslint-disable-next-line @typescript-eslint/no-require-imports
     this.package_json = require("./package.json")
   }
 
