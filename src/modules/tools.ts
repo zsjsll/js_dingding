@@ -309,7 +309,8 @@ class Tools {
   }
 
   public formatNotification(n: org.autojs.autojs.core.notification.Notification): string {
-    const text = n.getText().replace(/^\[\d+条\]\s*/g, "") //去除前面的 [number条]
+    // const text = n.getText().replace(/^\[\d+条\]\s*/g, "") //去除前面的 [number条]
+    const text = n.getText()
     const msgs = `${this.formatTime("HH:mm")} ${n.getTitle()}: ${text}`
     return msgs
   }
