@@ -1,8 +1,34 @@
 /* eslint-disable @typescript-eslint/no-empty-function */
 /* eslint-disable @typescript-eslint/no-unsafe-function-type */
-import { forEach, every, find, floor, head, includes, isEmpty, last, parseInt, some, toNumber, isFunction, forIn, toString, throttle, range } from "lodash-es"
+import {
+  forEach,
+  every,
+  find,
+  floor,
+  head,
+  includes,
+  isEmpty,
+  last,
+  parseInt,
+  some,
+  toNumber,
+  isFunction,
+  forIn,
+  toString,
+  throttle,
+  range,
+} from "lodash-es"
 import dayjs from "dayjs"
-import { SwipeScreen, Delay, Pause, AppPackages, Info, BlackListOptions, Package, XOY } from "@/types"
+import {
+  SwipeScreen,
+  Delay,
+  Pause,
+  AppPackages,
+  Info,
+  BlackListOptions,
+  Package,
+  XOY,
+} from "@/types"
 
 export const _ = {
   every,
@@ -25,11 +51,21 @@ export const _ = {
 
 export const decorator = {
   silent: function (): MethodDecorator {
-    return (_: unknown, _propertyKey: symbol | string, descriptor: PropertyDescriptor) => {
+    return (
+      _: unknown,
+      _propertyKey: symbol | string,
+      descriptor: PropertyDescriptor,
+    ) => {
       const originalMethod = descriptor.value as Function
       descriptor.value = function (...args: unknown[]) {
         const originalConsole = { ...console }
-        const consoleMethods = ["log", "warn", "error", "info", "verbose"] as const
+        const consoleMethods = [
+          "log",
+          "warn",
+          "error",
+          "info",
+          "verbose",
+        ] as const
         forEach(consoleMethods, (v) => {
           console[v] = () => {}
         })
@@ -57,7 +93,8 @@ class Ctrl {
 
   public clickBounds(bounds: android.graphics.Rect | XOY) {
     let xoy: XOY
-    if (bounds instanceof android.graphics.Rect) xoy = [bounds.centerX(), bounds.centerY()]
+    if (bounds instanceof android.graphics.Rect)
+      xoy = [bounds.centerX(), bounds.centerY()]
     else xoy = bounds
 
     if (this.isRoot) Tap(...xoy)
@@ -65,8 +102,22 @@ class Ctrl {
   }
 
   public swipeScreen(opt: SwipeScreen) {
-    if (this.isRoot) Swipe(device.width * 0.5, device.height * opt.START, device.width * 0.5, device.height * opt.END, opt.TIME)
-    else swipe(device.width * 0.5, device.height * opt.START, device.width * 0.5, device.height * opt.END, opt.TIME)
+    if (this.isRoot)
+      Swipe(
+        device.width * 0.5,
+        device.height * opt.START,
+        device.width * 0.5,
+        device.height * opt.END,
+        opt.TIME,
+      )
+    else
+      swipe(
+        device.width * 0.5,
+        device.height * opt.START,
+        device.width * 0.5,
+        device.height * opt.END,
+        opt.TIME,
+      )
     // gesture(
     //   opt.TIME, // 滑动时间：毫秒 320
     //   [
@@ -115,7 +166,10 @@ class Ctrl {
 
   public openGPS() {
     if (this.isRoot) {
-      const GPS_info = shell("settings get secure location_providers_allowed", true)
+      const GPS_info = shell(
+        "settings get secure location_providers_allowed",
+        true,
+      )
       if (GPS_info.error !== "") console.error("无法获取GPS信息")
       const r = GPS_info.result
       if (!_.includes(r, "gps")) console.info("GPS已关闭，正在打开中...")
@@ -194,7 +248,10 @@ class Tools {
   public readonly isRoot: boolean
 
   constructor() {
-    this.line = { default: "-----------------------------", warn: "!+!+!+!+!+!+!+!+!+!+!+!+!+!+!" }
+    this.line = {
+      default: "-----------------------------",
+      warn: "!+!+!+!+!+!+!+!+!+!+!+!+!+!+!",
+    }
     this.isRoot = Tools.isRoot()
   }
 
@@ -225,13 +282,20 @@ class Tools {
     }
   }
 
-  public passNotification(filter_switch = true, info: Info, app_packages: AppPackages): boolean {
+  public passNotification(
+    filter_switch = true,
+    info: Info,
+    app_packages: AppPackages,
+  ): boolean {
     if (!filter_switch) {
       console.info("√ 放行，过滤未开启")
       return true
     }
 
-    const app_package = _.find(Object.values(app_packages) as Package[], (pkg) => pkg.PACKAGENAME === info.PACKAGENAME)
+    const app_package = _.find(
+      Object.values(app_packages) as Package[],
+      (pkg) => pkg.PACKAGENAME === info.PACKAGENAME,
+    )
 
     if (!app_package) {
       console.warn("× 丢弃，不在包中")
@@ -243,11 +307,18 @@ class Tools {
       return true
     }
 
-    const checkBlackLists = (text: string, blackLists: BlackListOptions[]): boolean =>
-      _.some(blackLists, (black_list) => _.every(black_list, (kw) => _.includes(text, kw)))
+    const checkBlackLists = (
+      text: string,
+      blackLists: BlackListOptions[],
+    ): boolean =>
+      _.some(blackLists, (black_list) =>
+        _.every(black_list, (kw) => _.includes(text, kw)),
+      )
 
     // 当有黑名单时，对比通知内容和黑名单列表
-    if (checkBlackLists(info.TEXT, app_package.BLACKLISTS as BlackListOptions[])) {
+    if (
+      checkBlackLists(info.TEXT, app_package.BLACKLISTS as BlackListOptions[])
+    ) {
       console.warn("× 丢弃，命中关键词")
       return false
     }
@@ -295,8 +366,20 @@ class Tools {
       const [after, count] = pause
       if (count === 0) return []
       else if (after !== 0)
-        return [this.line.default, "# 暂停设置 #", `延迟: ${after}次  ( ${after / 2}天 )`, `暂停: ${count}次  ( ${count / 2}天 )`, this.line.default]
-      else return [this.line.default, "* 暂停开始 *", `剩余: ${count}次  ( ${count / 2}天 )`, this.line.default]
+        return [
+          this.line.default,
+          "# 暂停设置 #",
+          `延迟: ${after}次  ( ${after / 2}天 )`,
+          `暂停: ${count}次  ( ${count / 2}天 )`,
+          this.line.default,
+        ]
+      else
+        return [
+          this.line.default,
+          "* 暂停开始 *",
+          `剩余: ${count}次  ( ${count / 2}天 )`,
+          this.line.default,
+        ]
     }
     return ["好像出错了"]
   }
@@ -308,17 +391,23 @@ class Tools {
     return pause
   }
 
-  public formatNotification(n: org.autojs.autojs.core.notification.Notification): string {
-    // const text = n.getText().replace(/^\[\d+条\]\s*/g, "") //去除前面的 [number条]
-    const text = n.getText()
+  public formatNotification(
+    n: org.autojs.autojs.core.notification.Notification,
+  ): string {
+    let text = n.getText()
+    if (n.getText()[0] === "[") {
+      text = n.getText().replace(/^\[\d+条\]\s*/g, "") //去除前面的 [number条]
+    }
     const msgs = `${this.formatTime("HH:mm")} ${n.getTitle()}: ${text}`
     return msgs
   }
 
   public formatMsgs(msgs: string[]): string {
     const base_msgs = `\n当前电量: ${device.getBattery()}%\n是否充电: ${device.isCharging()}`
-    const findSomething = (list: string[], val: string) => _.some(list, (v) => _.includes(v, val))
-    const del_head_line = _.head(msgs) === this.line.default || _.head(msgs) === "\n"
+    const findSomething = (list: string[], val: string) =>
+      _.some(list, (v) => _.includes(v, val))
+    const del_head_line =
+      _.head(msgs) === this.line.default || _.head(msgs) === "\n"
     const del_last_line = _.last(msgs) === "\n"
     const add_warn = findSomething(msgs, "无效") || findSomething(msgs, "失败")
     if (del_head_line) msgs.shift()
