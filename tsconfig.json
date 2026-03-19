@@ -13,8 +13,12 @@
 
     "module": "nodenext",
     "moduleResolution": "nodenext",
-    "target": "ES5",
-    "typeRoots": ["./node_modules/@sm003/autojs6-dts/declarations", "./node_modules/@types", "types"],
+    "target": "esnext",
+    "typeRoots": [
+      "./node_modules/@sm003/autojs6-dts/declarations",
+      "./node_modules/@types",
+      "types"
+    ],
 
     "outDir": "./dist",
     "paths": {

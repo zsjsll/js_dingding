@@ -1,3 +1,6 @@
+// eslint-disable-next-line @typescript-eslint/triple-slash-reference
+/// <reference path="../node_modules/@sm003/autojs6-dts/declarations/index.d.ts" />
+
 /**
  * 需要Android 9以上,
  * 模拟按键 电源键 锁屏
