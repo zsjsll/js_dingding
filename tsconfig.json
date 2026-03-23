@@ -14,16 +14,18 @@
     "module": "nodenext",
     "moduleResolution": "nodenext",
     "target": "esnext",
-    "typeRoots": [
-      "./node_modules/@sm003/autojs6-dts/declarations",
-      "./node_modules/@types",
-      "types"
-    ],
+    // "typeRoots": [
+    //   "./node_modules/@sm003/autojs6-dts/declarations",
+    //   "./node_modules/@types",
+    //   "types"
+    // ],
 
     "outDir": "./dist",
+    "rootDir": "./src",
     "paths": {
       "@/*": ["./src/modules/*"]
     }
   },
-  "exclude": ["node_modules"]
+  "include": ["node_modules/@sm003/autojs6-dts/**/*.d.ts", "src", "types"]
+  // "exclude": ["node_modules"]
 }
