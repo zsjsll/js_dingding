@@ -11,8 +11,8 @@
 
     "resolveJsonModule": true,
 
-    "module": "nodenext",
-    "moduleResolution": "nodenext",
+    "module": "commonjs",
+    "moduleResolution": "bundler",
     "target": "esnext",
     // "typeRoots": [
     //   "./node_modules/@sm003/autojs6-dts/declarations",
