@@ -11,16 +11,16 @@
     "w": "bunx @rspack/cli b -w"
   },
   "dependencies": {
-    "@rspack/core": "^1.5.8",
-    "dayjs": "^1.11.18",
-    "lodash-es": "^4.17.21",
+    "@rspack/core": "^1.7.11",
+    "dayjs": "^1.11.20",
+    "globals": "^16.5.0",
+    "lodash-es": "^4.18.1",
     "reflect-metadata": "^0.2.2"
   },
   "devDependencies": {
     "@sm003/autojs6-dts": "latest",
     "@types/bun": "latest",
     "@types/lodash-es": "latest",
-    "globals": "^16.4.0",
     "oxfmt": "latest",
     "oxlint": "latest"
   },
