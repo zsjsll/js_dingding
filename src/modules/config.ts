@@ -1,5 +1,6 @@
-import { tools, _ } from "./tools"
+import { tools } from "./tools"
 import { Cfg, Json, ExtendProp } from "@/types"
+import _ from "lodash-es"
 
 export default class Config {
   private readonly CONFIG: Json

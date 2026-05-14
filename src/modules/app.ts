@@ -1,5 +1,6 @@
-import { tools, ctrl, _ } from "@/tools"
+import { tools, ctrl } from "@/tools"
 import { QQCfg, DDCfg, ClockCfg, SwipeScreen } from "@/types"
+import _ from "lodash-es"
 
 enum StatusCode {
   SUCCESS = 200,

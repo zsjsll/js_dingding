@@ -1,8 +1,10 @@
-import { tools, _ } from "@/tools"
+import { tools } from "@/tools"
 import Listener from "@/listener"
 import Config from "@/config"
 import Phone from "@/phone"
 import { QQ, DD, Clock } from "@/app"
+import _ from "lodash-es"
+
 ;(function main() {
   //初始化脚本
   tools.onlyRunOneScript() //停止其他脚本，只运行当前脚本

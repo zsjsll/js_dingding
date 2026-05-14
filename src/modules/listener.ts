@@ -1,5 +1,6 @@
-import { tools, ctrl, _ } from "./tools"
+import { tools, ctrl } from "./tools"
 import { AppPackages, Info, ListenerCfg } from "@/types"
+import _ from "lodash-es"
 
 export default class Listener {
   constructor(cfg: ListenerCfg) {

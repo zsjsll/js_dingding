@@ -2,26 +2,7 @@
 /* eslint-disable @typescript-eslint/no-unsafe-function-type */
 import { AppPackages, BlackListOptions, Delay, Info, Package, Pause, SwipeScreen, XOY } from "@/types"
 import dayjs from "dayjs"
-import { every, find, floor, forEach, forIn, head, includes, isEmpty, isFunction, last, parseInt, range, some, throttle, toNumber, toString } from "lodash-es"
-
-export const _ = {
-  every,
-  find,
-  floor,
-  head,
-  includes,
-  isEmpty,
-  last,
-  parseInt,
-  some,
-  toNumber,
-  isFunction,
-  throttle,
-  forIn,
-  toString,
-  forEach,
-  range,
-}
+import _ from "lodash-es"
 
 export const decorator = {
   silent: function (): MethodDecorator {
@@ -30,7 +11,7 @@ export const decorator = {
       descriptor.value = function (...args: unknown[]) {
         const originalConsole = { ...console }
         const consoleMethods = ["log", "warn", "error", "info", "verbose"] as const
-        forEach(consoleMethods, (v) => {
+        _.forEach(consoleMethods, (v) => {
           console[v] = () => {}
         })
         try {
@@ -135,7 +116,7 @@ class Ctrl {
 
   @decorator.silent()
   public backHome(home_id: string) {
-    forEach(range(10), (i) => {
+    _.forEach(_.range(10), (i) => {
       console.info(`按下back键第${i + 1}次...`)
       this.pressBack()
       sleep(50)
