@@ -162,6 +162,8 @@ export default (env: { RSPACK_WATCH: boolean }) => {
     optimization: {
       minimize: !isWatch,
     },
+    externalsType: "commonjs",
+    externals: { "lodash-es": "lodash" },
   }
 
   if (isWatch) {
