@@ -1,9 +1,9 @@
 {
   "features": {
-    "ghcr.io/shyim/devcontainers-features/bun:0": {
-      "version": "0.0.1",
-      "resolved": "ghcr.io/shyim/devcontainers-features/bun@sha256:689eae681aa08981175829a59953ba67a7d311f6a05c15d1bbbcb2da2839827e",
-      "integrity": "sha256:689eae681aa08981175829a59953ba67a7d311f6a05c15d1bbbcb2da2839827e"
+    "ghcr.io/michidk/devcontainers-features/bun:1": {
+      "version": "1.0.1",
+      "resolved": "ghcr.io/michidk/devcontainers-features/bun@sha256:568cc553062d184932ba993db954d4ace2bda3907d129477ce174777ac686dbd",
+      "integrity": "sha256:568cc553062d184932ba993db954d4ace2bda3907d129477ce174777ac686dbd"
     }
   }
 }
