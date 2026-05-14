@@ -192,7 +192,7 @@ class Tools {
   }
 
   public onlyRunOneScript() {
-    engines.all().map((ScriptEngine) => {
+    engines.all().forEach((ScriptEngine) => {
       if (engines.myEngine().toString() !== ScriptEngine.toString()) {
         ScriptEngine.forceStop()
       }
