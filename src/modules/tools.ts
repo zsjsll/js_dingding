@@ -67,7 +67,7 @@ class Ctrl {
     device.cancelKeepingAwake() // 取消设备常亮
     // if (isRoot()) shell("input keyevent 26", true)
     if (this.isRoot) Power()
-    else if (parseInt(device.release) > 9) lockScreen()
+    else if (_.parseInt(device.release) > 9) lockScreen()
     else {
       // console.error("root手机或者提升系统版本9.0以上，还不行的话换手机或者想想其他办法吧！")
     }
@@ -204,7 +204,7 @@ class Tools {
       return
     } else {
       const randomTime = random(min * 1e3, max * 1e3)
-      toastLog(`${Math.floor(randomTime / 1000)}秒后启动程序...`)
+      toastLog(`${_.floor(randomTime / 1000)}秒后启动程序...`)
       sleep(randomTime)
     }
   }
@@ -264,7 +264,7 @@ class Tools {
     //匹配所有数字，包括小数
     const pause = input.match(/[\d.]+/g)?.map((v) => {
       let num = _.floor(_.toNumber(v)) //变成数字，向下取整
-      if (isNaN(num)) num = 1 //判断NaN，如果是 变成1
+      if (_.isNaN(num)) num = 1 //判断NaN，如果是 变成1
       return num
     }) ?? [0, 1]
 

@@ -113,7 +113,6 @@ import * as _ from "lodash-es"
 
   function listenDD(n: org.autojs.autojs.core.notification.Notification) {
     if (n.getPackageName() !== cfg.PACKAGES.DD.PACKAGENAME) return
-    // if (includes(n.getText(), "考勤打卡") && (includes(n.getText(), "成功") || includes(n.getText(), "全部正常"))) return
 
     cfg.info.push(tools.formatNotification(n))
 
