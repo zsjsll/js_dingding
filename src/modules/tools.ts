@@ -1,8 +1,8 @@
 /* eslint-disable @typescript-eslint/no-empty-function */
 /* eslint-disable @typescript-eslint/no-unsafe-function-type */
-import { AppPackages, BlackListOptions, Delay, Info, Package, Pause, SwipeScreen, XOY } from "@/types"
+import type { AppPackages, BlackListOptions, Delay, Info, Package, Pause, SwipeScreen, XOY } from "@/types"
 import dayjs from "dayjs"
-import _ from "lodash-es"
+import * as _ from "lodash-es"
 
 export const decorator = {
   silent: function (): MethodDecorator {
@@ -269,7 +269,7 @@ class Tools {
     }) ?? [0, 1]
 
     pause[1] ??= 1 //默认 暂停1次
-    pause[0] = pause[1] === 0 ? 0 : pause[0]
+    pause[0] = pause[1] === 0 ? 0 : (pause[0] as number)
 
     return [pause[0], pause[1]]
   }

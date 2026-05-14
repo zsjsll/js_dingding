@@ -1,5 +1,5 @@
 import { ctrl } from "./tools"
-import { PhoneCfg, SwipeScreen } from "@/types"
+import type { PhoneCfg, SwipeScreen } from "@/types"
 
 export default class Phone {
   private readonly DEV: boolean

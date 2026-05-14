@@ -3,7 +3,7 @@ import Listener from "@/listener"
 import Config from "@/config"
 import Phone from "@/phone"
 import { QQ, DD, Clock } from "@/app"
-import _ from "lodash-es"
+import * as _ from "lodash-es"
 
 ;(function main() {
   //初始化脚本

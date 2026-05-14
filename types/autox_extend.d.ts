@@ -1,3 +1,5 @@
+import("@sm003/autojs6-dts/declarations/index")
+
 /**
  * 需要Android 9以上,
  * 模拟按键 电源键 锁屏
