@@ -307,7 +307,10 @@ export class Clock {
   private readonly RETRY: number
 
   constructor(cfg: ClockCfg) {
-    this.PACKAGESNAME = { CLOCK: cfg.PACKAGES.CLOCK.PACKAGENAME, HOME: cfg.PACKAGES.HOME.PACKAGENAME }
+    this.PACKAGESNAME = {
+      CLOCK: cfg.PACKAGES.CLOCK.PACKAGENAME,
+      HOME: cfg.PACKAGES.HOME.PACKAGENAME,
+    }
     this.SWIPESCREEN = cfg.SWIPESCREEN
     this.RETRY = cfg.RETRY
   }

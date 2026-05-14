@@ -69,8 +69,8 @@ export default class Listener {
           if (_.isFunction(func)) return func(n)
         },
         0,
-        { leading: true, trailing: false }
-      )
+        { leading: true, trailing: false },
+      ),
     )
   }
 }

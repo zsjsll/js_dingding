@@ -26,11 +26,6 @@
       "@/*": ["./src/modules/*"]
     }
   },
-  "include": [
-    "node_modules/@sm003/autojs6-dts/**/*.d.ts",
-    "src",
-    "types",
-    "rspack.config.ts"
-  ]
+  "include": ["node_modules/@sm003/autojs6-dts/**/*.d.ts", "src", "types", "rspack.config.ts"]
   // "exclude": ["node_modules"]
 }
