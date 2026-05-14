@@ -1,7 +1,6 @@
 import { tools, ctrl } from "@/tools"
 import type { QQCfg, DDCfg, ClockCfg, SwipeScreen } from "@/types"
 import * as _ from "lodash-es"
-import type a from "@sm003/autojs6-dts"
 
 enum StatusCode {
   SUCCESS = 200,
