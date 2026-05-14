@@ -1,34 +1,34 @@
 /* eslint-disable @typescript-eslint/no-empty-function */
 /* eslint-disable @typescript-eslint/no-unsafe-function-type */
 import {
-  forEach,
-  every,
-  find,
-  floor,
-  head,
-  includes,
-  isEmpty,
-  last,
-  parseInt,
-  some,
-  toNumber,
-  isFunction,
-  forIn,
-  toString,
-  throttle,
-  range,
-} from "lodash-es";
-import dayjs from "dayjs";
+    AppPackages,
+    BlackListOptions,
+    Delay,
+    Info,
+    Package,
+    Pause,
+    SwipeScreen,
+    XOY,
+} from "@/types"
+import dayjs from "dayjs"
 import {
-  SwipeScreen,
-  Delay,
-  Pause,
-  AppPackages,
-  Info,
-  BlackListOptions,
-  Package,
-  XOY,
-} from "@/types";
+    every,
+    find,
+    floor,
+    forEach,
+    forIn,
+    head,
+    includes,
+    isEmpty,
+    isFunction,
+    last,
+    parseInt,
+    range,
+    some,
+    throttle,
+    toNumber,
+    toString,
+} from "lodash-es"
 
 export const _ = {
   every,

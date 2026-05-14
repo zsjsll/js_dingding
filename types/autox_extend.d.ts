@@ -1,20 +1,17 @@
- 
-// / <reference path="../node_modules/@sm003/autojs6-dts/declarations/index.d.ts" />
-
 /**
  * 需要Android 9以上,
  * 模拟按键 电源键 锁屏
  *
  * @return {*}  {boolean}
  */
-declare function lockScreen(): boolean
+declare function lockScreen(): boolean;
 
 declare interface RootAutomator {
-  exit(): void
+  exit(): void;
 }
 declare namespace Internal {
   interface Engines {
-    execScriptFile(path: string): void
+    execScriptFile(path: string): void;
   }
 }
 
@@ -23,9 +20,9 @@ declare namespace Internal {
  *
  * @return {*}  {boolean}
  */
-declare function keyCodeHeadsetHook(): boolean
+declare function keyCodeHeadsetHook(): boolean;
 
 declare interface Console {
-  verbose: (input: unknown) => void
-  setGlobalLogConfig: (obj: object) => void
+  verbose: (input: unknown) => void;
+  setGlobalLogConfig: (obj: object) => void;
 }
