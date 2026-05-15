@@ -7,7 +7,7 @@
 	"author": "",
 	"main": "main.js",
 	"scripts": {
-		"format": "bunx biome format --write --log-level=error",
+		"fmt": "bunx biome format --write --log-level=error",
 		"b": "bunx @rspack/cli b",
 		"w": "bunx @rspack/cli b -w",
 		"prepare": "husky"
