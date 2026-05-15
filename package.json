@@ -1,31 +1,31 @@
 {
-	"name": "daka",
-	"version": "1.0.0",
-	"description": "打卡使用",
-	"keywords": [],
-	"license": "ISC",
-	"author": "",
-	"main": "main.js",
-	"scripts": {
-		"fmt": "bunx biome format --write --log-level=error",
-		"b": "bunx @rspack/cli b",
-		"w": "bunx @rspack/cli b -w"
-	},
-	"dependencies": {
-		"@rspack/cli": "latest",
-		"@rspack/core": "latest",
-		"dayjs": "latest",
-		"globals": "latest"
-	},
-	"devDependencies": {
-		"@sm003/autojs6-dts": "latest",
-		"@types/bun": "latest",
-		"@types/lodash-es": "latest",
-		"lodash-es": "latest",
-		"oxfmt": "latest",
-		"oxlint": "latest"
-	},
-	"peerDependencies": {
-		"typescript": "latest"
-	}
+  "name": "daka",
+  "version": "1.0.0",
+  "description": "打卡使用",
+  "keywords": [],
+  "license": "ISC",
+  "author": "",
+  "main": "main.js",
+  "scripts": {
+    "fmt": "bunx biome format --write --log-level=error",
+    "b": "bunx @rspack/cli b",
+    "w": "bunx @rspack/cli b -w"
+  },
+  "dependencies": {
+    "@rspack/cli": "latest",
+    "@rspack/core": "latest",
+    "dayjs": "latest",
+    "globals": "latest"
+  },
+  "devDependencies": {
+    "@sm003/autojs6-dts": "latest",
+    "@types/bun": "latest",
+    "@types/lodash-es": "latest",
+    "lodash-es": "latest",
+    "oxfmt": "latest",
+    "oxlint": "latest"
+  },
+  "peerDependencies": {
+    "typescript": "latest"
+  }
 }

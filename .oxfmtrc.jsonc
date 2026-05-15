@@ -1,10 +1,6 @@
 {
-	"$schema": "./node_modules/oxfmt/configuration_schema.json",
-	"ignorePatterns": [
-		"node_modules",
-		"dist",
-		".devcontainer/devcontainer-lock.json"
-	],
-	"semi": false,
-	"printWidth": 160
+  "$schema": "./node_modules/oxfmt/configuration_schema.json",
+  "ignorePatterns": ["node_modules", "dist", ".devcontainer/devcontainer-lock.json"],
+  "semi": false,
+  "printWidth": 160
 }

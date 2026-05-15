@@ -1,8 +1,8 @@
 {
-	"name": "打卡",
-	"main": "main.js",
-	"ignore": ["build"],
-	"packageName": "com.autojs.daka",
-	"versionName": "1.0.0",
-	"versionCode": 1
+  "name": "打卡",
+  "main": "main.js",
+  "ignore": ["build"],
+  "packageName": "com.autojs.daka",
+  "versionName": "1.0.0",
+  "versionCode": 1
 }
