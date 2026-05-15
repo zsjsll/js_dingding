@@ -23,17 +23,10 @@
 		"@sm003/autojs6-dts": "latest",
 		"@types/bun": "latest",
 		"@types/lodash-es": "latest",
-		"husky": "latest",
-		"lint-staged": "latest",
 		"oxfmt": "latest",
 		"oxlint": "latest"
 	},
 	"peerDependencies": {
 		"typescript": "latest"
-	},
-	"lint-staged": {
-		"*.{js,ts,jsx,tsx,json}": [
-			"biome check --write --no-errors-on-unmatched"
-		]
 	}
 }
