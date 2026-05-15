@@ -1,15 +1,15 @@
 {
-	"$schema": "./node_modules/oxlint/configuration_schema.json",
-	"plugins": ["typescript", "unicorn", "oxc"],
-	"categories": {
-		"correctness": "warn",
-		"suspicious": "warn",
-		"perf": "warn"
+  "$schema": "./node_modules/oxlint/configuration_schema.json",
+  "plugins": ["typescript", "unicorn", "oxc"],
+  "categories": {
+    "correctness": "warn",
+    "suspicious": "warn",
+    "perf": "warn",
 
-		// "pedantic": "warn",
-	},
-	"rules": {},
-	"env": {
-		"builtin": true
-	}
+    // "pedantic": "warn",
+  },
+  "rules": {},
+  "env": {
+    "builtin": true,
+  },
 }

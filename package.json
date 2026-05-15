@@ -12,11 +12,6 @@
 		"w": "bunx @rspack/cli b -w",
 		"prepare": "husky"
 	},
-	"lint-staged": {
-		"*.{js,ts,jsx,tsx,json}": [
-			"biome check --write --no-errors-on-unmatched"
-		]
-	},
 	"dependencies": {
 		"@rspack/cli": "latest",
 		"@rspack/core": "latest",
@@ -28,12 +23,17 @@
 		"@sm003/autojs6-dts": "latest",
 		"@types/bun": "latest",
 		"@types/lodash-es": "latest",
-		"husky": "^9.1.7",
-		"lint-staged": "^17.0.4",
+		"husky": "latest",
+		"lint-staged": "latest",
 		"oxfmt": "latest",
 		"oxlint": "latest"
 	},
 	"peerDependencies": {
 		"typescript": "latest"
+	},
+	"lint-staged": {
+		"*.{js,ts,jsx,tsx,json}": [
+			"biome check --write --no-errors-on-unmatched"
+		]
 	}
 }
