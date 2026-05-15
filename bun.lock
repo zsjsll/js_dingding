@@ -9,12 +9,12 @@
         "@rspack/core": "latest",
         "dayjs": "latest",
         "globals": "latest",
-        "lodash-es": "latest",
       },
       "devDependencies": {
         "@sm003/autojs6-dts": "latest",
         "@types/bun": "latest",
         "@types/lodash-es": "latest",
+        "lodash-es": "latest",
         "oxfmt": "latest",
         "oxlint": "latest",
       },
