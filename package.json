@@ -9,8 +9,7 @@
 	"scripts": {
 		"fmt": "bunx biome format --write --log-level=error",
 		"b": "bunx @rspack/cli b",
-		"w": "bunx @rspack/cli b -w",
-		"prepare": "husky"
+		"w": "bunx @rspack/cli b -w"
 	},
 	"dependencies": {
 		"@rspack/cli": "latest",
