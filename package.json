@@ -12,6 +12,11 @@
 		"w": "bunx @rspack/cli b -w",
 		"prepare": "husky"
 	},
+	"lint-staged": {
+		"*.{js,ts,jsx,tsx,json}": [
+			"biome check --write --no-errors-on-unmatched"
+		]
+	},
 	"dependencies": {
 		"@rspack/cli": "latest",
 		"@rspack/core": "latest",

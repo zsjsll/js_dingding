@@ -11,7 +11,7 @@ import type {
 	XOY,
 } from "@/types";
 
-export        const decorator = {
+export const decorator = {
 	silent:
 		(): MethodDecorator =>
 		(

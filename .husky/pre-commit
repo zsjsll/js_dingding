@@ -1,1 +1,1 @@
-bunx biome check
+bunx lint-staged
