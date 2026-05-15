@@ -1,6 +1,3 @@
-/* eslint-disable @typescript-eslint/no-empty-function */
-/* eslint-disable @typescript-eslint/no-unsafe-function-type */
-
 import dayjs from "dayjs";
 import * as _ from "lodash-es";
 import type {
@@ -14,7 +11,7 @@ import type {
 	XOY,
 } from "@/types";
 
-export const decorator = {
+export        const decorator = {
 	silent:
 		(): MethodDecorator =>
 		(

@@ -7,8 +7,10 @@
 	"author": "",
 	"main": "main.js",
 	"scripts": {
+		"format": "bunx biome format --write --log-level=error",
 		"b": "bunx @rspack/cli b",
-		"w": "bunx @rspack/cli b -w"
+		"w": "bunx @rspack/cli b -w",
+		"prepare": "husky"
 	},
 	"dependencies": {
 		"@rspack/cli": "latest",
@@ -21,6 +23,8 @@
 		"@sm003/autojs6-dts": "latest",
 		"@types/bun": "latest",
 		"@types/lodash-es": "latest",
+		"husky": "^9.1.7",
+		"lint-staged": "^17.0.4",
 		"oxfmt": "latest",
 		"oxlint": "latest"
 	},

@@ -1,6 +1,6 @@
 import fs from "node:fs/promises";
 import { get } from "node:http";
-import path from "node:path/posix";
+import path from "node:path";
 import type {
 	Compiler,
 	RspackOptions,

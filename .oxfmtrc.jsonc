@@ -2,5 +2,6 @@
 	"$schema": "./node_modules/oxfmt/configuration_schema.json",
 	"ignorePatterns": ["node_modules", "dist"],
 	"semi": false,
-	"printWidth": 160
+	"printWidth": 160,
+	"trailingComma": "all"
 }
