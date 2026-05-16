@@ -3,3 +3,4 @@ tempCodeRunnerFile.*
 .pnpm-debug.log
 /config.js
 /dist
+.vscode/task-history.ndjson
