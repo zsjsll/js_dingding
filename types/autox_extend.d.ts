@@ -24,7 +24,7 @@ declare namespace Internal {
  */
 declare function keyCodeHeadsetHook(): boolean
 
-declare interface Console {
-  verbose: (input: unknown) => void
-  setGlobalLogConfig: (obj: object) => void
-}
+// declare interface Console {
+//   verbose: (input: unknown) => void
+//   setGlobalLogConfig: (obj: object) => void
+// }
