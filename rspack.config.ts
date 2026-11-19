@@ -2,6 +2,7 @@ import fs from "node:fs/promises"
 import { get } from "node:http"
 import path from "node:path"
 import type { Compiler, RspackOptions, RspackPluginInstance } from "@rspack/core"
+import { Glob } from "bun"
 import packageJson from "./package.json"
 
 interface Option {
@@ -110,21 +111,35 @@ class AutoxDeployPlugin implements RspackPluginInstance {
   }
 }
 
-const entry_file = path.resolve("./src/main.ts")
 const alias_path = path.resolve("./src/modules")
 const output_path = path.resolve("./dist")
 
-export default (env: { RSPACK_WATCH: boolean }) => {
+async function getEntrise() {
+  const glob = new Glob("src/*/main.ts")
+  const files = glob.scan({ cwd: "./", onlyFiles: true })
+
+  const entries: Record<string, string> = {}
+  for await (const file of files) {
+    const dir = file.split("\\").at(-2)
+    if (!dir) continue
+    entries[dir] = path.resolve(file)
+  }
+  return entries
+}
+
+export default async (env: { RSPACK_WATCH: boolean }) => {
   const isWatch = env.RSPACK_WATCH
+  const entries = await getEntrise()
 
   const config: RspackOptions = {
     devtool: false,
-    entry: entry_file,
+    entry: entries,
 
     mode: "production",
     target: ["web", "es3"],
     output: {
       path: output_path,
+      filename: "[name].js",
     },
 
     plugins: [
